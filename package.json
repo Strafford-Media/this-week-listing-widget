@@ -1,5 +1,5 @@
 {
-  "name": "external-app-template",
+  "name": "this-week-listing-widget",
   "version": "0.0.1",
   "main": "index.html",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/tehpsalmist/external-app-template.git"
+    "url": "git+ssh://git@github.com/tehpsalmist/this-week-listing-widget.git"
   },
   "keywords": [
     "parcel",
@@ -21,9 +21,9 @@
   "author": "Ben Steward <bstewardcodes@gmail.com> (https://tehpsalmist.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tehpsalmist/external-app-template/issues"
+    "url": "https://github.com/tehpsalmist/this-week-listing-widget/issues"
   },
-  "homepage": "https://github.com/Strafford-Media/external-app-template#readme",
+  "homepage": "https://github.com/Strafford-Media/this-week-listing-widget#readme",
   "devDependencies": {
     "@parcel/transformer-inline-string": "^2.10.1",
     "@types/node": "^20.8.9",
