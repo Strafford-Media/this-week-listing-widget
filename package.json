@@ -1,0 +1,54 @@
+{
+  "name": "external-app-template",
+  "version": "0.0.1",
+  "main": "index.html",
+  "scripts": {
+    "start": "MODE=development parcel serve src/index.html -p 2023",
+    "build": "MODE=production parcel build src/index.tsx --no-scope-hoist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tehpsalmist/external-app-template.git"
+  },
+  "keywords": [
+    "parcel",
+    "react",
+    "tailwindcss",
+    "duda",
+    "external app",
+    "template"
+  ],
+  "author": "Ben Steward <bstewardcodes@gmail.com> (https://tehpsalmist.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tehpsalmist/external-app-template/issues"
+  },
+  "homepage": "https://github.com/Strafford-Media/external-app-template#readme",
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "parcel": "latest",
+    "process": "^0.11.10",
+    "tailwindcss": "latest"
+  },
+  "dependencies": {
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "app": "public/index.js",
+  "targets": {
+    "main": false,
+    "app": {
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    }
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  }
+}

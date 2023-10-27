@@ -1,0 +1,17 @@
+{
+  "alias": [
+    "external-app-template"
+  ],
+  "version": 2,
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.js"
+    }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "public"
+}

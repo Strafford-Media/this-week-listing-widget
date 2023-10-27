@@ -1,0 +1,11 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@layer utilities {
+  .ps-flex-center {
+    @apply ps-flex ps-justify-center ps-items-center !important;
+  }
+}
