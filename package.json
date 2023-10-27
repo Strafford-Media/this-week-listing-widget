@@ -25,17 +25,17 @@
   },
   "homepage": "https://github.com/Strafford-Media/external-app-template#readme",
   "devDependencies": {
-    "@types/node": "^18.11.18",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "autoprefixer": "latest",
-    "parcel": "latest",
+    "@types/node": "^20.8.9",
+    "@types/react": "^18.2.33",
+    "@types/react-dom": "^18.2.14",
+    "autoprefixer": "^10.4.16",
+    "parcel": "^2.10.1",
     "process": "^0.11.10",
-    "tailwindcss": "latest"
+    "tailwindcss": "^3.3.5"
   },
   "dependencies": {
-    "react": "latest",
-    "react-dom": "latest"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "app": "public/index.js",
   "targets": {
