@@ -11,7 +11,7 @@ export const App = ({ className = '', ...props }: AppProps) => {
     if (typeof (window as any).dmAPI !== 'undefined') {
       ;(window as any).dmAPI.drawMap({
         container: '.main-listing-mapbox-map',
-        addressQuery: '577 College Ave., Palo Alto, CA',
+        addressQuery: pageData.primary_address,
       })
     }
   }, [pageData.primary_address])
