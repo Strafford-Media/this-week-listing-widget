@@ -24,6 +24,9 @@ export interface DudaContextValue {
     primary_phone: string
     primary_web_url: string
     tier: 'basic' | 'standard' | 'premium'
+    main_image: string
+    logo: string
+    this_week_recommended: boolean
     images: {
       url: string
       status: 'UPLOADED'

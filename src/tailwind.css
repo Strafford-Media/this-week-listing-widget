@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 @layer utilities {
-  .ps-flex-center {
-    @apply ps-flex ps-justify-center ps-items-center !important;
+  .tw-flex-center {
+    @apply tw-flex tw-justify-center tw-items-center !important;
   }
 }

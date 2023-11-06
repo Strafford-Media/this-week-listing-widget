@@ -1,4 +1,5 @@
-import { createContext, useContext } from 'react'
+import { createContext } from 'preact'
+import { useContext } from 'preact/hooks'
 import { DudaContextValue } from './@types/duda'
 
 const DudaContext = createContext<DudaContextValue>({
@@ -27,6 +28,9 @@ const DudaContext = createContext<DudaContextValue>({
     primary_phone: '',
     primary_web_url: '',
     tier: 'basic',
+    main_image: '',
+    logo: '',
+    this_week_recommended: true,
     images: [],
     videos: [],
     booking_links: [],

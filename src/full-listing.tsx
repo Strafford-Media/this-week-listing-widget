@@ -1,5 +1,4 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
+import { render } from 'preact'
 import { DudaContextValue } from './@types/duda'
 import { App } from './components/App'
 import { DudaProvider } from './DudaContext'
@@ -14,20 +13,10 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let root
-export async function init({
-  container,
-  props,
-}: {
-  container: Element
-  props: DudaContextValue
-}) {
+export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
-    root = createRoot(container)
-
     if (typeof (window as any).dmAPI === 'undefined') {
-      return console.error(
-        'no dmAPI object available to bootstrap widget content'
-      )
+      return console.error('no dmAPI object available to bootstrap widget content')
     }
 
     const dp = (window as any).dmAPI.dynamicPageApi()
@@ -36,24 +25,25 @@ export async function init({
 
     props.pageData = await dp.pageData()
 
-    root.render(
+    render(
       <DudaProvider value={props}>
         <App />
-      </DudaProvider>
+      </DudaProvider>,
+      container
     )
   }
 }
 
 export function clean() {
-  if (root) {
+  if (root!) {
     root.unmount()
   }
 }
 
 if (process.env.NODE_ENV === 'development') {
-  const root = createRoot(document.getElementById('app')!)
+  const root = document.getElementById('app')!
 
-  root.render(
+  render(
     <DudaProvider
       value={{
         siteDetails: {
@@ -70,15 +60,18 @@ if (process.env.NODE_ENV === 'development') {
         },
         pageData: {
           business_name: 'Aloha Adventures',
+          main_image:
+            'https://irt-cdn.multiscreensite.com/3105c6ea9c524f6482a10797a4aa680a/dms3rep/multi/Cat_August_2010-4-b3e1cbd3.jpg',
+          logo: 'https://images.examples.com/wp-content/uploads/2017/03/Free-Corporate-Company-Logo.jpg?width=600',
           images: [
             {
               url: 'https://irt-cdn.multiscreensite.com/3105c6ea9c524f6482a10797a4aa680a/dms3rep/multi/Cat_August_2010-4-b3e1cbd3.jpg',
               status: 'UPLOADED',
-              original_url:
-                'https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg',
+              original_url: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg',
             },
           ],
           island: 'oahu',
+          this_week_recommended: true,
           primary_address: '1234 Beach Blvd, Honolulu, HI',
           created_at: '',
           description:
@@ -100,6 +93,7 @@ if (process.env.NODE_ENV === 'development') {
       }}
     >
       <App />
-    </DudaProvider>
+    </DudaProvider>,
+    root
   )
 }
