@@ -1,10 +1,20 @@
 import { ComponentProps } from 'preact'
 import { useDudaContext } from '../DudaContext'
+import { useEffect } from 'preact/hooks'
 
 export interface AppProps extends ComponentProps<'div'> {}
 
 export const App = ({ className = '', ...props }: AppProps) => {
   const { pageData } = useDudaContext()
+
+  useEffect(() => {
+    if (typeof (window as any).dmAPI !== 'undefined') {
+      ;(window as any).dmAPI.drawMap({
+        container: '.main-listing-mapbox-map',
+        addressQuery: '577 College Ave., Palo Alto, CA',
+      })
+    }
+  }, [pageData.primary_address])
 
   return (
     <div className={`${className}`} {...props}>
@@ -32,14 +42,11 @@ export const App = ({ className = '', ...props }: AppProps) => {
         <div>{pageData.island}</div>
         <div>{pageData.primary_email}</div>
         <div>{pageData.primary_phone}</div>
-        <div>{pageData.primary_address}</div>
-        <a
-          href={pageData.primary_web_url}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
+        <a href={pageData.primary_web_url} target="_blank" rel="noreferrer noopener">
           {pageData.primary_web_url}
         </a>
+        <div>{pageData.primary_address}</div>
+        <div className="main-listing-mapbox-map"></div>
         <div>{pageData.description}</div>
         <div>
           <h3>Photo Gallery</h3>
