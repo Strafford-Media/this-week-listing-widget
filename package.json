@@ -4,7 +4,7 @@
   "main": "index.html",
   "scripts": {
     "start": "MODE=development parcel serve src/index.html -p 2023",
-    "build": "MODE=production parcel build src/full-listing.tsx --no-scope-hoist"
+    "build": "MODE=production parcel build"
   },
   "repository": {
     "type": "git",
@@ -32,10 +32,30 @@
     "process": "^0.11.10",
     "tailwindcss": "^3.3.5"
   },
-  "app": "public/index.js",
+  "full-listing": "public/full-listing.js",
+  "search-bar": "public/search-bar.js",
+  "this-week-widgets-css": "public/this-week-widgets.css",
   "targets": {
     "main": false,
-    "app": {
+    "full-listing": {
+      "source": "src/full-listing.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "search-bar": {
+      "source": "src/search-bar.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "this-week-widgets-css": {
+      "source": "src/tailwind.css",
+      "scopeHoist": false,
       "engines": {
         "browsers": "IE 11"
       },
