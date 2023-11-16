@@ -2,14 +2,16 @@ import { render } from 'preact'
 import { DudaProvider } from './DudaContext'
 import { DudaContextValue } from './@types/duda'
 import { SearchBar } from './components/SearchBar'
-import { SearchEngine } from './utils/SearchEngine'
 
 let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
     render(
       <DudaProvider value={props}>
-        <SearchBar size="md" />
+        <SearchBar
+          style={{ maxWidth: props.siteDetails.config.maxWidth || undefined }}
+          size={props.siteDetails.config.size || 'md'}
+        />
       </DudaProvider>,
       container
     )
