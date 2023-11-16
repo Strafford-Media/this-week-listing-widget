@@ -1,6 +1,6 @@
 import { Dispatch, useEffect, useRef, useState, StateUpdater } from 'preact/hooks'
 
-export function useRememberedState<T>(key: string, initialValue: T | (() => T)): [T, Dispatch<StateUpdater<T>>] {
+export function useRememberedState<T>(key: string, initialValue: T | (() => T)): [T, Dispatch<T | StateUpdater<T>>] {
   const currentKey = useRef(key)
   const [storedValue, setStoredValue] = useState(() => {
     try {
@@ -20,7 +20,7 @@ export function useRememberedState<T>(key: string, initialValue: T | (() => T)):
     }
   })
 
-  const setValue: Dispatch<StateUpdater<T>> = (value) => {
+  const setValue: Dispatch<T | StateUpdater<T>> = (value) => {
     const valueToStore = value instanceof Function ? value(storedValue) : value
 
     setStoredValue(valueToStore)

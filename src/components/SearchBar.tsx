@@ -45,7 +45,7 @@ export interface SearchBarProps extends Omit<ComponentProps<'div'>, 'size'> {
 
 export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [island, setIsland] = useState(islands[0])
+  const [island, setIsland] = useRememberedState('this-week-search-island-value', islands[0])
   const [openDropdown, setOpenDropdown] = useState(false)
   const [dropDownType, setDropdownType] = useState<'island' | 'results'>('island')
   const [search, setSearch] = useRememberedState('this-week-search-value', '')
@@ -88,7 +88,7 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
     >
       {dropDownType === 'island' && (
         <ul className="tw-relative tw-max-w-sm tw-w-screen">
-          {islands.map((isle, index) => (
+          {islands.map((isle) => (
             <li className={isle.peerClass}>
               <button
                 className="tw-p-3 tw-flex tw-w-full tw-items-center focus:tw-outline-none focus:tw-bg-blue-100 hover:tw-bg-blue-100"
