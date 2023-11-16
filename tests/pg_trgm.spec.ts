@@ -15,7 +15,7 @@ test('calculate correct similarity', () => {
   assert.equal(trigramSimilarity('hello world', 'hello world'), 1)
   assert.equal(trigramSimilarity('hello', 'hello world'), 0.5)
   assert.equal(trigramSimilarity('world', 'hello world'), 0.5)
-  console.log(trigramSimilarity('hell', 'hello world'))
+
   assert.equal(Number(trigramSimilarity('hell', 'hello world').toPrecision(5)), 0.30769)
 })
 

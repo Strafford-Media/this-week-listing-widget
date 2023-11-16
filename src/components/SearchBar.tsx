@@ -61,10 +61,9 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
   })
 
   const go = async (params: SearchParams) => {
-    const newList = await searchEngine.search(params)
+    const newResults = await searchEngine.search(params)
 
-    console.log(newList)
-    setResultList(newList)
+    setResultList(newResults)
   }
 
   const debouncedGo = useDebouncedCallback(go, 500)
