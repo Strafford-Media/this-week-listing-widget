@@ -4,7 +4,10 @@
   "main": "index.html",
   "scripts": {
     "start": "MODE=development parcel serve src/index.html -p 2023",
-    "build": "MODE=production parcel build"
+    "build": "MODE=production parcel build",
+    "watch": "NODE_ENV=production parcel watch",
+    "test": "node -r ts-node/register --loader ts-node/esm --test ./tests/pg_trgm.spec.ts",
+    "test:watch": "node --watch -r ts-node/register --loader ts-node/esm --test ./tests/pg_trgm.spec.ts"
   },
   "repository": {
     "type": "git",
@@ -30,7 +33,8 @@
     "autoprefixer": "^10.4.16",
     "parcel": "^2.10.1",
     "process": "^0.11.10",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "ts-node": "^10.9.1"
   },
   "full-listing": "public/full-listing.js",
   "search-bar": "public/search-bar.js",
@@ -68,9 +72,12 @@
     "printWidth": 120
   },
   "dependencies": {
+    "@floating-ui/react-dom": "^2.0.3",
     "preact": "^10.18.2"
   },
   "alias": {
-    "preact/jsx-dev-runtime": "preact/jsx-runtime"
+    "preact/jsx-dev-runtime": "preact/jsx-runtime",
+    "react": "preact/compat",
+    "react-dom": "preact/compat"
   }
 }

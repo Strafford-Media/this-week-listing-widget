@@ -11,7 +11,7 @@ export interface DudaContextValue {
     config: any
     locale: string
   }
-  pageData: {
+  pageData?: {
     business_name: string
     slogan: string
     island: 'hawaii' | 'oahu' | 'maui' | 'kauai'
@@ -37,4 +37,55 @@ export interface DudaContextValue {
     }[]
     booking_links: []
   }
+}
+
+export interface CollectionResult {
+  name: string
+  page: {
+    pageSize: number
+    pageNumber: number
+    totalPages: number
+    totalItems: number
+  }
+  filters: [
+    {
+      field: string
+      value: string
+      operator: string
+    }
+  ]
+  sortBy: string | null
+  search: string | null
+  fields: string[] | null
+  language: string | null
+  values: {
+    data: {
+      business_name: string
+      images: {
+        url: string
+        status: string
+        original_url: string
+      }[]
+      action_shot1: string
+      island: string
+      main_image: string
+      primary_address: string
+      created_at: string | null
+      description: string
+      videos: {
+        url: string
+      }[]
+      booking_links: any[]
+      primary_phone: string
+      updated_at: string | null
+      tier: 'basic' | 'standard' | 'premium'
+      this_week_recommended: boolean
+      logo: string
+      primary_email: string
+      id: number
+      slogan: string
+      primary_web_url: string
+    }
+    page_item_url: string
+  }[]
 }

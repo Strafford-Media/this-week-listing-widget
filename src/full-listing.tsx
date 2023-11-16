@@ -1,6 +1,6 @@
 import { render } from 'preact'
 import { DudaContextValue } from './@types/duda'
-import { App } from './components/App'
+import { FullListing } from './components/FullListing'
 import { DudaProvider } from './DudaContext'
 
 let root
@@ -18,7 +18,7 @@ export async function init({ container, props }: { container: Element; props: Du
 
     render(
       <DudaProvider value={props}>
-        <App />
+        <FullListing />
       </DudaProvider>,
       container
     )
@@ -32,7 +32,7 @@ export function clean() {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  const root = document.getElementById('app')!
+  const root = document.getElementById('full-listing')!
 
   render(
     <DudaProvider
@@ -83,7 +83,7 @@ if (process.env.NODE_ENV === 'development') {
         },
       }}
     >
-      <App />
+      <FullListing />
     </DudaProvider>,
     root
   )

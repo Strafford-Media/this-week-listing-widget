@@ -44,6 +44,22 @@ module.exports = {
       boxShadow: {
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 -1px 4px -1px rgba(0, 0, 0, 0.06)',
       },
+      animation: {
+        'fade-down': 'fade-down 1s both',
+      },
+      keyframes: {
+        'fade-down': {
+          '0%': {
+            opacity: 0,
+            transform: 'translateY(-2rem)',
+          },
+
+          '100%': {
+            opacity: 1,
+            transform: 'translateY(0)',
+          },
+        },
+      },
     },
   },
   plugins: [],

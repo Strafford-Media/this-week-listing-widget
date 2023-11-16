@@ -2,19 +2,21 @@ import { ComponentProps } from 'preact'
 import { useDudaContext } from '../DudaContext'
 import { useEffect } from 'preact/hooks'
 
-export interface AppProps extends ComponentProps<'div'> {}
+export interface FullListingProps extends ComponentProps<'div'> {}
 
-export const App = ({ className = '', ...props }: AppProps) => {
+export const FullListing = ({ className = '', ...props }: FullListingProps) => {
   const { pageData } = useDudaContext()
 
   useEffect(() => {
-    if (typeof (window as any).dmAPI !== 'undefined') {
+    if (typeof (window as any).dmAPI !== 'undefined' && pageData) {
       ;(window as any).dmAPI.drawMap({
         container: '.main-listing-mapbox-map',
         addressQuery: pageData.primary_address,
       })
     }
-  }, [pageData.primary_address])
+  }, [pageData?.primary_address])
+
+  if (!pageData) return null
 
   return (
     <div className={`${className}`} {...props}>
@@ -47,7 +49,7 @@ export const App = ({ className = '', ...props }: AppProps) => {
         </a>
         <div>{pageData.primary_address}</div>
         <div className="main-listing-mapbox-map"></div>
-        <div>{pageData.description}</div>
+        <div className="tw-max-w-24">{pageData.description}</div>
         <div>
           <h3>Photo Gallery</h3>
           <ul>
