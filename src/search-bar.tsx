@@ -6,12 +6,14 @@ import { SearchBar } from './components/SearchBar'
 let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
+    const maxWidth =
+      props.siteDetails.config.setMaxWidth && props.siteDetails.config.maxWidth
+        ? `${props.siteDetails.config.maxWidth}px`
+        : undefined
+
     render(
       <DudaProvider value={props}>
-        <SearchBar
-          style={{ maxWidth: props.siteDetails.config.maxWidth || undefined }}
-          size={props.siteDetails.config.size || 'md'}
-        />
+        <SearchBar className="tw-mx-auto" style={{ maxWidth }} size={props.siteDetails.config.size || 'md'} />
       </DudaProvider>,
       container
     )

@@ -6,34 +6,52 @@ import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react
 import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
 import { IslandValue, SearchEngine, SearchParams, SearchResult } from '../utils/SearchEngine'
 
-const islands: { value: IslandValue; label: string; peerClass: string }[] = [
+const islandHoverAndFocusClasses =
+  `tw-absolute tw-inset-y-0 tw-right-0 -tw-z-10 tw-my-auto tw-w-2/3 tw-origin-center tw-rotate-12
+  tw-text-lime-300
+  peer-focus-within/big-island:[--big-island-highlight-color:theme(colors.red.600)] peer-hover/big-island:[--big-island-highlight-color:theme(colors.red.600)]
+  peer-focus-within/kauai:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-hover/kauai:[--kauai-highlight-color:theme(colors.fuchsia.500)]
+  peer-focus-within/maui:[--maui-highlight-color:theme(colors.pink.600)] peer-hover/maui:[--maui-highlight-color:theme(colors.pink.600)]
+  peer-focus-within/oahu:[--oahu-highlight-color:theme(colors.yellow.300)] peer-hover/oahu:[--oahu-highlight-color:theme(colors.yellow.300)]
+  peer-focus-within/any-island:tw-text-lime-600 peer-hover/any-island:tw-text-lime-600
+  peer-focus-within/any-island:[--big-island-highlight-color:theme(colors.red.600)] peer-focus-within/any-island:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-focus-within/any-island:[--oahu-highlight-color:theme(colors.yellow.400)] peer-focus-within/any-island:[--maui-highlight-color:theme(colors.pink.600)]
+  peer-hover/any-island:[--big-island-highlight-color:theme(colors.red.600)] peer-hover/any-island:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-hover/any-island:[--oahu-highlight-color:theme(colors.yellow.400)] peer-hover/any-island:[--maui-highlight-color:theme(colors.pink.600)]`.replace(
+    /\s+/g,
+    ' ',
+  )
+
+const islands: { value: IslandValue; label: string; peerClass: string; buttonClass: string }[] = [
   {
     value: 'kauai',
     label: 'Kauai',
     peerClass: 'tw-peer/kauai',
+    buttonClass: 'tw-bg-fuchsia-500 tw-text-white',
   },
   {
     value: 'oahu',
     label: 'Oahu',
     peerClass: 'tw-peer/oahu',
+    buttonClass: 'tw-bg-yellow-300 tw-text-gray-800',
   },
   {
     value: 'maui',
     label: 'Maui',
     peerClass: 'tw-peer/maui',
+    buttonClass: 'tw-bg-pink-600 tw-text-white',
   },
   {
     value: 'hawaii',
     label: 'Hawaii',
     peerClass: 'tw-peer/big-island',
+    buttonClass: 'tw-bg-red-600 tw-text-white',
   },
-  { value: '', label: 'Any Island', peerClass: 'tw-peer/any-island' },
+  { value: '', label: 'Any Island', peerClass: 'tw-peer/any-island', buttonClass: 'tw-bg-sky-500 tw-text-white' },
 ]
 
 const emptySearchResult: SearchResult = {
   matches: [],
   suggestions: [],
-  notEnough: true,
+  notEnough: false,
   emptySearch: true,
 }
 
@@ -48,8 +66,10 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
   const [island, setIsland] = useRememberedState('this-week-search-island-value', islands[0])
   const [openDropdown, setOpenDropdown] = useState(false)
   const [dropDownType, setDropdownType] = useState<'island' | 'results'>('island')
-  const [search, setSearch] = useRememberedState('this-week-search-value', '')
+  const [search, setSearch] = useRememberedState('this-week-search-value', 'none')
   const [searchResults, setResultList] = useState<SearchResult>(emptySearchResult)
+
+  const [currentlyHoveredIsland, setCurrentlyHoveredIsland] = useState('')
 
   const sizeClass = getSizeClass(size)
 
@@ -64,6 +84,12 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
     const newResults = await searchEngine.search(params)
 
     setResultList(newResults)
+
+    if (newResults.emptySearch) {
+      setOpenDropdown(false)
+    } else {
+      setOpenDropdown(true)
+    }
   }
 
   const debouncedGo = useDebouncedCallback(go, 500)
@@ -83,14 +109,18 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
     <div
       ref={refs.setFloating}
       style={floatingStyles}
-      className="tw-bg-gray-50 tw-rounded-lg tw-overflow-clip tw-shadow-lg"
+      className={`${
+        dropDownType === 'island'
+          ? '[background-image:url("https://irp.cdn-website.com/0e650340/dms3rep/multi/water-bg.png")]'
+          : 'tw-bg-gray-50'
+      } tw-min-w-80 tw-overflow-clip tw-rounded-lg tw-shadow-2xl tw-shadow-black`}
     >
       {dropDownType === 'island' && (
-        <ul className="tw-relative tw-max-w-sm tw-w-screen">
+        <ul className="tw-relative tw-w-screen tw-max-w-sm">
           {islands.map((isle) => (
             <li className={isle.peerClass}>
               <button
-                className="tw-p-3 tw-flex tw-w-full tw-items-center focus:tw-outline-none focus:tw-bg-blue-100 hover:tw-bg-blue-100"
+                className="tw-flex tw-w-full tw-items-center tw-p-3 tw-font-bold tw-text-blue-100 hover:tw-bg-white/10 focus:tw-bg-white/10 focus:tw-outline-none"
                 type="button"
                 role="listitem"
                 onClick={(e) => {
@@ -111,34 +141,43 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
               </button>
             </li>
           ))}
-          <HawaiianIslands
-            className={`tw-text-lime-200 tw-w-2/3 tw-inset-y-0 tw-my-auto tw-origin-center tw-absolute tw-right-0 tw-rotate-12 peer-hover/kauai:[--kauai-highlight-color:theme(colors.lime.600)] peer-focus-within/kauai:[--kauai-highlight-color:theme(colors.lime.600)] peer-hover/oahu:[--oahu-highlight-color:theme(colors.lime.600)] peer-focus-within/oahu:[--oahu-highlight-color:theme(colors.lime.600)] peer-hover/maui:[--maui-highlight-color:theme(colors.lime.600)] peer-focus-within/maui:[--maui-highlight-color:theme(colors.lime.600)] peer-hover/big-island:[--big-island-highlight-color:theme(colors.lime.600)] peer-focus-within/big-island:[--big-island-highlight-color:theme(colors.lime.600)] peer-hover/any-island:tw-text-lime-600 peer-focus-within/any-island:tw-text-lime-600`}
-          />
+          <HawaiianIslands className={islandHoverAndFocusClasses} />
         </ul>
       )}
       {dropDownType === 'results' && (
         <>
-          {!searchResults.matches.length ? (
-            <p>Unfortunately, nothing matched your search terms.</p>
-          ) : (
-            <ul>
-              <p className="tw-text-sm tw-text-gray-600 tw-border-b tw-border-b-gray-200">Matches</p>
-              {searchResults.matches.map((isle) => (
+          <ul>
+            <p className="tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800">
+              Matches
+            </p>
+            {!searchResults.matches.length ? (
+              <em className="tw-px-3 tw-py-1 tw-text-gray-500">
+                {searchResults.notEnough ? 'Type more for better results...' : 'None'}
+              </em>
+            ) : (
+              searchResults.matches.map((isle) => (
                 <li>
-                  <a href={getListingHref(isle.value)} className="tw-py-1 tw-px-3 tw-inline-block">
+                  <a
+                    href={getListingHref(isle.value)}
+                    className="tw-block tw-w-full tw-px-3 tw-py-1 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
+                  >
                     {isle.label}
                   </a>
                 </li>
-              ))}
-            </ul>
-          )}
-          {searchResults.notEnough && <p>Type more for better results...</p>}
+              ))
+            )}
+          </ul>
           {!!searchResults.suggestions.length && (
             <ul>
-              <p className="tw-text-sm tw-text-gray-600">Suggestions</p>
+              <p className="tw-mt-4 tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800">
+                Suggestions
+              </p>
               {searchResults.suggestions.map((isle) => (
                 <li>
-                  <a href={getListingHref(isle.value)} className="tw-py-1 tw-px-3 tw-inline-block">
+                  <a
+                    href={getListingHref(isle.value)}
+                    className="tw-block tw-w-full tw-px-3 tw-py-1 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
+                  >
                     {isle.label}
                   </a>
                 </li>
@@ -151,11 +190,11 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
   )
 
   return (
-    <div ref={refs.setReference} className="tw-relative tw-z-10 tw-animate-fade-down">
-      <div className={`${className} tw-w-full tw-flex tw-items-stretch tw-text-black`} {...props}>
+    <div ref={refs.setReference} className={`${className} tw-relative tw-z-10 tw-animate-fade-down`} {...props}>
+      <div className={`tw-flex tw-w-full tw-items-stretch tw-text-black`}>
         <button
           type="button"
-          className={`tw-group tw-px-3 tw-min-h-10 tw-relative tw-rounded-l-lg focus:tw-border-red-600 tw-border-2 tw-border-transparent tw-bg-yellow-300 tw-flex tw-items-center focus:tw-outline-none`}
+          className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent ${island.buttonClass} tw-px-3 focus:tw-border-sky-400 focus:tw-outline-none`}
           onClick={() => {
             if (dropDownType !== 'island') {
               setOpenDropdown(true)
@@ -166,9 +205,9 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
           }}
         >
           <div
-            className={`tw-absolute -tw-inset-0.5 group-focus:tw-inset-0 tw-rounded-l-lg tw-z-10 tw-bg-gradient-to-b tw-to-transparent tw-from-white/50`}
+            className={`tw-absolute -tw-inset-0.5 tw-z-10 tw-rounded-l-lg tw-bg-gradient-to-b tw-from-white/50 tw-to-transparent group-focus:tw-inset-0`}
           ></div>
-          <span className={`tw-flex tw-flex-nowrap tw-whitespace-nowrap tw-items-center ${sizeClass.text}`}>
+          <span className={`tw-flex tw-flex-nowrap tw-items-center tw-whitespace-nowrap ${sizeClass.text}`}>
             {island.label}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +226,7 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
         {dropDownType === 'island' && dropDownComponent}
         <input
           ref={inputRef}
-          className={`tw-flex tw-h-full tw-items-center tw-px-2 tw-py-2 focus:tw-outline-none tw-border-transparent tw-border-2 focus:tw-border-red-600 focus:tw-z-20 tw-m-0 tw-bg-white ${sizeClass.text}`}
+          className={`tw-m-0 tw-flex tw-h-full tw-items-center tw-border-2 tw-border-transparent tw-bg-white tw-px-2 tw-py-2 focus:tw-z-20 focus:tw-border-sky-400 focus:tw-outline-none ${sizeClass.text}`}
           type="text"
           value={search}
           onInput={(e) => {
@@ -200,12 +239,17 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
             if (dropDownType !== 'results') {
               setDropdownType('results')
             }
+
+            if (!searchResults.matches.length && search) {
+              go({ search, island: island.value })
+              setOpenDropdown(true)
+            }
           }}
         />
         {dropDownType === 'results' && dropDownComponent}
         <button
           type="button"
-          className="tw-px-2 tw-min-h-8 tw-bg-gradient-to-b tw-from-gray-200 tw-to-gray-400 tw-flex tw-rounded-r-lg tw-items-center focus:tw-outline-none focus:tw-border-red-600 focus:tw-border-2 tw-border-x-2 tw-border-x-transparent"
+          className="tw-flex tw-min-h-8 tw-items-center tw-rounded-r-lg tw-border-x-2 tw-border-x-transparent tw-bg-gradient-to-b tw-from-gray-200 tw-to-gray-400 tw-px-2 focus:tw-border-2 focus:tw-border-sky-400 focus:tw-outline-none"
           onClick={async (e) => {
             e.stopPropagation()
 

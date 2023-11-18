@@ -77,7 +77,9 @@ export class SearchEngine {
   }
 
   async findMatches(search: string, island = ''): Promise<[Error | null, SearchResultItem[] | null]> {
-    const [err, res] = await this.graphqlRequest(
+    const [err, res] = await this.graphqlRequest<{
+      data: { search_listings: { id: number; business_name: string }[] }
+    }>(
       `query searchListings ($search: String!){
       search_listings(args: { search: $search }${island ? `, where: { island: { _eq: "${island}" } }` : ''}) {
         id
@@ -91,22 +93,26 @@ export class SearchEngine {
       return [err, null]
     }
 
-    if (!Array.isArray(res?.data?.search_listings)) {
+    if (!res || !Array.isArray(res?.data?.search_listings)) {
       return [new Error('Unable to search for matches'), null]
     }
 
     return [
       null,
-      res.data.search_listings.map((r: { id: number; business_name: string }) => ({
-        id: r.id,
-        value: this.collectionMap[r.id].page_item_url,
-        label: r.business_name,
-      })),
+      res.data.search_listings
+        .map((r: { id: number; business_name: string }) => ({
+          id: r.id,
+          value: this.collectionMap[r.id]?.page_item_url,
+          label: r.business_name,
+        }))
+        .filter((l) => l.value),
     ]
   }
 
   async findSuggestions(search: string, island = '', limit = 5): Promise<[Error | null, SearchResultItem[] | null]> {
-    const [err, res] = await this.graphqlRequest(
+    const [err, res] = await this.graphqlRequest<{
+      data: { fuzzy_search_listings: { id: number; business_name: string }[] }
+    }>(
       `query fuzzySearchListings ($search: String!, $limit: Int!){
         fuzzy_search_listings(args: {search: $search}${
           island ? `, where: { island: { _eq: "${island}" } }` : ''
@@ -122,17 +128,19 @@ export class SearchEngine {
       return [err, null]
     }
 
-    if (!Array.isArray(res?.data?.fuzzy_search_listings)) {
+    if (!res || !Array.isArray(res?.data?.fuzzy_search_listings)) {
       return [new Error('Unable to search for matches'), null]
     }
 
     return [
       null,
-      res.data.fuzzy_search_listings.map((r: { id: number; business_name: string }) => ({
-        id: r.id,
-        value: this.collectionMap[r.id].page_item_url,
-        label: r.business_name,
-      })),
+      res.data.fuzzy_search_listings
+        .map((r) => ({
+          id: r.id,
+          value: this.collectionMap[r.id]?.page_item_url,
+          label: r.business_name,
+        }))
+        .filter((l) => l.value),
     ]
   }
 

@@ -12,6 +12,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
       ;(window as any).dmAPI.drawMap({
         container: '.main-listing-mapbox-map',
         addressQuery: pageData.primary_address,
+        // layout: 'layout2',
       })
     }
   }, [pageData?.primary_address])
@@ -30,7 +31,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="tw-w-6 tw-h-6"
+              className="tw-h-6 tw-w-6"
             >
               <path
                 strokeLinecap="round"
