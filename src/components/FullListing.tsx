@@ -23,7 +23,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
   return (
     <div className={`${className}`} {...props}>
       <section className="tw-relative md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">
-        {!pageData.this_week_recommended && (
+        {pageData.this_week_recommended && (
           <div className="tw-absolute tw-right-0 tw-top-0 tw-flex tw-rotate-12 tw-flex-col tw-items-center tw-text-[9px] tw-font-bold tw-leading-[1] tw-text-red-500">
             <img
               src="https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-1920w.png"
