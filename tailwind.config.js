@@ -12,15 +12,19 @@ module.exports = {
         },
       },
       minHeight: (theme) => ({
+        ...theme('height'),
         ...theme('spacing'),
       }),
       maxHeight: (theme) => ({
+        ...theme('height'),
         ...theme('spacing'),
       }),
       minWidth: (theme) => ({
+        ...theme('width'),
         ...theme('spacing'),
       }),
       maxWidth: (theme) => ({
+        ...theme('width'),
         ...theme('spacing'),
       }),
       inset: (theme) => ({

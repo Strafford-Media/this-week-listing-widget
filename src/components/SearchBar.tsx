@@ -299,11 +299,11 @@ const deviceType = (window as any).dmAPI.getCurrentDeviceType()
 function getListingHref(listingUrl: string) {
   switch (env) {
     case 'preview':
-      return `/site/${siteID}/listings/${listingUrl}?preview=true&insitepreview=true&dm_device=${deviceType}`
+      return `/site/${siteID}/listing/${listingUrl}?preview=true&insitepreview=true&dm_device=${deviceType}`
     case 'editor':
-      return `/site/${siteID}/listings/${listingUrl}?preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
+      return `/site/${siteID}/listing/${listingUrl}?preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
     case 'live':
     default:
-      return `/listings/${listingUrl}`
+      return `/listing/${listingUrl}`
   }
 }

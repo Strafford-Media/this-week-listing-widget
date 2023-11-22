@@ -25,7 +25,8 @@ export interface DudaContextValue {
     primary_web_url: string
     tier: 'basic' | 'standard' | 'premium'
     main_image: string
-    logo: string
+    action_shot1?: string
+    logo?: string
     this_week_recommended: boolean
     images: {
       url: string
@@ -52,7 +53,7 @@ export interface CollectionResult {
       field: string
       value: string
       operator: string
-    }
+    },
   ]
   sortBy: string | null
   search: string | null
