@@ -2,6 +2,7 @@ import { ComponentProps } from 'preact'
 import { useDudaContext } from '../DudaContext'
 import { useEffect } from 'preact/hooks'
 import { PhotoGallery } from './PhotoGallery'
+import { VideoPlayer } from './VideoPlayer'
 
 export interface FullListingProps extends ComponentProps<'div'> {}
 
@@ -54,6 +55,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
         </a>
         <div>{pageData.primary_address}</div>
         <div className="main-listing-mapbox-map"></div>
+        {!!pageData.videos.length && <VideoPlayer video={pageData.videos[0]} />}
         <p>{pageData.description}</p>
         {!!pageData.images?.length && <PhotoGallery images={pageData.images} />}
       </section>

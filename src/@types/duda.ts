@@ -35,6 +35,8 @@ export interface DudaContextValue {
     }[]
     videos: {
       url: string
+      type: 'youtube' | 'vimeo' | 'dailymotion'
+      id: string
     }[]
     booking_links: []
   }

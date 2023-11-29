@@ -34,11 +34,6 @@ export const PhotoGallery = ({ className = '', images, ...props }: PhotoGalleryP
     }
   })
 
-  const innerWidth = window.innerWidth
-  const scrollLeft = listRef.current?.scrollLeft ?? 0
-  const isLeft = scrollLeft < innerWidth / 2
-  const isRight = scrollLeft > innerWidth * (images.length - 1)
-
   return (
     <div className={`${className} tw-max-h-[60vh]`} {...props}>
       <h3 className="tw-mb-4">Photo Gallery</h3>
@@ -80,32 +75,28 @@ export const PhotoGallery = ({ className = '', images, ...props }: PhotoGalleryP
         ))}
         {enhance && (
           <>
-            {!isLeft && (
-              <button
-                role="button"
-                className="tw-fixed tw-inset-y-0 tw-left-0 tw-hidden tw-w-12 tw-items-center tw-bg-white/5 tw-px-2 tw-text-gray-200 hover:tw-bg-white/20 focus:tw-bg-white/20 focus:tw-outline-none sm:tw-flex"
-                onClick={(e) => {
-                  e.stopPropagation()
+            <button
+              role="button"
+              className="tw-fixed tw-inset-y-0 tw-left-0 tw-hidden tw-w-12 tw-items-center tw-bg-white/5 tw-px-2 tw-text-gray-200 hover:tw-bg-white/20 focus:tw-bg-white/20 focus:tw-outline-none sm:tw-flex"
+              onClick={(e) => {
+                e.stopPropagation()
 
-                  if (listRef.current) listRef.current.scrollLeft -= window.innerWidth
-                }}
-              >
-                <ArrowLeft className="" />
-              </button>
-            )}
-            {!isRight && (
-              <button
-                role="button"
-                className="tw-fixed tw-inset-y-0 tw-right-0 tw-hidden tw-w-12 tw-items-center tw-bg-white/5 tw-px-2 tw-text-gray-200 hover:tw-bg-white/20 focus:tw-bg-white/20 focus:tw-outline-none sm:tw-flex"
-                onClick={(e) => {
-                  e.stopPropagation()
+                if (listRef.current) listRef.current.scrollLeft -= window.innerWidth
+              }}
+            >
+              <ArrowLeft className="" />
+            </button>
+            <button
+              role="button"
+              className="tw-fixed tw-inset-y-0 tw-right-0 tw-hidden tw-w-12 tw-items-center tw-bg-white/5 tw-px-2 tw-text-gray-200 hover:tw-bg-white/20 focus:tw-bg-white/20 focus:tw-outline-none sm:tw-flex"
+              onClick={(e) => {
+                e.stopPropagation()
 
-                  if (listRef.current) listRef.current.scrollLeft += window.innerWidth
-                }}
-              >
-                <ArrowLeft className="tw-rotate-180" />
-              </button>
-            )}
+                if (listRef.current) listRef.current.scrollLeft += window.innerWidth
+              }}
+            >
+              <ArrowLeft className="tw-rotate-180" />
+            </button>
           </>
         )}
       </ul>
