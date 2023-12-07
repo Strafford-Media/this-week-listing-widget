@@ -1,4 +1,5 @@
 import { CollectionResult } from '../@types/duda'
+import { getHasuraUrl } from './urls'
 
 export type IslandValue = 'oahu' | 'maui' | 'kauai' | 'hawaii' | ''
 
@@ -27,11 +28,8 @@ export class SearchEngine {
   collectionMap: Record<string, CollectionResult['values'][number]> = {}
   loaded = false
   error: Error | null = null
-  isDev = false
 
   constructor() {
-    const env = (window as any).dmAPI.getCurrentEnvironment()
-    this.isDev = ['editor', 'preview'].includes(env) && localStorage.getItem('this-week-local-dev') === 'yes'
     this.loadCollection()
   }
 
@@ -86,7 +84,7 @@ export class SearchEngine {
         business_name
       }
     }`,
-      { search }
+      { search },
     )
 
     if (err) {
@@ -121,7 +119,7 @@ export class SearchEngine {
           business_name
         }
       }`,
-      { search, limit }
+      { search, limit },
     )
 
     if (err) {
@@ -192,21 +190,17 @@ export class SearchEngine {
   }
 
   async graphqlRequest<Data = any>(query: string, variables: any): Promise<[Error | null, Data | null]> {
-    const res: Data | Error = await fetch(
-      this.isDev
-        ? 'https://local.hasura.nhost.run/v1/graphql'
-        : 'https://hboobcwwuscftftwhuse.hasura.us-east-1.nhost.run/v1/graphql',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query,
-          variables,
-        }),
-      }
-    )
+    const hasuraUrl = getHasuraUrl()
+    const res: Data | Error = await fetch(hasuraUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    })
       .then((r) => r.json())
       .catch((err) => (err instanceof Error ? err : new Error(JSON.stringify(err))))
 

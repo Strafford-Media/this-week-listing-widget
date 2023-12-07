@@ -25,27 +25,32 @@ const islands: { value: IslandValue; label: string; peerClass: string; buttonCla
     value: 'kauai',
     label: 'Kauai',
     peerClass: 'tw-peer/kauai',
-    buttonClass: 'tw-bg-fuchsia-500 tw-text-white',
+    buttonClass: 'tw-bg-fuchsia-500 tw-text-white focus:tw-bg-fuchsia-900 hover:tw-bg-fuchsia-900',
   },
   {
     value: 'oahu',
     label: 'Oahu',
     peerClass: 'tw-peer/oahu',
-    buttonClass: 'tw-bg-yellow-300 tw-text-gray-800',
+    buttonClass: 'tw-bg-yellow-300 tw-text-gray-800 focus:tw-bg-yellow-900 hover:tw-bg-yellow-900',
   },
   {
     value: 'maui',
     label: 'Maui',
     peerClass: 'tw-peer/maui',
-    buttonClass: 'tw-bg-pink-600 tw-text-white',
+    buttonClass: 'tw-bg-pink-600 tw-text-white focus:tw-bg-pink-900 hover:tw-bg-pink-900',
   },
   {
     value: 'hawaii',
     label: 'Hawaii',
     peerClass: 'tw-peer/big-island',
-    buttonClass: 'tw-bg-red-600 tw-text-white',
+    buttonClass: 'tw-bg-red-600 tw-text-white focus:tw-bg-red-900 hover:tw-bg-red-900',
   },
-  { value: '', label: 'Any Island', peerClass: 'tw-peer/any-island', buttonClass: 'tw-bg-sky-500 tw-text-white' },
+  {
+    value: '',
+    label: 'Any Island',
+    peerClass: 'tw-peer/any-island',
+    buttonClass: 'tw-bg-red-600 tw-text-white focus:tw-bg-red-900 hover:tw-bg-red-900',
+  },
 ]
 
 const emptySearchResult: SearchResult = {
@@ -63,13 +68,11 @@ export interface SearchBarProps extends Omit<ComponentProps<'div'>, 'size'> {
 
 export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [island, setIsland] = useRememberedState('this-week-search-island-value', islands[0])
+  const [island, setIsland] = useRememberedState('this-week-search-island-value', islands[1])
   const [openDropdown, setOpenDropdown] = useState(false)
   const [dropDownType, setDropdownType] = useState<'island' | 'results'>('island')
   const [search, setSearch] = useRememberedState('this-week-search-value', 'none')
   const [searchResults, setResultList] = useState<SearchResult>(emptySearchResult)
-
-  const [currentlyHoveredIsland, setCurrentlyHoveredIsland] = useState('')
 
   const sizeClass = getSizeClass(size)
 
@@ -194,7 +197,7 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
       <div className={`tw-flex tw-w-full tw-items-stretch tw-text-black`}>
         <button
           type="button"
-          className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent ${island.buttonClass} tw-px-3 focus:tw-border-sky-400 focus:tw-outline-none`}
+          className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent ${island.buttonClass} tw-px-3 focus:tw-outline-none`}
           onClick={() => {
             if (dropDownType !== 'island') {
               setOpenDropdown(true)
@@ -204,9 +207,6 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
             }
           }}
         >
-          <div
-            className={`tw-absolute -tw-inset-0.5 tw-z-10 tw-rounded-l-lg tw-bg-gradient-to-b tw-from-white/50 tw-to-transparent group-focus:tw-inset-0`}
-          ></div>
           <span className={`tw-flex tw-flex-nowrap tw-items-center tw-whitespace-nowrap ${sizeClass.text}`}>
             {island.label}
             <svg
@@ -249,7 +249,7 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
         {dropDownType === 'results' && dropDownComponent}
         <button
           type="button"
-          className="tw-flex tw-min-h-8 tw-items-center tw-rounded-r-lg tw-border-x-2 tw-border-x-transparent tw-bg-gradient-to-b tw-from-gray-200 tw-to-gray-400 tw-px-2 focus:tw-border-2 focus:tw-border-sky-400 focus:tw-outline-none"
+          className="tw-flex tw-min-h-8 tw-items-center tw-rounded-r-lg tw-border-x-2 tw-border-x-transparent tw-bg-gray-200 tw-px-2 focus:tw-border-2 focus:tw-border-sky-400 focus:tw-outline-none"
           onClick={async (e) => {
             e.stopPropagation()
 
@@ -280,12 +280,12 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
 
 function getSizeClass(size: 'sm' | 'md' | 'lg' | 'xl') {
   switch (size) {
-    case 'md':
-      return { text: 'tw-text-lg', icon: 'tw-h-7 tw-w-7', caret: 'tw-h-5 tw-w-5' }
-    case 'lg':
-      return { text: 'tw-text-xl', icon: 'tw-h-8 tw-w-8', caret: 'tw-h-6 tw-w-6' }
     case 'xl':
-      return { text: 'tw-text-3xl', icon: 'tw-h-10 tw-w-10', caret: 'tw-h-8 tw-w-8' }
+      return { text: 'tw-text-3xl', icon: 'tw-h-8 tw-w-8', caret: 'tw-h-8 tw-w-8' }
+    case 'lg':
+      return { text: 'tw-text-xl', icon: 'tw-h-7 tw-w-7', caret: 'tw-h-6 tw-w-6' }
+    case 'md':
+      return { text: 'tw-text-lg', icon: 'tw-h-6 tw-w-6', caret: 'tw-h-5 tw-w-5' }
     case 'sm':
     default:
       return { text: 'tw-text-base', icon: 'tw-h-6 tw-w-6', caret: 'tw-h-5 tw-w-5' }

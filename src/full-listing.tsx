@@ -20,7 +20,8 @@ export async function init({ container, props }: { container: Element; props: Du
       <DudaProvider value={props}>
         <FullListing />
       </DudaProvider>,
-      container
+      container,
+      container.firstChild as Element,
     )
   }
 }
@@ -70,6 +71,8 @@ if (process.env.NODE_ENV === 'development') {
           videos: [
             {
               url: 'https://www.youtube.com/watch?v=ik2Z1IZPJZ8',
+              type: 'youtube',
+              id: '',
             },
           ],
           booking_links: [],
@@ -85,6 +88,6 @@ if (process.env.NODE_ENV === 'development') {
     >
       <FullListing />
     </DudaProvider>,
-    root
+    root,
   )
 }

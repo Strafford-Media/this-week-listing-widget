@@ -15,7 +15,8 @@ export async function init({ container, props }: { container: Element; props: Du
       <DudaProvider value={props}>
         <SearchBar className="tw-mx-auto" style={{ maxWidth }} size={props.siteDetails.config.size || 'md'} />
       </DudaProvider>,
-      container
+      container,
+      container.firstChild as Element,
     )
   }
 }
@@ -48,6 +49,6 @@ if (process.env.NODE_ENV === 'development') {
     >
       <SearchBar />
     </DudaProvider>,
-    root
+    root,
   )
 }
