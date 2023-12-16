@@ -9,7 +9,11 @@ export async function init({ container, props }: { container: Element; props: Du
 
     if (!size) return console.error('no size specified')
 
-    render(<AdPlacement size={size} />, container, container.firstChild as Element)
+    render(
+      <AdPlacement size={size} placement_identifier={props.siteDetails.config.placement_identifier} />,
+      container,
+      container.firstChild as Element,
+    )
   }
 }
 

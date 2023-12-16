@@ -1,12 +1,10 @@
-import { env } from './environment'
+import { isDevSimulation } from './environment'
 
 let functionsUrl = ''
 let hasuraUrl = ''
 
 export const setUrls = () => {
-  const isDev = ['editor', 'preview'].includes(env) && localStorage.getItem('this-week-local-dev') === 'yes'
-
-  if (isDev) {
+  if (isDevSimulation) {
     hasuraUrl = 'https://local.hasura.nhost.run/v1/graphql'
     functionsUrl = 'https://local.functions.nhost.run/v1'
   } else {

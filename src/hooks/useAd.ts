@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'preact/hooks'
 import { getFunctionsUrl } from '../utils/urls'
-import { env } from '../utils/environment'
+import { env, isDevSimulation } from '../utils/environment'
+import { Ad } from '../@types/thisweek'
 
-const isProd = env === 'live'
+const shouldLoad = env === 'live' || isDevSimulation
 
 export const useAd = (size: string) => {
-  const [ad, setAd] = useState<{ id: number; image: string; link: string; name: string } | null>(null)
+  const [ad, setAd] = useState<Ad | null>(null)
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!isProd) return
+    if (!shouldLoad) return
+
+    setLoading(true)
 
     const functionsUrl = getFunctionsUrl()
 
@@ -21,11 +25,13 @@ export const useAd = (size: string) => {
         } else {
           setError(j.message)
         }
+        setLoading(false)
       })
       .catch((e) => {
         setError(e?.message ?? e ?? 'Ad not found')
+        setLoading(false)
       })
   }, [size])
 
-  return { ad, error }
+  return { ad, error, loading }
 }

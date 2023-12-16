@@ -40,6 +40,8 @@
   "full-listing": "public/full-listing.js",
   "search-bar": "public/search-bar.js",
   "ad-placement": "public/ad-placement.js",
+  "evvnt-gallery": "public/evvnt-gallery.js",
+  "island-hero": "public/island-hero.js",
   "this-week-widgets-css": "public/this-week-widgets.css",
   "targets": {
     "main": false,
@@ -61,6 +63,22 @@
     },
     "ad-placement": {
       "source": "src/ad-placement.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "evvnt-gallery": {
+      "source": "src/evvnt-gallery.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "island-hero": {
+      "source": "src/island-hero.tsx",
       "scopeHoist": false,
       "engines": {
         "browsers": "IE 11"

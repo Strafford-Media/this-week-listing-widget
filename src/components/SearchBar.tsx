@@ -5,6 +5,7 @@ import { HawaiianIslands } from './Hawaii'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
 import { IslandValue, SearchEngine, SearchParams, SearchResult } from '../utils/SearchEngine'
+import { deviceType, env, siteID } from '../utils/environment'
 
 const islandHoverAndFocusClasses =
   `tw-absolute tw-inset-y-0 tw-right-0 -tw-z-10 tw-my-auto tw-w-2/3 tw-origin-center tw-rotate-12
@@ -64,9 +65,10 @@ const searchEngine = new SearchEngine()
 
 export interface SearchBarProps extends Omit<ComponentProps<'div'>, 'size'> {
   size?: 'sm' | 'md' | 'lg' | 'xl'
+  dropdownBGImage: string
 }
 
-export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarProps) => {
+export const SearchBar = ({ className = '', size = 'sm', dropdownBGImage, ...props }: SearchBarProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [island, setIsland] = useRememberedState('this-week-search-island-value', islands[1])
   const [openDropdown, setOpenDropdown] = useState(false)
@@ -111,11 +113,9 @@ export const SearchBar = ({ className = '', size = 'sm', ...props }: SearchBarPr
   const dropDownComponent = openDropdown && (
     <div
       ref={refs.setFloating}
-      style={floatingStyles}
+      style={{ ...floatingStyles, backgroundImage: `url(${dropdownBGImage})` }}
       className={`${
-        dropDownType === 'island'
-          ? '[background-image:url("https://irp.cdn-website.com/0e650340/dms3rep/multi/water-bg.png")]'
-          : 'tw-bg-gray-50'
+        dropDownType === 'island' ? '' : 'tw-bg-gray-50'
       } tw-min-w-80 tw-overflow-clip tw-rounded-lg tw-shadow-2xl tw-shadow-black`}
     >
       {dropDownType === 'island' && (
@@ -291,10 +291,6 @@ function getSizeClass(size: 'sm' | 'md' | 'lg' | 'xl') {
       return { text: 'tw-text-base', icon: 'tw-h-6 tw-w-6', caret: 'tw-h-5 tw-w-5' }
   }
 }
-
-const env = (window as any).dmAPI.getCurrentEnvironment()
-const siteID = (window as any).dmAPI.getSiteName()
-const deviceType = (window as any).dmAPI.getCurrentDeviceType()
 
 function getListingHref(listingUrl: string) {
   switch (env) {

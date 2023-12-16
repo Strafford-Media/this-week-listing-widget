@@ -148,7 +148,7 @@ export class SearchEngine {
         return console.error('no dmAPI object available to bootstrap widget content')
       }
 
-      const collectionsAPI = await (window as any).dmAPI.loadCollectionsAPI()
+      const collectionsAPI = await (window as any).dmAPI?.loadCollectionsAPI?.()
 
       if (!collectionsAPI) return console.error('failed to load collections API')
 

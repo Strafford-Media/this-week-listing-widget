@@ -13,7 +13,15 @@ export async function init({ container, props }: { container: Element; props: Du
 
     render(
       <DudaProvider value={props}>
-        <SearchBar className="tw-mx-auto" style={{ maxWidth }} size={props.siteDetails.config.size || 'md'} />
+        <SearchBar
+          className="tw-mx-auto"
+          style={{ maxWidth }}
+          size={props.siteDetails.config.size || 'md'}
+          dropdownBGImage={
+            props.siteDetails.config.dropdownBGImage ??
+            'https://irp.cdn-website.com/0e650340/dms3rep/multi/water-bg.png'
+          }
+        />
       </DudaProvider>,
       container,
       container.firstChild as Element,
@@ -47,7 +55,7 @@ if (process.env.NODE_ENV === 'development') {
         },
       }}
     >
-      <SearchBar />
+      <SearchBar dropdownBGImage="https://irp.cdn-website.com/0e650340/dms3rep/multi/water-bg.png" />
     </DudaProvider>,
     root,
   )
