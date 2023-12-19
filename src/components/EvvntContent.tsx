@@ -5,7 +5,7 @@ import { useEffect } from 'preact/hooks'
 const publishers: Record<string, { apiKey: string; id: number }> = {
   hawaii: {
     apiKey: 'THISWEEKHAWAIIDJ',
-    id: 7672,
+    id: 7674,
   },
   maui: {
     apiKey: 'THISWEEKHAWAIID',
@@ -13,7 +13,7 @@ const publishers: Record<string, { apiKey: string; id: number }> = {
   },
   oahu: {
     apiKey: 'THISWEEKHAWAIIN',
-    id: 7674,
+    id: 7672,
   },
   kauai: {
     apiKey: 'THISWEEKHAWAIIB',
@@ -35,7 +35,7 @@ export const EvvntContent = ({ className = '', island, ...props }: EvvntContentP
       if (typeof (window as any).evvnt_require === 'function') {
         window.clearInterval(intervalRef)
         ;(window as any).evvnt_require('evvnt/discovery_plugin').init({
-          api_key: publishers[island].apiKey,
+          api_key: publishers[island]?.apiKey,
           publisher_id: publishers[island]?.id,
           discovery: {
             element: `#this-week-evvnt-content-island-${island}`,
