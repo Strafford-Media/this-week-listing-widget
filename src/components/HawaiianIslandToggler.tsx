@@ -29,7 +29,10 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
         <>
           <div className="tw-absolute tw-left-0 tw-top-1/3 tw-grid tw-h-2/3 tw-w-1/2 tw-grid-rows-[auto_minmax(0,1fr)] tw-gap-2">
             <div className="tw-rounded-lg tw-bg-white/50 tw-p-2">
-              <p className="tw-rounded-md tw-bg-gray-100 tw-p-1 tw-text-sm lg:tw-text-base">{content.content}</p>
+              <div className="tw-rounded-md tw-bg-gray-100 tw-p-1">
+                <h4>{content.islandName}</h4>
+                <p className="tw-text-sm lg:tw-text-base">{content.content}</p>
+              </div>
             </div>
             <div className="tw-inline-flex tw-min-h-0 tw-w-fit tw-rounded-lg tw-bg-white/50 tw-p-2">
               <img className="tw-max-h-full tw-object-cover" src={content.image} alt="Hawaii (Big Island)" />
@@ -58,6 +61,7 @@ const getContent = (config: any, island: string) => {
         link: config.hawaiiLink,
         btnClass: 'tw-text-white tw-bg-red-600 hover:tw-bg-red-900 focus:tw-bg-red-900',
         btnLabel: 'Explore the Big Island',
+        islandName: 'Hawaii (Big Island)',
       }
     case 'maui':
       return {
@@ -66,6 +70,7 @@ const getContent = (config: any, island: string) => {
         link: config.mauiLink,
         btnClass: 'tw-text-white tw-bg-pink-600 hover:tw-bg-pink-900 focus:tw-bg-pink-900',
         btnLabel: 'Explore Maui',
+        islandName: 'Maui',
       }
     case 'oahu':
       return {
@@ -74,6 +79,7 @@ const getContent = (config: any, island: string) => {
         link: config.oahuLink,
         btnClass: 'tw-text-gray-800 tw-bg-yellow-300 hover:tw-bg-yellow-600 focus:tw-bg-yellow-600',
         btnLabel: 'Explore Oahu',
+        islandName: 'Oahu',
       }
     case 'kauai':
       return {
@@ -82,6 +88,7 @@ const getContent = (config: any, island: string) => {
         link: config.kauaiLink,
         btnClass: 'tw-text-white tw-bg-fuchsia-500 hover:tw-bg-fuchsia-900 focus:tw-bg-fuchsia-900',
         btnLabel: 'Explore Kauai',
+        islandName: 'Kauai',
       }
     default:
       return null
