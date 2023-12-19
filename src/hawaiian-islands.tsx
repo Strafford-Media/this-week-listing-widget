@@ -1,11 +1,18 @@
 import { render } from 'preact'
 import { HawaiianIslandsToggler } from './components/HawaiianIslandToggler'
 import { DudaContextValue } from './@types/duda'
+import { DudaProvider } from './DudaContext'
 
 let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
-    render(<HawaiianIslandsToggler />, container, container.firstChild as Element)
+    render(
+      <DudaProvider value={props}>
+        <HawaiianIslandsToggler />
+      </DudaProvider>,
+      container,
+      container.firstChild as Element,
+    )
   }
 }
 

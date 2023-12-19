@@ -9,12 +9,11 @@ import { deviceType, env, siteID } from '../utils/environment'
 
 const islandHoverAndFocusClasses =
   `tw-absolute tw-inset-y-0 tw-right-0 -tw-z-10 tw-my-auto tw-w-2/3 tw-origin-center tw-rotate-12
-  tw-text-lime-300
+  tw-text-lime-600
   peer-focus-within/big-island:[--big-island-highlight-color:theme(colors.red.600)] peer-hover/big-island:[--big-island-highlight-color:theme(colors.red.600)]
   peer-focus-within/kauai:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-hover/kauai:[--kauai-highlight-color:theme(colors.fuchsia.500)]
   peer-focus-within/maui:[--maui-highlight-color:theme(colors.pink.600)] peer-hover/maui:[--maui-highlight-color:theme(colors.pink.600)]
   peer-focus-within/oahu:[--oahu-highlight-color:theme(colors.yellow.300)] peer-hover/oahu:[--oahu-highlight-color:theme(colors.yellow.300)]
-  peer-focus-within/any-island:tw-text-lime-600 peer-hover/any-island:tw-text-lime-600
   peer-focus-within/any-island:[--big-island-highlight-color:theme(colors.red.600)] peer-focus-within/any-island:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-focus-within/any-island:[--oahu-highlight-color:theme(colors.yellow.400)] peer-focus-within/any-island:[--maui-highlight-color:theme(colors.pink.600)]
   peer-hover/any-island:[--big-island-highlight-color:theme(colors.red.600)] peer-hover/any-island:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-hover/any-island:[--oahu-highlight-color:theme(colors.yellow.400)] peer-hover/any-island:[--maui-highlight-color:theme(colors.pink.600)]`.replace(
     /\s+/g,
@@ -32,7 +31,7 @@ const islands: { value: IslandValue; label: string; peerClass: string; buttonCla
     value: 'oahu',
     label: 'Oahu',
     peerClass: 'tw-peer/oahu',
-    buttonClass: 'tw-bg-yellow-300 tw-text-gray-800 focus:tw-bg-yellow-900 hover:tw-bg-yellow-900',
+    buttonClass: 'tw-bg-yellow-300 tw-text-gray-800 focus:tw-bg-yellow-600 hover:tw-bg-yellow-600',
   },
   {
     value: 'maui',
@@ -113,7 +112,7 @@ export const SearchBar = ({ className = '', size = 'sm', dropdownBGImage, ...pro
   const dropDownComponent = openDropdown && (
     <div
       ref={refs.setFloating}
-      style={{ ...floatingStyles, backgroundImage: `url(${dropdownBGImage})` }}
+      style={{ ...floatingStyles, backgroundImage: dropDownType === 'island' ? `url(${dropdownBGImage})` : undefined }}
       className={`${
         dropDownType === 'island' ? '' : 'tw-bg-gray-50'
       } tw-min-w-80 tw-overflow-clip tw-rounded-lg tw-shadow-2xl tw-shadow-black`}
