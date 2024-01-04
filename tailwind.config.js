@@ -1,5 +1,8 @@
 const colors = require('tailwindcss/colors')
 
+/**
+ * @type {import('tailwindcss/defaultConfig')}
+ */
 module.exports = {
   content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
   theme: {
@@ -54,6 +57,7 @@ module.exports = {
       },
       animation: {
         'fade-down': 'fade-down 1s both',
+        'fade-in': 'fade-in 1s both',
       },
       keyframes: {
         'fade-down': {
@@ -65,6 +69,15 @@ module.exports = {
           '100%': {
             opacity: 1,
             transform: 'translateY(0)',
+          },
+        },
+        'fade-in': {
+          '0%': {
+            opacity: 0,
+          },
+
+          '100%': {
+            opacity: 1,
           },
         },
       },

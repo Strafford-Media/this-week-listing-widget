@@ -1,11 +1,18 @@
 @tailwind base;
 
+@font-face {
+  font-family: 'Bobaland.ttf';
+  src: url('https://irp.cdn-website.com/0e650340/fonts/Bobaland.ttf-70c_400.woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @tailwind components;
 
 @tailwind utilities;
 
 @layer utilities {
   .tw-flex-center {
-    @apply tw-flex tw-justify-center tw-items-center !important;
+    @apply tw-flex tw-items-center tw-justify-center !important;
   }
 }
