@@ -9,7 +9,7 @@ import { deviceType, env, siteID } from '../utils/environment'
 
 const islandHoverAndFocusClasses =
   `tw-absolute tw-inset-y-0 tw-right-0 -tw-z-10 tw-my-auto tw-w-2/3 tw-origin-center tw-rotate-12
-  tw-text-lime-600
+  tw-text-[#ecd9c7]
   peer-focus-within/big-island:[--big-island-highlight-color:theme(colors.red.600)] peer-hover/big-island:[--big-island-highlight-color:theme(colors.red.600)]
   peer-focus-within/kauai:[--kauai-highlight-color:theme(colors.fuchsia.500)] peer-hover/kauai:[--kauai-highlight-color:theme(colors.fuchsia.500)]
   peer-focus-within/maui:[--maui-highlight-color:theme(colors.pink.600)] peer-hover/maui:[--maui-highlight-color:theme(colors.pink.600)]
@@ -65,11 +65,21 @@ const searchEngine = new SearchEngine()
 export interface SearchBarProps extends Omit<ComponentProps<'div'>, 'size'> {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   dropdownBGImage: string
+  closeable?: boolean
 }
 
-export const SearchBar = ({ className = '', size = 'sm', dropdownBGImage, ...props }: SearchBarProps) => {
+export const SearchBar = ({
+  className = '',
+  size = 'sm',
+  dropdownBGImage,
+  closeable = false,
+  ...props
+}: SearchBarProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [island, setIsland] = useRememberedState('this-week-search-island-value', islands[1])
+
+  const [searchClosed, setSearchClosed] = useState(closeable)
+
   const [openDropdown, setOpenDropdown] = useState(false)
   const [dropDownType, setDropdownType] = useState<'island' | 'results'>('island')
   const [search, setSearch] = useRememberedState('this-week-search-value', 'none')
@@ -115,14 +125,14 @@ export const SearchBar = ({ className = '', size = 'sm', dropdownBGImage, ...pro
       style={{ ...floatingStyles, backgroundImage: dropDownType === 'island' ? `url(${dropdownBGImage})` : undefined }}
       className={`${
         dropDownType === 'island' ? '' : 'tw-bg-gray-50'
-      } tw-min-w-80 tw-overflow-clip tw-rounded-lg tw-shadow-2xl tw-shadow-black`}
+      } tw-min-w-80 tw-max-w-[95vw] tw-overflow-clip tw-rounded-lg tw-shadow-2xl tw-shadow-black`}
     >
       {dropDownType === 'island' && (
         <ul className="tw-relative tw-w-screen tw-max-w-sm">
           {islands.map((isle) => (
             <li className={isle.peerClass}>
               <button
-                className="tw-flex tw-w-full tw-items-center tw-p-3 tw-font-bold tw-text-blue-100 hover:tw-bg-white/10 focus:tw-bg-white/10 focus:tw-outline-none"
+                className="tw-flex tw-w-full tw-items-center tw-p-3 tw-font-bold tw-text-white tw-drop-shadow-md hover:tw-bg-white/10 focus:tw-bg-white/10 focus:tw-outline-none"
                 type="button"
                 role="listitem"
                 onClick={(e) => {
@@ -192,69 +202,92 @@ export const SearchBar = ({ className = '', size = 'sm', dropdownBGImage, ...pro
   )
 
   return (
-    <div ref={refs.setReference} className={`${className} tw-relative tw-z-10 tw-animate-fade-down`} {...props}>
+    <div
+      ref={refs.setReference}
+      className={`${className} tw-relative tw-animate-fade-down ${
+        !openDropdown ? 'tw-overflow-hidden' : ''
+      } tw-rounded-r-lg`}
+      {...props}
+    >
       <div className={`tw-flex tw-w-full tw-items-stretch tw-text-black`}>
-        <button
-          type="button"
-          className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent ${island.buttonClass} tw-px-3 focus:tw-outline-none`}
-          onClick={() => {
-            if (dropDownType !== 'island') {
-              setOpenDropdown(true)
-              setDropdownType('island')
-            } else {
-              setOpenDropdown((o) => !o)
-            }
-          }}
+        <div
+          className={`tw-z-10 tw-flex tw-grow tw-items-stretch tw-transition-transform tw-duration-300 ${
+            searchClosed ? 'tw-translate-x-full' : 'tw-translate-x-0'
+          }`}
         >
-          <span className={`tw-flex tw-flex-nowrap tw-items-center tw-whitespace-nowrap ${sizeClass.text}`}>
-            {island.label}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class={`${sizeClass.caret} tw-ml-2 ${
-                dropDownType === 'island' && openDropdown ? 'tw-rotate-180' : 'tw-rotate-0'
-              } tw-transition-transform`}
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
-          </span>
-        </button>
-        {dropDownType === 'island' && dropDownComponent}
-        <input
-          ref={inputRef}
-          className={`tw-m-0 tw-flex tw-h-full tw-items-center tw-border-2 tw-border-transparent tw-bg-white tw-px-2 tw-py-2 focus:tw-z-20 focus:tw-border-sky-400 focus:tw-outline-none ${sizeClass.text}`}
-          type="text"
-          value={search}
-          onInput={(e) => {
-            const newVal = (e as any).target.value
-            setSearch(newVal)
-            debouncedGo({ island: island.value, search: newVal })
-          }}
-          placeholder={`Explore ${island.label}`}
-          onFocus={() => {
-            if (dropDownType !== 'results') {
-              setDropdownType('results')
-            }
+          <button
+            type="button"
+            className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent tw-px-3 focus:tw-outline-none ${island.buttonClass}`}
+            onClick={() => {
+              if (dropDownType !== 'island') {
+                setOpenDropdown(true)
+                setDropdownType('island')
+              } else {
+                setOpenDropdown((o) => !o)
+              }
+            }}
+          >
+            <span className={`tw-flex tw-flex-nowrap tw-items-center tw-whitespace-nowrap ${sizeClass.text}`}>
+              {island.label}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class={`${sizeClass.caret} tw-ml-2 ${
+                  dropDownType === 'island' && openDropdown ? 'tw-rotate-180' : 'tw-rotate-0'
+                } tw-transition-transform`}
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </span>
+          </button>
+          {dropDownType === 'island' && dropDownComponent}
+          <input
+            ref={inputRef}
+            className={`tw-m-0 tw-flex tw-h-full tw-items-center tw-border-2 tw-border-transparent tw-bg-white tw-px-2 tw-py-2 focus:tw-z-20 focus:tw-border-sky-400 focus:tw-outline-none ${sizeClass.text}`}
+            type="text"
+            value={search}
+            onInput={(e) => {
+              const newVal = (e as any).target.value
+              setSearch(newVal)
+              debouncedGo({ island: island.value, search: newVal })
+            }}
+            placeholder={`Explore ${island.label}`}
+            onFocus={() => {
+              if (dropDownType !== 'results') {
+                setDropdownType('results')
+              }
 
-            if (!searchResults.matches.length && search) {
-              go({ search, island: island.value })
-              setOpenDropdown(true)
-            }
-          }}
-        />
-        {dropDownType === 'results' && dropDownComponent}
+              if (!searchResults.matches.length && search) {
+                go({ search, island: island.value })
+                setOpenDropdown(true)
+              }
+            }}
+          />
+          {dropDownType === 'results' && dropDownComponent}
+        </div>
         <button
           type="button"
-          className="tw-flex tw-min-h-8 tw-items-center tw-rounded-r-lg tw-border-x-2 tw-border-x-transparent tw-bg-gray-200 tw-px-2 focus:tw-border-2 focus:tw-border-sky-400 focus:tw-outline-none"
+          className={`tw-z-10 tw-flex tw-min-h-8 tw-items-center tw-rounded-r-lg tw-border-x-2 tw-border-x-transparent tw-bg-gray-200 tw-px-2 focus:tw-border-2 focus:tw-border-sky-400 focus:tw-outline-none ${
+            searchClosed ? 'tw-rounded-l-lg' : ''
+          }`}
           onClick={async (e) => {
             e.stopPropagation()
 
-            go({ island: island.value, search })
-            setDropdownType('results')
-            setOpenDropdown(true)
+            if (closeable && searchClosed) {
+              setSearchClosed(false)
+            } else if (!search) {
+              if (openDropdown) {
+                setOpenDropdown(false)
+              }
+              setSearchClosed(closeable)
+            } else {
+              go({ island: island.value, search })
+              setDropdownType('results')
+              setOpenDropdown(true)
+            }
           }}
         >
           <svg

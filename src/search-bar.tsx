@@ -19,8 +19,9 @@ export async function init({ container, props }: { container: Element; props: Du
           size={props.siteDetails.config.size || 'md'}
           dropdownBGImage={
             props.siteDetails.config.dropdownBGImage ??
-            'https://irp.cdn-website.com/0e650340/dms3rep/multi/water-bg.png'
+            'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/aerial_water_3-640w.jpeg'
           }
+          closeable={props.siteDetails.config.closeable}
         />
       </DudaProvider>,
       container,
