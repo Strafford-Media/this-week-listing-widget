@@ -99,7 +99,7 @@ const getContent = (config: any, island: string) => {
         link: config.mauiLink,
         bgClass: 'tw-from-pink-500',
         tagLine: config.mauiTagline,
-        tagLineClass: 'tw-text-yellow-400',
+        tagLineClass: 'tw-text-yellow-300',
         islandName: 'Maui',
       }
     case 'kauai':
