@@ -29,10 +29,10 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
         className="tw-absolute tw-left-0 tw-right-0 tw-top-0 tw-mx-auto tw-w-full tw-max-w-3xl tw-text-[#ecd9c7] tw-drop-shadow-[-4px_2px_4px_black]"
         onIslandHover={setIsland}
         onIslandClick={goToIsland}
-        hawaiiClass={island === 'hawaii' ? 'tw-text-red-600' : 'hover:tw-text-red-600 tw-cursor-pointer'}
-        mauiClass={island === 'maui' ? 'tw-text-pink-600' : 'hover:tw-text-pink-600 tw-cursor-pointer'}
-        oahuClass={island === 'oahu' ? 'tw-text-yellow-300' : 'hover:tw-text-yellow-300 tw-cursor-pointer'}
-        kauaiClass={island === 'kauai' ? 'tw-text-fuchsia-500' : 'hover:tw-text-fuchsia-500 tw-cursor-pointer'}
+        hawaiiClass={island === 'hawaii' ? 'tw-cursor-pointer tw-text-red-600' : 'hover:tw-text-red-600'}
+        mauiClass={island === 'maui' ? 'tw-cursor-pointer tw-text-pink-600' : 'hover:tw-text-pink-600'}
+        oahuClass={island === 'oahu' ? 'tw-cursor-pointer tw-text-yellow-300' : 'hover:tw-text-yellow-300'}
+        kauaiClass={island === 'kauai' ? 'tw-cursor-pointer tw-text-fuchsia-500' : 'hover:tw-text-fuchsia-500'}
       />
       <div className="tw-mt-[284px] tw-grid tw-w-2/3 tw-grid-cols-[repeat(1,minmax(0,auto))] tw-grid-rows-[repeat(1,minmax(0,auto))] tw-items-stretch lg:tw-mt-[200px] lg:tw-w-1/2">
         {islandContents.map((isle) => (
