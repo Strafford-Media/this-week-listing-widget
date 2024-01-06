@@ -23,6 +23,8 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
     }
   }
 
+  console.log(siteDetails)
+
   return (
     <div className={`${className} tw-relative tw-flex tw-w-full tw-animate-fade-in`} {...props}>
       <HawaiianIslands
@@ -34,7 +36,7 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
         oahuClass={island === 'oahu' ? 'tw-cursor-pointer tw-text-yellow-300' : 'hover:tw-text-yellow-300'}
         kauaiClass={island === 'kauai' ? 'tw-cursor-pointer tw-text-fuchsia-500' : 'hover:tw-text-fuchsia-500'}
       />
-      <div className="tw-mt-[284px] tw-grid tw-w-2/3 tw-grid-cols-[repeat(1,minmax(0,auto))] tw-grid-rows-[repeat(1,minmax(0,auto))] tw-items-stretch lg:tw-mt-[200px] lg:tw-w-1/2">
+      <div className="tw-mt-[284px] tw-grid tw-w-2/3 tw-grid-cols-[repeat(1,minmax(0,auto))] tw-grid-rows-[repeat(1,minmax(0,auto))] tw-items-stretch tw-overflow-clip tw-rounded-tr-xl lg:tw-mt-[200px] lg:tw-w-1/2">
         {islandContents.map((isle) => (
           <div
             className={`tw-col-start-1 tw-row-start-1 tw-overflow-hidden tw-bg-gradient-to-b tw-from-20% tw-transition-opacity tw-duration-300 ${
@@ -80,9 +82,9 @@ const getContent = (config: any, island: string) => {
       return {
         island: 'hawaii',
         content: config.hawaiiContent,
-        bannerImage: config.hawaiiImage,
-        magImage: config.hawaiiMagImage,
-        logo: config.hawaiiLogo,
+        bannerImage: optimizeImage(config.hawaiiImage),
+        magImage: optimizeImage(config.hawaiiMagImage),
+        logo: optimizeImage(config.hawaiiLogo),
         link: config.hawaiiLink,
         bgClass: 'tw-from-red-500',
         tagLine: config.hawaiiTagline,
@@ -93,9 +95,9 @@ const getContent = (config: any, island: string) => {
       return {
         island: 'maui',
         content: config.mauiContent,
-        bannerImage: config.mauiImage,
-        magImage: config.mauiMagImage,
-        logo: config.mauiLogo,
+        bannerImage: optimizeImage(config.mauiImage),
+        magImage: optimizeImage(config.mauiMagImage),
+        logo: optimizeImage(config.mauiLogo),
         link: config.mauiLink,
         bgClass: 'tw-from-pink-500',
         tagLine: config.mauiTagline,
@@ -106,9 +108,9 @@ const getContent = (config: any, island: string) => {
       return {
         island: 'kauai',
         content: config.kauaiContent,
-        bannerImage: config.kauaiImage,
-        magImage: config.kauaiMagImage,
-        logo: config.kauaiLogo,
+        bannerImage: optimizeImage(config.kauaiImage),
+        magImage: optimizeImage(config.kauaiMagImage),
+        logo: optimizeImage(config.kauaiLogo),
         link: config.kauaiLink,
         bgClass: 'tw-from-fuchsia-500',
         tagLine: config.kauaiTagline,
@@ -120,9 +122,9 @@ const getContent = (config: any, island: string) => {
       return {
         island: 'oahu',
         content: config.oahuContent,
-        bannerImage: config.oahuImage,
-        magImage: config.oahuMagImage,
-        logo: config.oahuLogo,
+        bannerImage: optimizeImage(config.oahuImage),
+        magImage: optimizeImage(config.oahuMagImage),
+        logo: optimizeImage(config.oahuLogo),
         link: config.oahuLink,
         bgClass: 'tw-from-yellow-300',
         tagLine: config.oahuTagline,
@@ -130,4 +132,18 @@ const getContent = (config: any, island: string) => {
         islandName: 'Oahu',
       }
   }
+}
+
+const optimizeImage = (url: string, width = 640) => {
+  if (url.includes('/opt/') || !url.includes('cdn-website.com')) return url
+
+  const replacedUrl = url
+    .replace('https://irp.cdn-website.com', 'https://lirp.cdn-website.com')
+    .replace('/dms3rep/multi/', '/dms3rep/multi/opt/')
+
+  const ext = replacedUrl.split('.').at(-1)
+
+  if (!ext) return url
+
+  return replacedUrl.replace(`.${ext}`, `-${width}w.${ext}`)
 }

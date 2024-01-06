@@ -56,6 +56,7 @@ const islands: { value: IslandValue; label: string; peerClass: string; buttonCla
 const emptySearchResult: SearchResult = {
   matches: [],
   suggestions: [],
+  categoryTags: [],
   notEnough: false,
   emptySearch: true,
 }
@@ -191,6 +192,23 @@ export const SearchBar = ({
                     className="tw-block tw-w-full tw-px-3 tw-py-1 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
                     {isle.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {!!searchResults.categoryTags.length && (
+            <ul>
+              <p className="tw-mt-4 tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800">
+                Relevant Categories
+              </p>
+              {searchResults.categoryTags.map((tag) => (
+                <li>
+                  <a
+                    href={getCategoryHref(tag.id)}
+                    className="tw-block tw-w-full tw-px-3 tw-py-1 tw-capitalize hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
+                  >
+                    {tag.label}
                   </a>
                 </li>
               ))}
@@ -333,5 +351,17 @@ function getListingHref(listingUrl: string) {
     case 'live':
     default:
       return `/listing/${listingUrl}`
+  }
+}
+
+function getCategoryHref(categoryId: number) {
+  switch (env) {
+    case 'preview':
+      return `/site/${siteID}/listing/${categoryId}?preview=true&insitepreview=true&dm_device=${deviceType}`
+    case 'editor':
+      return `/site/${siteID}/listing/${categoryId}?preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
+    case 'live':
+    default:
+      return `/listing/${categoryId}`
   }
 }

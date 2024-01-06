@@ -11,16 +11,18 @@ export async function init({ container, props }: { container: Element; props: Du
         ? `${props.siteDetails.config.maxWidth}px`
         : undefined
 
+    const bgImage =
+      !props.siteDetails.config?.dropdownBGImage || props.siteDetails.config.dropdownBGImage === '&quot;&quot;'
+        ? 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/aerial_water_3-640w.jpeg'
+        : props.siteDetails.config.dropdownBGImage
+
     render(
       <DudaProvider value={props}>
         <SearchBar
           className="tw-mx-auto"
           style={{ maxWidth }}
           size={props.siteDetails.config.size || 'md'}
-          dropdownBGImage={
-            props.siteDetails.config.dropdownBGImage ??
-            'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/aerial_water_3-640w.jpeg'
-          }
+          dropdownBGImage={bgImage}
           closeable={props.siteDetails.config.closeable}
         />
       </DudaProvider>,

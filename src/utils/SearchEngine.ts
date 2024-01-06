@@ -11,6 +11,7 @@ export interface SearchParams {
 export interface SearchResult {
   matches: SearchResultItem[]
   suggestions: SearchResultItem[]
+  categoryTags: SearchResultItem[]
   notEnough: boolean
   emptySearch?: boolean
   error?: Error | null
@@ -21,6 +22,8 @@ interface SearchResultItem {
   value: string
   label: string
 }
+
+const emptyResult = { matches: [], suggestions: [], categoryTags: [], emptySearch: true, notEnough: true }
 
 export class SearchEngine {
   collectionsAPI: any
@@ -39,17 +42,25 @@ export class SearchEngine {
     }
 
     if (!search) {
-      return { matches: [], suggestions: [], emptySearch: true, notEnough: true }
+      return emptyResult
     }
 
-    if (search.length < 3) {
-      return { matches: [], suggestions: [], notEnough: true, emptySearch: false }
+    if (search.length < 2) {
+      return { ...emptyResult, emptySearch: false }
     }
 
-    const [err, matches] = await this.findMatches(search, island)
+    const [[err, matches], [catErr, catSuggestions]] = await Promise.all([
+      this.findMatches(search, island),
+      this.findSuggestedCategories(search),
+    ])
+
+    if (catErr) {
+      // not important enough to stop the show on its own, but we'll let people inspect it in the console if they want
+      console.error("couldn't fetch categories:", catErr)
+    }
 
     if (err) {
-      return { error: err, matches: [], suggestions: [], emptySearch: false, notEnough: false }
+      return { ...emptyResult, error: err, emptySearch: false, notEnough: false }
     }
 
     let suggestions: SearchResultItem[] = []
@@ -69,6 +80,7 @@ export class SearchEngine {
     return {
       matches: matches ?? [],
       suggestions,
+      categoryTags: catSuggestions ?? [],
       notEnough: false,
       emptySearch: false,
     }
@@ -137,6 +149,39 @@ export class SearchEngine {
           id: r.id,
           value: this.collectionMap[r.id]?.page_item_url,
           label: r.business_name,
+        }))
+        .filter((l) => l.value),
+    ]
+  }
+
+  async findSuggestedCategories(search: string): Promise<[Error | null, SearchResultItem[] | null]> {
+    const [err, res] = await this.graphqlRequest<{
+      data: { fuzzy_search_categories: { id: number; label: string }[] }
+    }>(
+      `query fuzzySearchCategories ($search: String!){
+        fuzzy_search_categories(args: {search: $search}) {
+          id
+          label
+        }
+      }`,
+      { search },
+    )
+
+    if (err) {
+      return [err, null]
+    }
+
+    if (!res || !Array.isArray(res?.data?.fuzzy_search_categories)) {
+      return [new Error('Unable to search for matches'), null]
+    }
+
+    return [
+      null,
+      res.data.fuzzy_search_categories
+        .map((r) => ({
+          id: r.id,
+          value: r.label,
+          label: r.label,
         }))
         .filter((l) => l.value),
     ]
