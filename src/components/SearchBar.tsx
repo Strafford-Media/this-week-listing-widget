@@ -123,7 +123,11 @@ export const SearchBar = ({
   const dropDownComponent = openDropdown && (
     <div
       ref={refs.setFloating}
-      style={{ ...floatingStyles, backgroundImage: dropDownType === 'island' ? `url(${dropdownBGImage})` : undefined }}
+      style={{
+        ...floatingStyles,
+        backgroundPosition: 'bottom left',
+        backgroundImage: dropDownType === 'island' ? `url(${dropdownBGImage})` : undefined,
+      }}
       className={`${
         dropDownType === 'island' ? '' : 'tw-bg-gray-50'
       } tw-min-w-80 tw-max-w-[95vw] tw-overflow-clip tw-rounded-lg tw-shadow-2xl tw-shadow-black`}
@@ -159,39 +163,30 @@ export const SearchBar = ({
       )}
       {dropDownType === 'results' && (
         <>
-          <ul>
-            <p className="tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800">
-              Matches
-            </p>
-            {!searchResults.matches.length ? (
-              <em className="tw-px-3 tw-py-1 tw-text-gray-500">
-                {searchResults.notEnough ? 'Type more for better results...' : 'None'}
-              </em>
-            ) : (
-              searchResults.matches.map((isle) => (
+          {!searchResults.matches.length && !searchResults.suggestions.length && (
+            <em className="tw-px-3 tw-py-1 tw-text-gray-500">
+              {searchResults.notEnough ? 'Type more for better results...' : 'None'}
+            </em>
+          )}
+          {!!(searchResults.matches.length || searchResults.suggestions.length) && (
+            <ul>
+              {searchResults.matches.map((listing) => (
                 <li>
                   <a
-                    href={getListingHref(isle.value)}
-                    className="tw-block tw-w-full tw-px-3 tw-py-1 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
+                    href={getListingHref(listing.value)}
+                    className="tw-block tw-w-full tw-px-3 tw-py-1 tw-font-bold hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
-                    {isle.label}
+                    {listing.label}
                   </a>
                 </li>
-              ))
-            )}
-          </ul>
-          {!!searchResults.suggestions.length && (
-            <ul>
-              <p className="tw-mt-4 tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800">
-                Suggestions
-              </p>
-              {searchResults.suggestions.map((isle) => (
+              ))}
+              {searchResults.suggestions.map((listing) => (
                 <li>
                   <a
-                    href={getListingHref(isle.value)}
-                    className="tw-block tw-w-full tw-px-3 tw-py-1 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
+                    href={getListingHref(listing.value)}
+                    className="tw-block tw-w-full tw-px-3 tw-py-1 tw-text-gray-600 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
-                    {isle.label}
+                    {listing.label}
                   </a>
                 </li>
               ))}
@@ -205,10 +200,10 @@ export const SearchBar = ({
               {searchResults.categoryTags.map((tag) => (
                 <li>
                   <a
-                    href={getCategoryHref(tag.id)}
+                    href={getCategoryHref(tag.id, island.value)}
                     className="tw-block tw-w-full tw-px-3 tw-py-1 tw-capitalize hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
-                    {tag.label}
+                    {tag.label} <span className="tw-text-sm tw-text-gray-500">{tag.value}</span>
                   </a>
                 </li>
               ))}
@@ -266,6 +261,7 @@ export const SearchBar = ({
             ref={inputRef}
             className={`tw-m-0 tw-flex tw-h-full tw-items-center tw-border-2 tw-border-transparent tw-bg-white tw-px-2 tw-py-2 focus:tw-z-20 focus:tw-border-sky-400 focus:tw-outline-none ${sizeClass.text}`}
             type="text"
+            name="search"
             value={search}
             onInput={(e) => {
               const newVal = (e as any).target.value
@@ -283,6 +279,12 @@ export const SearchBar = ({
                 setOpenDropdown(true)
               }
             }}
+            onKeyDown={(e) => {
+              if (e.key !== 'Enter') return
+
+              go({ search, island: island.value })
+            }}
+            autoComplete="off"
           />
           {dropDownType === 'results' && dropDownComponent}
         </div>
@@ -354,14 +356,18 @@ function getListingHref(listingUrl: string) {
   }
 }
 
-function getCategoryHref(categoryId: number) {
+function getCategoryHref(categoryId: number, island: string) {
   switch (env) {
     case 'preview':
-      return `/site/${siteID}/listing/${categoryId}?preview=true&insitepreview=true&dm_device=${deviceType}`
+      return `/site/${siteID}/${
+        island ? `${island}/` : ''
+      }explore?categoryId=${categoryId}&preview=true&insitepreview=true&dm_device=${deviceType}`
     case 'editor':
-      return `/site/${siteID}/listing/${categoryId}?preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
+      return `/site/${siteID}/${
+        island ? `${island}/` : ''
+      }explore?categoryId=${categoryId}&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
     case 'live':
     default:
-      return `/listing/${categoryId}`
+      return `/${island ? `${island}/` : ''}explore?categoryId=${categoryId}`
   }
 }

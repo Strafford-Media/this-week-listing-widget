@@ -38,6 +38,7 @@
     "ts-node": "^10.9.1"
   },
   "full-listing": "public/full-listing.js",
+  "listing-list": "public/listing-list.js",
   "search-bar": "public/search-bar.js",
   "ad-placement": "public/ad-placement.js",
   "evvnt-gallery": "public/evvnt-gallery.js",
@@ -47,6 +48,14 @@
     "main": false,
     "full-listing": {
       "source": "src/full-listing.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "listing-list": {
+      "source": "src/listing-list.tsx",
       "scopeHoist": false,
       "engines": {
         "browsers": "IE 11"

@@ -51,7 +51,7 @@ export class SearchEngine {
 
     const [[err, matches], [catErr, catSuggestions]] = await Promise.all([
       this.findMatches(search, island),
-      this.findSuggestedCategories(search),
+      this.findSuggestedCategories(search, island),
     ])
 
     if (catErr) {
@@ -154,17 +154,18 @@ export class SearchEngine {
     ]
   }
 
-  async findSuggestedCategories(search: string): Promise<[Error | null, SearchResultItem[] | null]> {
+  async findSuggestedCategories(search: string, island?: string): Promise<[Error | null, SearchResultItem[] | null]> {
     const [err, res] = await this.graphqlRequest<{
-      data: { fuzzy_search_categories: { id: number; label: string }[] }
+      data: { fuzzy_search_categories: { id: number; label: string; listings_count: number }[] }
     }>(
-      `query fuzzySearchCategories ($search: String!){
-        fuzzy_search_categories(args: {search: $search}) {
+      `query fuzzySearchCategories ($search: String!, $island: String) {
+        fuzzy_search_categories(args: { search: $search, island: $island }) {
           id
           label
+          listings_count
         }
       }`,
-      { search },
+      { search, island },
     )
 
     if (err) {
@@ -180,7 +181,7 @@ export class SearchEngine {
       res.data.fuzzy_search_categories
         .map((r) => ({
           id: r.id,
-          value: r.label,
+          value: `(${r.listings_count})`,
           label: r.label,
         }))
         .filter((l) => l.value),
