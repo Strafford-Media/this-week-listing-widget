@@ -22,13 +22,47 @@ export const useURLParams = () => {
     const category = segments[exploreIndex + 1]
 
     const categories = url.searchParams.getAll('category')
-    const islands = url.searchParams.get('island') ?? ''
+    const islands = url.searchParams.getAll('island')
 
     return { categories, island, islands, category }
   }, [window.location.href])
 
-  const navigate = (url: string) => {
-    window.history.pushState(null, '', url)
+  const navigate = ({
+    add,
+    remove,
+  }: {
+    add?: { [key: string]: string | string[] }
+    remove?: { [key: string]: string | string[] }
+  }) => {
+    const currentUrl = new URL(window.location.href)
+
+    if (add) {
+      for (const param of Object.keys(add)) {
+        const value = add[param]
+        if (Array.isArray(value)) {
+          for (const val of value) {
+            currentUrl.searchParams.append(param, val)
+          }
+        } else {
+          currentUrl.searchParams.set(param, value)
+        }
+      }
+    }
+
+    if (remove) {
+      for (const param of Object.keys(remove)) {
+        const value = remove[param]
+        if (Array.isArray(value)) {
+          for (const val of value) {
+            currentUrl.searchParams.delete(param, val)
+          }
+        } else {
+          currentUrl.searchParams.delete(param)
+        }
+      }
+    }
+
+    window.history.pushState(null, '', currentUrl.toString())
     fireUpdate((s) => !s)
   }
 
