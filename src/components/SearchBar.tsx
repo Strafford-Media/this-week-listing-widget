@@ -4,7 +4,7 @@ import { ComponentProps } from 'preact'
 import { HawaiianIslands } from './Hawaii'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
-import { IslandValue, SearchEngine, SearchParams, SearchResult } from '../utils/SearchEngine'
+import { IslandValue, ListingsEngine, SearchParams, SearchResult } from '../utils/ListingsEngine'
 import { deviceType, env, siteID } from '../utils/environment'
 
 const islandHoverAndFocusClasses =
@@ -61,7 +61,7 @@ const emptySearchResult: SearchResult = {
   emptySearch: true,
 }
 
-const searchEngine = new SearchEngine()
+const listingsEngine = new ListingsEngine()
 
 export interface SearchBarProps extends Omit<ComponentProps<'div'>, 'size'> {
   size?: 'sm' | 'md' | 'lg' | 'xl'
@@ -96,7 +96,7 @@ export const SearchBar = ({
   })
 
   const go = async (params: SearchParams) => {
-    const newResults = await searchEngine.search(params)
+    const newResults = await listingsEngine.search({ ...params, includeCategories: true })
 
     setResultList(newResults)
 
@@ -173,20 +173,20 @@ export const SearchBar = ({
               {searchResults.matches.map((listing) => (
                 <li>
                   <a
-                    href={getListingHref(listing.value)}
+                    href={getListingHref(listing.page_item_url)}
                     className="tw-block tw-w-full tw-px-3 tw-py-1 tw-font-bold hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
-                    {listing.label}
+                    {listing.data.business_name}
                   </a>
                 </li>
               ))}
               {searchResults.suggestions.map((listing) => (
                 <li>
                   <a
-                    href={getListingHref(listing.value)}
+                    href={getListingHref(listing.page_item_url)}
                     className="tw-block tw-w-full tw-px-3 tw-py-1 tw-text-gray-600 hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
-                    {listing.label}
+                    {listing.data.business_name}
                   </a>
                 </li>
               ))}
@@ -200,10 +200,10 @@ export const SearchBar = ({
               {searchResults.categoryTags.map((tag) => (
                 <li>
                   <a
-                    href={getCategoryHref(tag.id, island.value)}
+                    href={getCategoryHref(tag.label, island.value)}
                     className="tw-block tw-w-full tw-px-3 tw-py-1 tw-capitalize hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
-                    {tag.label} <span className="tw-text-sm tw-text-gray-500">{tag.value}</span>
+                    {tag.label} <span className="tw-text-sm tw-text-gray-500">({tag.listings_count})</span>
                   </a>
                 </li>
               ))}
@@ -356,18 +356,18 @@ function getListingHref(listingUrl: string) {
   }
 }
 
-function getCategoryHref(categoryId: number, island: string) {
+function getCategoryHref(category: string, island: string) {
   switch (env) {
     case 'preview':
       return `/site/${siteID}/${
         island ? `${island}/` : ''
-      }explore?categoryId=${categoryId}&preview=true&insitepreview=true&dm_device=${deviceType}`
+      }explore?category=${category}&preview=true&insitepreview=true&dm_device=${deviceType}`
     case 'editor':
       return `/site/${siteID}/${
         island ? `${island}/` : ''
-      }explore?categoryId=${categoryId}&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
+      }explore?category=${category}&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
     case 'live':
     default:
-      return `/${island ? `${island}/` : ''}explore?categoryId=${categoryId}`
+      return `/${island ? `${island}/` : ''}explore?category=${category}`
   }
 }

@@ -23,8 +23,6 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
     }
   }
 
-  console.log(siteDetails)
-
   return (
     <div className={`${className} tw-relative tw-flex tw-w-full tw-animate-fade-in`} {...props}>
       <HawaiianIslands

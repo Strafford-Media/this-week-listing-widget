@@ -26,6 +26,22 @@ export interface Listing {
     id: string
   }[]
   booking_links: []
+  categories?: Category[]
+}
+
+export interface Category {
+  id: number
+  label: string
+  listings_count?: number
+  listing_category_tags: {
+    id: number
+    listing_id: number
+  }[]
+}
+
+export interface CollectionValue<T> {
+  data: T
+  page_item_url: string
 }
 
 export interface DudaContextValue {
@@ -44,7 +60,7 @@ export interface DudaContextValue {
   pageData?: Listing
 }
 
-export interface CollectionResult {
+export interface CollectionResult<T extends { id: number }> {
   name: string
   page: {
     pageSize: number
@@ -63,8 +79,5 @@ export interface CollectionResult {
   search: string | null
   fields: string[] | null
   language: string | null
-  values: {
-    data: Listing
-    page_item_url: string
-  }[]
+  values: CollectionValue<T>[]
 }

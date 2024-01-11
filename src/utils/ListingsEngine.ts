@@ -1,4 +1,4 @@
-import { CollectionResult } from '../@types/duda'
+import { CollectionResult, Listing, Category, CollectionValue } from '../@types/duda'
 import { getHasuraUrl } from './urls'
 
 export type IslandValue = 'oahu' | 'maui' | 'kauai' | 'hawaii' | ''
@@ -9,36 +9,72 @@ export interface SearchParams {
 }
 
 export interface SearchResult {
-  matches: SearchResultItem[]
-  suggestions: SearchResultItem[]
-  categoryTags: SearchResultItem[]
+  matches: CollectionValue<Listing>[]
+  suggestions: CollectionValue<Listing>[]
+  categoryTags: Category[]
   notEnough: boolean
   emptySearch?: boolean
   error?: Error | null
 }
 
-interface SearchResultItem {
-  id: number
-  value: string
-  label: string
+const collectionMapping = {
+  Listings: {
+    listKey: 'listings',
+    mapKey: 'listingsMap',
+  },
+  Categories: {
+    listKey: 'primaryCategories',
+    mapKey: 'primaryCategoriesMap',
+  },
+  'All Categories': {
+    listKey: 'allCategories',
+    mapKey: 'allCategoriesMap',
+  },
 }
 
 const emptyResult = { matches: [], suggestions: [], categoryTags: [], emptySearch: true, notEnough: true }
 
-export class SearchEngine {
+export class ListingsEngine extends EventTarget {
   collectionsAPI: any
-  collection: CollectionResult['values'] = []
-  collectionMap: Record<string, CollectionResult['values'][number]> = {}
-  loaded = false
+  listings: CollectionResult<Listing>['values'] = []
+  listingsMap: Record<string, CollectionResult<Listing>['values'][number]> = {}
+  primaryCategories: CollectionResult<Category>['values'] = []
+  primaryCategoriesMap: Record<string, CollectionResult<Category>['values'][number]> = {}
+  allCategories: CollectionResult<Category>['values'] = []
+  allCategoriesMap: Record<string, CollectionResult<Category>['values'][number]> = {}
   error: Error | null = null
+  listingsCategorized = false
 
-  constructor() {
-    this.loadCollection()
+  constructor(categories: (keyof typeof collectionMapping)[] = ['Listings']) {
+    super()
+    this.loadCollections(categories)
   }
 
-  async search({ search, island }: { search: string; island?: string }): Promise<SearchResult> {
-    if (!this.collection.length) {
-      await this.loadCollection()
+  filterList({ island, categories }: { island?: string; categories?: string[] }): CollectionResult<Listing>['values'] {
+    if (!island && !categories?.length) {
+      return this.listings
+    }
+
+    const categoryMap = categories?.reduce<Record<string, true>>((map, cat) => ({ ...map, [cat]: true }), {}) ?? {}
+
+    return this.listings.filter(
+      (l) =>
+        (!island || l.data.island === island) &&
+        (!categories?.length || l.data.categories?.some((c) => categoryMap[c.label])),
+    )
+  }
+
+  async search({
+    search,
+    island,
+    includeCategories = false,
+  }: {
+    search: string
+    island?: string
+    includeCategories?: boolean
+  }): Promise<SearchResult> {
+    if (!this.listings.length) {
+      await this.loadCollections()
     }
 
     if (!search) {
@@ -51,7 +87,7 @@ export class SearchEngine {
 
     const [[err, matches], [catErr, catSuggestions]] = await Promise.all([
       this.findMatches(search, island),
-      this.findSuggestedCategories(search, island),
+      includeCategories ? this.findSuggestedCategories(search, island) : [],
     ])
 
     if (catErr) {
@@ -63,7 +99,7 @@ export class SearchEngine {
       return { ...emptyResult, error: err, emptySearch: false, notEnough: false }
     }
 
-    let suggestions: SearchResultItem[] = []
+    let suggestions: CollectionValue<Listing>[] = []
 
     if ((matches?.length ?? 0) < 3) {
       const [suggestionErr, fetchedSuggestions] = await this.findSuggestions(search, island, matches?.length ? 5 : 10)
@@ -73,7 +109,7 @@ export class SearchEngine {
       }
 
       if (fetchedSuggestions) {
-        suggestions = fetchedSuggestions.filter((fs) => !matches || matches.every((m) => m.id !== fs.id))
+        suggestions = fetchedSuggestions.filter((fs) => !matches || matches.every((m) => m.data.id !== fs.data.id))
       }
     }
 
@@ -86,14 +122,13 @@ export class SearchEngine {
     }
   }
 
-  async findMatches(search: string, island = ''): Promise<[Error | null, SearchResultItem[] | null]> {
+  async findMatches(search: string, island = ''): Promise<[Error | null, CollectionValue<Listing>[] | null]> {
     const [err, res] = await this.graphqlRequest<{
       data: { search_listings: { id: number; business_name: string }[] }
     }>(
       `query searchListings ($search: String!){
       search_listings(args: { search: $search }${island ? `, where: { island: { _eq: "${island}" } }` : ''}) {
         id
-        business_name
       }
     }`,
       { search },
@@ -107,28 +142,22 @@ export class SearchEngine {
       return [new Error('Unable to search for matches'), null]
     }
 
-    return [
-      null,
-      res.data.search_listings
-        .map((r: { id: number; business_name: string }) => ({
-          id: r.id,
-          value: this.collectionMap[r.id]?.page_item_url,
-          label: r.business_name,
-        }))
-        .filter((l) => l.value),
-    ]
+    return [null, res.data.search_listings.map((r) => this.listingsMap[r.id]).filter(Boolean)]
   }
 
-  async findSuggestions(search: string, island = '', limit = 5): Promise<[Error | null, SearchResultItem[] | null]> {
+  async findSuggestions(
+    search: string,
+    island = '',
+    limit = 5,
+  ): Promise<[Error | null, CollectionValue<Listing>[] | null]> {
     const [err, res] = await this.graphqlRequest<{
-      data: { fuzzy_search_listings: { id: number; business_name: string }[] }
+      data: { fuzzy_search_listings: { id: number }[] }
     }>(
       `query fuzzySearchListings ($search: String!, $limit: Int!){
         fuzzy_search_listings(args: {search: $search}${
           island ? `, where: { island: { _eq: "${island}" } }` : ''
         }, limit: $limit) {
           id
-          business_name
         }
       }`,
       { search, limit },
@@ -142,19 +171,10 @@ export class SearchEngine {
       return [new Error('Unable to search for matches'), null]
     }
 
-    return [
-      null,
-      res.data.fuzzy_search_listings
-        .map((r) => ({
-          id: r.id,
-          value: this.collectionMap[r.id]?.page_item_url,
-          label: r.business_name,
-        }))
-        .filter((l) => l.value),
-    ]
+    return [null, res.data.fuzzy_search_listings.map((r) => this.listingsMap[r.id]).filter(Boolean)]
   }
 
-  async findSuggestedCategories(search: string, island?: string): Promise<[Error | null, SearchResultItem[] | null]> {
+  async findSuggestedCategories(search: string, island?: string): Promise<[Error | null, Category[] | null]> {
     const [err, res] = await this.graphqlRequest<{
       data: { fuzzy_search_categories: { id: number; label: string; listings_count: number }[] }
     }>(
@@ -179,16 +199,16 @@ export class SearchEngine {
     return [
       null,
       res.data.fuzzy_search_categories
-        .map((r) => ({
-          id: r.id,
-          value: `(${r.listings_count})`,
-          label: r.label,
+        .map((c) => ({
+          ...c,
+          // spoof the category type
+          listing_category_tags: [],
         }))
-        .filter((l) => l.value),
+        .filter(Boolean),
     ]
   }
 
-  async loadCollection() {
+  async loadCollections(collectionNames: (keyof typeof collectionMapping)[] = ['Listings']) {
     if (!this.collectionsAPI) {
       if (typeof (window as any).dmAPI === 'undefined') {
         return console.error('no dmAPI object available to bootstrap widget content')
@@ -201,12 +221,51 @@ export class SearchEngine {
       this.collectionsAPI = collectionsAPI
     }
 
+    // doing it this way to parallelize the processing
+    await Promise.all(
+      collectionNames.map(async (name) => {
+        switch (name) {
+          case 'Listings': {
+            const { list, map } = await this.loadCollection<Listing>('Listings')
+            this.listings = list
+            this.listingsMap = map
+            break
+          }
+          case 'All Categories': {
+            const { list, map } = await this.loadCollection<Category>('All Categories')
+            this.allCategories = list
+            this.allCategoriesMap = map
+          }
+        }
+      }),
+    )
+
+    if (this.listings.length && this.allCategories.length) {
+      this.allCategories.forEach((cat) => {
+        cat.data.listing_category_tags?.forEach((lct) => {
+          if (this.listingsMap[lct.listing_id]) {
+            if (!Array.isArray(this.listingsMap[lct.listing_id].data.categories)) {
+              this.listingsMap[lct.listing_id].data.categories = []
+            }
+
+            this.listingsMap[lct.listing_id].data.categories?.push(cat.data)
+          }
+        })
+      })
+    }
+
+    this.dispatchEvent(new Event('collections-loaded'))
+  }
+
+  async loadCollection<T extends { id: number }>(collectionName: string) {
+    let list: CollectionResult<T>['values'] = []
+
     let moar = true
     let nextPage = 0
     let pageSize = 100
     while (moar) {
-      const results: CollectionResult = await this.collectionsAPI
-        .data('Listings')
+      const results: CollectionResult<T> = await this.collectionsAPI
+        .data(collectionName)
         .pageSize(pageSize)
         .pageNumber(nextPage)
         .get()
@@ -214,25 +273,25 @@ export class SearchEngine {
 
       if (results instanceof Error) {
         this.error = results
-        this.collection = []
-        this.collectionMap = {}
+        list = []
         moar = false
       }
 
       if (!Array.isArray(results.values)) {
         this.error = new Error('No results fetched')
-        this.collection = []
-        this.collectionMap = {}
+        list = []
         moar = false
       }
 
-      this.collection = this.collection.concat(results.values)
+      list = list.concat(results.values)
 
       nextPage = results.page.pageNumber + 1
       moar = nextPage < results.page.totalPages
     }
 
-    this.collectionMap = this.collection.reduce((map, item) => ({ ...map, [item.data.id]: item }), {})
+    const map = list.reduce((map, item) => ({ ...map, [item.data.id]: item }), {})
+
+    return { map, list }
   }
 
   async graphqlRequest<Data = any>(query: string, variables: any): Promise<[Error | null, Data | null]> {

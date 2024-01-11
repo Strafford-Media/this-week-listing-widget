@@ -113,7 +113,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.0.3",
-    "preact": "^10.18.2"
+    "preact": "^10.19.3"
   },
   "alias": {
     "preact/jsx-dev-runtime": "preact/jsx-runtime",
