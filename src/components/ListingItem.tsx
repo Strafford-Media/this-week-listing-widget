@@ -5,8 +5,28 @@ export interface ListingItemProps extends ComponentProps<'li'> {
   listing: Listing
 }
 
+const islandClasses = {
+  hawaii: {
+    pill: 'tw-bg-red-500 tw-text-white',
+    icon: 'tw-text-red-500',
+  },
+  maui: {
+    pill: 'tw-bg-pink-500 tw-text-white',
+    icon: 'tw-text-pink-500',
+  },
+  oahu: {
+    pill: 'tw-bg-yellow-500 tw-text-white',
+    icon: 'tw-text-yellow-500',
+  },
+  kauai: {
+    pill: 'tw-bg-fuchsia-500 tw-text-white',
+    icon: 'tw-text-fuchsia-500',
+  },
+}
+
 export const ListingItem = ({ className = '', listing, ...props }: ListingItemProps) => {
-  const pillBgClass = 'tw-bg-pink-500 tw-text-white'
+  const pillBgClass = islandClasses[listing.island]?.pill
+  const iconClass = islandClasses[listing.island]?.icon
 
   return (
     <li
@@ -27,9 +47,11 @@ export const ListingItem = ({ className = '', listing, ...props }: ListingItemPr
         <h5 className="mb-2 tw-text-base">{listing.business_name}</h5>
         <p className="tw-relative tw-h-[140px] tw-overflow-y-hidden tw-text-sm">
           {listing.description}
-          <div className="tw-absolute tw-inset-x-0 tw-top-[100px] tw-flex tw-h-10 tw-flex-nowrap tw-gap-2 tw-overflow-x-auto tw-bg-gradient-to-t tw-from-white tw-from-50%">
+          <div className="tw-absolute tw-inset-x-0 tw-top-[100px] tw-flex tw-h-10 tw-flex-nowrap tw-items-end tw-gap-2 tw-overflow-x-auto tw-bg-gradient-to-t tw-from-white tw-from-60%">
             {listing.categories?.map((category) => (
-              <span className={`tw-rounded-full ${pillBgClass}`}>{category}</span>
+              <span className={`tw-rounded-full tw-px-1 tw-py-0.5 tw-text-xs tw-capitalize ${pillBgClass}`}>
+                {category.label}
+              </span>
             ))}
           </div>
         </p>
@@ -41,7 +63,7 @@ export const ListingItem = ({ className = '', listing, ...props }: ListingItemPr
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="tw-mr-2 tw-h-4 tw-w-4"
+          className={`tw-mr-1 tw-h-4 tw-w-4 ${iconClass}`}
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           <path

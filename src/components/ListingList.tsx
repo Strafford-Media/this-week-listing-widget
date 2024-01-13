@@ -76,6 +76,9 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             </button>
           </div>
         )}
+        <div>
+          <div></div>
+        </div>
       </div>
       {loaded && !list.length && (
         <p className="tw-w-full tw-text-center">No activities matched your search, unfortunately.</p>
