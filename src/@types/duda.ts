@@ -37,6 +37,13 @@ export interface Category {
     id: number
     listing_id: number
   }[]
+  island?: {
+    hawaii: boolean
+    maui: boolean
+    oahu: boolean
+    kauai: boolean
+    [key: string]: boolean
+  }
 }
 
 export interface CollectionValue<T> {

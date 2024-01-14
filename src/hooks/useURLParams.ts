@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'preact/hooks'
 
-const urlRegex = /\/(.+)\/explore?\/?(.+)?\//
-
 const islandSwitcher: { [key: string]: string } = {
   hawaii: 'hawaii',
   oahu: 'oahu',
@@ -24,7 +22,9 @@ export const useURLParams = () => {
     const categories = url.searchParams.getAll('category')
     const islands = url.searchParams.getAll('island')
 
-    return { categories, island, islands, category }
+    const categoryMap = categories.reduce<Record<string, true>>((map, cat) => ({ ...map, [cat]: true }), {})
+
+    return { categories, island, islands, category, categoryMap }
   }, [window.location.href])
 
   const navigate = ({
@@ -41,6 +41,7 @@ export const useURLParams = () => {
         const value = add[param]
         if (Array.isArray(value)) {
           for (const val of value) {
+            currentUrl.searchParams.delete(param, val)
             currentUrl.searchParams.append(param, val)
           }
         } else {

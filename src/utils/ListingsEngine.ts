@@ -17,6 +17,17 @@ export interface SearchResult {
   error?: Error | null
 }
 
+export interface CategorySearchSegment {
+  substring: string
+  match: boolean
+}
+
+export interface CategorySearchResult {
+  value: Category
+  matchCount: number
+  segments: CategorySearchSegment[]
+}
+
 const collectionMapping = {
   Listings: {
     listKey: 'listings',
@@ -48,6 +59,118 @@ export class ListingsEngine extends EventTarget {
   constructor(categories: (keyof typeof collectionMapping)[] = ['Listings']) {
     super()
     this.loadCollections(categories)
+  }
+
+  searchCategories(search: string, island: string): CategorySearchResult[] {
+    if (!search) {
+      return this.allCategories.map((cat) => ({
+        value: cat.data,
+        matchCount: 0,
+        segments: [{ substring: cat.data.label, match: false }],
+      }))
+    }
+
+    const results = {
+      exact: [] as CategorySearchResult[],
+      exactPartialFromStart: [] as CategorySearchResult[],
+      exactPartial: [] as CategorySearchResult[],
+      allCharsFromStart: [] as CategorySearchResult[],
+      allChars: [] as CategorySearchResult[],
+      partialPartialFromStart: [] as CategorySearchResult[],
+      partialPartial: [] as CategorySearchResult[],
+      someCharsFromStart: [] as CategorySearchResult[],
+      someChars: [] as CategorySearchResult[],
+    }
+
+    this.allCategories.forEach((cat) => {
+      if (island && !cat.data.island?.[island]) return
+
+      const label = cat.data.label
+
+      if (label === search) {
+        results.exact.push({ value: cat.data, matchCount: label.length, segments: [{ substring: label, match: true }] })
+        return
+      }
+
+      let startsRight = false
+      let wholeSearch = false
+      let matchCount = 0
+
+      const searchChars = Array.from(search)
+      let searchChar = searchChars.shift()
+      const segments: CategorySearchSegment[] = []
+      for (let i = 0; i < label.length; i++) {
+        if (wholeSearch) {
+          segments.push({ match: false, substring: label.slice(i) })
+          break
+        }
+
+        const searchMatched = searchChar === label[i]
+
+        if (searchMatched) {
+          matchCount++
+          searchChar = searchChars.shift()
+
+          if (!searchChar) {
+            wholeSearch = true
+          }
+        }
+
+        if (i === 0) {
+          startsRight = searchMatched
+          segments.push({ match: searchMatched, substring: label[i] })
+          continue
+        }
+
+        const currentSegment = segments.at(-1)
+        if (!currentSegment) continue
+
+        const currentlyMatching = currentSegment.match
+
+        if (currentlyMatching === searchMatched) {
+          currentSegment.substring += label[i]
+        } else {
+          segments.push({ match: searchMatched, substring: label[i] })
+        }
+      }
+
+      if (matchCount === 0) {
+        return
+      }
+
+      const hasGaps = segments.length > (startsRight ? 2 : 3)
+
+      switch (true) {
+        case wholeSearch && !hasGaps && startsRight:
+          return results.exactPartialFromStart.push({ value: cat.data, matchCount, segments })
+        case wholeSearch && !hasGaps && !startsRight:
+          return results.exactPartial.push({ value: cat.data, matchCount, segments })
+        case wholeSearch && hasGaps && startsRight:
+          return results.allCharsFromStart.push({ value: cat.data, matchCount, segments })
+        case wholeSearch && hasGaps && !startsRight:
+          return results.allChars.push({ value: cat.data, matchCount, segments })
+        case !wholeSearch && !hasGaps && startsRight:
+          return results.partialPartialFromStart.push({ value: cat.data, matchCount, segments })
+        case !wholeSearch && !hasGaps && !startsRight:
+          return results.partialPartial.push({ value: cat.data, matchCount, segments })
+        case !wholeSearch && hasGaps && startsRight:
+          return results.someCharsFromStart.push({ value: cat.data, matchCount, segments })
+        case !wholeSearch && hasGaps && !startsRight:
+          return results.someChars.push({ value: cat.data, matchCount, segments })
+      }
+    })
+
+    return [
+      ...results.exact,
+      ...results.exactPartialFromStart.sort((a, b) => a.value.label.length - b.value.label.length),
+      ...results.exactPartial.sort((a, b) => a.value.label.length - b.value.label.length),
+      ...results.allCharsFromStart.sort((a, b) => a.value.label.length - b.value.label.length),
+      ...results.allChars.sort((a, b) => a.value.label.length - b.value.label.length),
+      ...results.partialPartialFromStart.sort((a, b) => b.matchCount - a.matchCount),
+      ...results.partialPartial.sort((a, b) => b.matchCount - a.matchCount),
+      ...results.someCharsFromStart.sort((a, b) => b.matchCount - a.matchCount),
+      ...results.someChars.sort((a, b) => b.matchCount - a.matchCount),
+    ]
   }
 
   filterList({ island, categories }: { island?: string; categories?: string[] }): CollectionResult<Listing>['values'] {
@@ -235,6 +358,7 @@ export class ListingsEngine extends EventTarget {
             const { list, map } = await this.loadCollection<Category>('All Categories')
             this.allCategories = list
             this.allCategoriesMap = map
+            break
           }
         }
       }),
@@ -242,6 +366,8 @@ export class ListingsEngine extends EventTarget {
 
     if (this.listings.length && this.allCategories.length) {
       this.allCategories.forEach((cat) => {
+        cat.data.island = { hawaii: false, maui: false, oahu: false, kauai: false }
+
         cat.data.listing_category_tags?.forEach((lct) => {
           if (this.listingsMap[lct.listing_id]) {
             if (!Array.isArray(this.listingsMap[lct.listing_id].data.categories)) {
@@ -249,6 +375,10 @@ export class ListingsEngine extends EventTarget {
             }
 
             this.listingsMap[lct.listing_id].data.categories?.push(cat.data)
+          }
+
+          if (this.listingsMap[lct.listing_id].data.island) {
+            cat.data.island![this.listingsMap[lct.listing_id].data.island] = true
           }
         })
       })
