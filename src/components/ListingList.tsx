@@ -206,7 +206,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       )}
       <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4 tw-px-2 tw-pb-8">
         {list.map((data) => (
-          <ListingItem listing={data.data} />
+          <ListingItem listing={data.data} listingURL={data.page_item_url} />
         ))}
       </ul>
     </div>

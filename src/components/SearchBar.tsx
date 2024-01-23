@@ -5,7 +5,7 @@ import { HawaiianIslands } from './Hawaii'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
 import { IslandValue, ListingsEngine, SearchParams, SearchResult } from '../utils/ListingsEngine'
-import { deviceType, env, siteID } from '../utils/environment'
+import { getCategoryHref, getListingHref } from '../utils/urls'
 
 const islandHoverAndFocusClasses =
   `tw-absolute tw-inset-y-0 tw-right-0 -tw-z-10 tw-my-auto tw-w-2/3 tw-origin-center tw-rotate-12
@@ -341,33 +341,5 @@ function getSizeClass(size: 'sm' | 'md' | 'lg' | 'xl') {
     case 'sm':
     default:
       return { text: 'tw-text-base', icon: 'tw-h-6 tw-w-6', caret: 'tw-h-5 tw-w-5' }
-  }
-}
-
-function getListingHref(listingUrl: string) {
-  switch (env) {
-    case 'preview':
-      return `/site/${siteID}/listing/${listingUrl}?preview=true&insitepreview=true&dm_device=${deviceType}`
-    case 'editor':
-      return `/site/${siteID}/listing/${listingUrl}?preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
-    case 'live':
-    default:
-      return `/listing/${listingUrl}`
-  }
-}
-
-function getCategoryHref(category: string, island: string) {
-  switch (env) {
-    case 'preview':
-      return `/site/${siteID}/${
-        island ? `${island}/` : ''
-      }explore?category=${category}&preview=true&insitepreview=true&dm_device=${deviceType}`
-    case 'editor':
-      return `/site/${siteID}/${
-        island ? `${island}/` : ''
-      }explore?category=${category}&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
-    case 'live':
-    default:
-      return `/${island ? `${island}/` : ''}explore?category=${category}`
   }
 }
