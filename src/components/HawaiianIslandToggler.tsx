@@ -26,7 +26,7 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
   return (
     <div className={`${className} tw-relative tw-flex tw-w-full tw-animate-fade-in`} {...props}>
       <HawaiianIslands
-        className="tw-absolute tw-left-0 tw-right-0 tw-top-0 tw-mx-auto tw-w-full tw-max-w-3xl tw-text-[#ecd9c7] tw-drop-shadow-[-4px_2px_4px_black]"
+        className="tw-absolute tw-left-0 tw-right-0 tw-top-0 tw-mx-auto tw-w-full tw-max-w-2xl tw-text-[#ecd9c7] tw-drop-shadow-[-4px_2px_4px_black]"
         onIslandHover={setIsland}
         onIslandClick={goToIsland}
         hawaiiClass={island === 'hawaii' ? 'tw-cursor-pointer tw-text-red-600' : 'hover:tw-text-red-600'}
@@ -34,7 +34,7 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
         oahuClass={island === 'oahu' ? 'tw-cursor-pointer tw-text-yellow-300' : 'hover:tw-text-yellow-300'}
         kauaiClass={island === 'kauai' ? 'tw-cursor-pointer tw-text-fuchsia-500' : 'hover:tw-text-fuchsia-500'}
       />
-      <div className="tw-mt-[284px] tw-grid tw-w-2/3 tw-grid-cols-[repeat(1,minmax(0,auto))] tw-grid-rows-[repeat(1,minmax(0,auto))] tw-items-stretch tw-overflow-clip tw-rounded-tr-xl lg:tw-mt-[200px] lg:tw-w-1/2">
+      <div className="tw-mt-[160px] tw-grid tw-w-1/2 tw-grid-cols-[repeat(1,minmax(0,auto))] tw-grid-rows-[repeat(1,minmax(0,auto))] tw-items-stretch tw-overflow-clip tw-rounded-tr-xl lg:tw-mt-[120px] lg:tw-w-2/5">
         {islandContents.map((isle) => (
           <div
             className={`tw-col-start-1 tw-row-start-1 tw-overflow-hidden tw-bg-gradient-to-b tw-from-20% tw-transition-opacity tw-duration-300 ${
@@ -45,12 +45,12 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
             <div>
               <div className="tw-z-10 tw-flex">
                 <img
-                  className="tw-z-10 -tw-mt-4 tw-ml-2 tw-max-h-16 lg:-tw-mt-8 lg:tw-max-h-20 xl:tw-max-h-24"
+                  className="tw-z-10 -tw-mt-3 tw-ml-2 tw-max-h-14 lg:-tw-mt-6 lg:tw-max-h-16 xl:tw-max-h-20"
                   src={isle.logo}
                   alt={isle.island}
                 />
                 <h4
-                  className={`tw-m-auto tw-py-2 tw-text-center tw-text-3xl tw-font-normal tw-tracking-wide tw-drop-shadow xl:tw-py-4 xl:tw-text-4xl 2xl:tw-text-5xl ${isle.tagLineClass}`}
+                  className={`tw-m-auto tw-py-2 tw-text-center tw-text-2xl tw-font-normal tw-tracking-wide tw-drop-shadow xl:tw-py-4 xl:tw-text-3xl 2xl:tw-text-4xl ${isle.tagLineClass}`}
                   style={{ fontFamily: "'Bobaland.ttf'" }}
                 >
                   {isle.tagLine}
@@ -58,11 +58,11 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
               </div>
               <div className="tw-relative tw-flex tw-px-4">
                 <img
-                  className="tw-absolute tw-left-0 tw-top-0 tw-max-w-48 tw-origin-top-left -tw-rotate-12 tw-self-start"
+                  className="tw-absolute tw-left-0 tw-top-0 tw-max-w-40 tw-origin-top-left -tw-rotate-12 tw-self-start"
                   src={isle.magImage}
                   alt={`Magazine Cover from This Week Hawaii for ${isle.islandName}`}
                 />
-                <p className="tw-z-10 tw-mb-4 tw-ml-48 tw-rounded-md tw-bg-white tw-p-3 tw-text-gray-800 lg:tw-text-xl xl:tw-text-2xl">
+                <p className="tw-z-10 tw-mb-4 tw-ml-40 tw-rounded-md tw-bg-white tw-p-3 tw-text-sm tw-text-gray-800 xl:tw-text-base 2xl:tw-text-lg">
                   {isle.content}
                 </p>
               </div>

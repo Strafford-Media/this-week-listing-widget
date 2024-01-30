@@ -14,6 +14,9 @@ module.exports = {
           100: '#dbfde4',
         },
       },
+      content: {
+        x: "'\\2715'",
+      },
       minHeight: (theme) => ({
         ...theme('height'),
         ...theme('spacing'),
