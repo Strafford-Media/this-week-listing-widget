@@ -149,7 +149,10 @@ export const SearchBar = ({
                     setOpenDropdown(false)
                   }
 
+                  // setTimeout(() => {
+
                   inputRef.current?.focus()
+                  // }, 10);
 
                   go({ island: isle.value, search })
                 }}
@@ -274,6 +277,7 @@ export const SearchBar = ({
                 setDropdownType('results')
               }
 
+              console.log(island.value, !searchResults.matches.length && search)
               if (!searchResults.matches.length && search) {
                 go({ search, island: island.value })
                 setOpenDropdown(true)
