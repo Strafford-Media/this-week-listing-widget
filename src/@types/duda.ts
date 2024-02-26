@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    FH: any
+  }
+}
+
 export interface Listing {
   business_name: string
   slogan: string
@@ -7,6 +13,7 @@ export interface Listing {
   id: number
   description: string
   primary_address: string
+  lat_lng: string
   primary_email: string
   primary_phone: string
   primary_web_url: string
@@ -15,6 +22,8 @@ export interface Listing {
   action_shot1?: string
   logo?: string
   this_week_recommended: boolean
+  social_media: Record<string, string>
+  business_hours: any
   images: {
     url: string
     status: 'UPLOADED'

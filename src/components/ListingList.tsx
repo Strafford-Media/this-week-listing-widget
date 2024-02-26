@@ -5,6 +5,7 @@ import { useURLParams } from '../hooks/useURLParams'
 import { useEffect, useState } from 'preact/hooks'
 import { CategorySearchResult } from 'utils/ListingsEngine'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
+import { useScript } from 'hooks/useScript'
 
 export interface ListingListProps extends ComponentProps<'div'> {}
 
@@ -82,7 +83,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             {categories.map((cat) => (
               <button
                 type="button"
-                className={`tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize ${islandClasses[island]?.pill}`}
+                className={`tw-relative tw-bottom-0 tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize before:tw-absolute before:tw-inset-0 before:tw-z-10 before:tw-rounded-full before:tw-bg-gray-700 before:tw-opacity-0 after:tw-absolute after:tw-inset-0 after:tw-z-20 after:tw-py-0.5 after:tw-font-bold after:tw-opacity-0 after:tw-content-x hover:before:tw-opacity-50 hover:after:tw-opacity-100 focus:tw-outline-none focus:tw-ring-2 focus:before:tw-opacity-50 focus:after:tw-opacity-100 ${islandClasses[island]?.pill}`}
                 onClick={() => navigate({ remove: { category: [cat] } })}
               >
                 {cat}

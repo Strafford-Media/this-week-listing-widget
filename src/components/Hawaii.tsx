@@ -17,11 +17,12 @@ export const HawaiianIslands = ({
   mauiClass = '',
   oahuClass = '',
   kauaiClass = '',
+  strokeWidth = 150,
   ...props
 }: HawaiianIslandsProps) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-31668,-16192 60625,40809" className={className} {...props}>
-      <g id="Hawaii (state)" style="fill: currentColor; stroke: #ecd9c7; stroke-width: 150;">
+      <g id="Hawaii (state)" style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <path
           id="Kauai"
           className={`${kauaiClass} [color:var(--kauai-highlight-color,currentColor)]`}
@@ -86,10 +87,10 @@ export const HawaiianIslands = ({
 
 export interface BigIslandProps extends ComponentProps<'svg'> {}
 
-export const BigIsland = ({ className = '', ...props }: BigIslandProps) => {
+export const BigIsland = ({ className = '', strokeWidth = 150, ...props }: BigIslandProps) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="11500 7300 16000 16000" className={className} {...props}>
-      <g id="Hawaii (state)" style="fill: currentColor; stroke: #1821DE; stroke-width: 200;">
+      <g id="Hawaii (state)" style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <path
           id="Hawaii (island)"
           className="[color:var(--island-highlight-color,currentColor)]"
@@ -102,10 +103,10 @@ export const BigIsland = ({ className = '', ...props }: BigIslandProps) => {
 
 export interface MauiProps extends ComponentProps<'svg'> {}
 
-export const Maui = ({ className = '', ...props }: MauiProps) => {
+export const Maui = ({ className = '', strokeWidth = 150, ...props }: MauiProps) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -7000 16000 16000" className={className} {...props}>
-      <g id="Hawaii (state)" style="fill: currentColor; stroke: #1821DE; stroke-width: 200;">
+      <g id="Hawaii (state)" style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <path
           id="Molokai"
           d="M 4722,-2275 l 44,12 41,41 131,36 35,-82 46,5 86,66 50,-30 81,-16 30,46 131,-10 91,-46 81,41 66,-21 60,-41 41,11 90,-67 86,-10 106,97 141,-82 116,-10 122,25 126,-36 66,72 -20,71 10,31 50,-10 101,0 187,-41 -61,209 -136,225 -60,0 -116,200 -137,102 -35,41 -91,92 -121,82 -85,82 -303,82 -76,61 -40,11 -81,56 -151,61 -41,-51 -45,16 -121,92 -142,-36 -121,-61 -409,-102 -166,-10 -182,-92 -344,-97 -156,0 -15,-62 -131,-112 -41,5 -45,-31 -91,-10 -51,-51 -181,-31 -46,26 -136,-15 -71,-82 -30,46 -363,112 -329,16 -90,-11 -81,16 -187,-21 -197,57 -86,-6 -302,41 -51,-41 -50,11 -384,-52 -40,11 -71,-133 40,-26 91,-225 21,-87 50,-46 30,-15 -5,-41 46,-92 86,-61 80,-6 31,-56 40,-10 86,-61 0,-82 50,-31 0,-92 36,-46 -36,-204 -101,-98 21,-46 40,-5 303,87 40,-35 56,10 40,-36 5,46 81,0 91,77 20,71 91,51 40,-15 81,15 136,-5 51,21 90,36 31,-41 90,20 81,-41 152,72 116,-16 20,-5 45,5 86,57 86,30 101,-5 80,31 228,10 141,26 66,5 55,5 101,36 81,-16 75,-77 6,-40 35,-92 0,-103 110,-102 46,15 81,82 111,220 25,143 51,41 171,71 41,-35 z"
@@ -130,10 +131,10 @@ export const Maui = ({ className = '', ...props }: MauiProps) => {
 
 export interface OahuProps extends ComponentProps<'svg'> {}
 
-export const Oahu = ({ className = '', ...props }: OahuProps) => {
+export const Oahu = ({ className = '', strokeWidth = 150, ...props }: OahuProps) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-14000 -13000 16000 16000" className={className} {...props}>
-      <g style="fill: currentColor; stroke: #1821DE; stroke-width: 200;">
+      <g style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <g id="Oahu">
           <path
             id="Oahu (proper)"
@@ -156,10 +157,10 @@ export const Oahu = ({ className = '', ...props }: OahuProps) => {
 
 export interface KauaiProps extends ComponentProps<'svg'> {}
 
-export const Kauai = ({ className = '', ...props }: KauaiProps) => {
+export const Kauai = ({ className = '', strokeWidth = 150, ...props }: KauaiProps) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-32000 -19000 16000 16000" className={className} {...props}>
-      <g style="fill: currentColor; stroke: #1821DE; stroke-width: 200;">
+      <g style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <path
           id="Kauai"
           className="[color:var(--island-highlight-color,currentColor)]"

@@ -249,12 +249,12 @@ export class ListingsEngine extends EventTarget {
     const [err, res] = await this.graphqlRequest<{
       data: { search_listings: { id: number; business_name: string }[] }
     }>(
-      `query searchListings ($search: String!){
-      search_listings(args: { search: $search }${island ? `, where: { island: { _eq: "${island}" } }` : ''}) {
+      `query searchListings ($search: String!, $island: String){
+      search_listings(args: { search: $search, search_island: $island }) {
         id
       }
     }`,
-      { search },
+      { search, island },
     )
 
     if (err) {
@@ -276,14 +276,12 @@ export class ListingsEngine extends EventTarget {
     const [err, res] = await this.graphqlRequest<{
       data: { fuzzy_search_listings: { id: number }[] }
     }>(
-      `query fuzzySearchListings ($search: String!, $limit: Int!){
-        fuzzy_search_listings(args: {search: $search}${
-          island ? `, where: { island: { _eq: "${island}" } }` : ''
-        }, limit: $limit) {
+      `query fuzzySearchListings ($search: String!, $island: String, $limit: Int!){
+        fuzzy_search_listings(args: {search: $search, island: $island}, limit: $limit) {
           id
         }
       }`,
-      { search, limit },
+      { search, limit, island },
     )
 
     if (err) {

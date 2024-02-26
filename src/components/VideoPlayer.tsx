@@ -12,8 +12,7 @@ export interface VideoPlayerProps extends ComponentProps<'div'> {
 }
 
 export const VideoPlayer = ({ className = '', video, ...props }: VideoPlayerProps) => {
-  const id = video.url.split('/').pop()
-  const src = `${sources[video.type]}${id}`
+  const { id, type } = video
 
   if (!sources[video.type] || !id) {
     console.error('bad video data:', video)
@@ -21,8 +20,16 @@ export const VideoPlayer = ({ className = '', video, ...props }: VideoPlayerProp
   }
 
   return (
-    <div className={`${className}`} {...props}>
-      <iframe src={src} frameBorder={0} allowFullScreen />
+    <div className={`${className} tw-flex tw-justify-center`} {...props}>
+      <iframe
+        key={id}
+        width="560"
+        height="315"
+        src={`${sources[type]}${id}`}
+        title={`${type} video player`}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
     </div>
   )
 }
