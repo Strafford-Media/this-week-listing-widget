@@ -61,7 +61,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             </div>
           </p>
         </div>
-        <div className="tw-mt-auto tw-flex tw-items-center tw-border-t tw-border-t-gray-200 tw-p-2 tw-text-xs tw-capitalize tw-text-gray-500">
+        <div className="tw-mt-auto tw-flex tw-grow-0 tw-items-center tw-border-t tw-border-t-gray-200 tw-p-2 tw-text-xs tw-capitalize tw-text-gray-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
