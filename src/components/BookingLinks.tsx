@@ -61,6 +61,8 @@ export const FareharborGrid = ({ link, className = '' }: BookingLinkProps) => {
 }
 
 export const ExternalBookingLink = ({ link, className = '' }: BookingLinkProps) => {
+  if (!link.href) return null
+
   return (
     <a
       className={`${className} tw-flex tw-items-center tw-justify-center tw-rounded-md tw-bg-red-500 tw-px-6 tw-py-2 tw-text-base tw-font-bold tw-text-white`}

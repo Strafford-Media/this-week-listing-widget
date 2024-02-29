@@ -368,14 +368,14 @@ export class ListingsEngine extends EventTarget {
 
         cat.data.listing_category_tags?.forEach((lct) => {
           if (this.listingsMap[lct.listing_id]) {
-            if (!Array.isArray(this.listingsMap[lct.listing_id].data.categories)) {
+            if (!Array.isArray(this.listingsMap[lct.listing_id].data?.categories)) {
               this.listingsMap[lct.listing_id].data.categories = []
             }
 
             this.listingsMap[lct.listing_id].data.categories?.push(cat.data)
           }
 
-          if (this.listingsMap[lct.listing_id].data.island) {
+          if (this.listingsMap[lct.listing_id]?.data?.island) {
             cat.data.island![this.listingsMap[lct.listing_id].data.island] = true
           }
         })
