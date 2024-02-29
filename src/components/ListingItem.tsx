@@ -35,7 +35,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
       className={`${className} tw-flex tw-flex-col tw-overflow-clip tw-rounded-md tw-bg-white tw-shadow-md`}
       {...props}
     >
-      <a href={getListingHref(listingURL)}>
+      <a className="tw-flex tw-grow tw-flex-col" href={getListingHref(listingURL)}>
         <div
           className={`tw-aspect-video tw-w-full ${
             listing.main_image ? 'tw-bg-cover' : 'tw-bg-contain tw-bg-no-repeat tw-opacity-50'
