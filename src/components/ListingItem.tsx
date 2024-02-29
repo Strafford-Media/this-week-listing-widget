@@ -52,7 +52,9 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             {listing.description}
             <div className="tw-absolute tw-inset-x-0 tw-top-[100px] tw-flex tw-h-10 tw-flex-nowrap tw-items-end tw-gap-2 tw-overflow-x-auto tw-bg-gradient-to-t tw-from-white tw-from-60%">
               {listing.categories?.map((category) => (
-                <span className={`tw-rounded-full tw-px-1 tw-py-0.5 tw-text-xs tw-capitalize ${pillBgClass}`}>
+                <span
+                  className={`tw-whitespace-nowrap tw-rounded-full tw-px-1 tw-py-0.5 tw-text-xs tw-capitalize ${pillBgClass}`}
+                >
                   {category.label}
                 </span>
               ))}
