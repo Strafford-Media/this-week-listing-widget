@@ -159,7 +159,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               <em>
                 <a
                   className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
-                  href={`sms:${pageData.primary_phone}`}
+                  href={`tel:${pageData.primary_phone}`}
                   target="_blank"
                   rel="noreferrer noopener"
                 >
