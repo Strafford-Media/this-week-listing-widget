@@ -185,7 +185,7 @@ export class ListingsEngine extends EventTarget {
 
     return this.listings.filter(
       (l) =>
-        (!island || l.data.island === island) &&
+        (!island || l.data.island?.includes(island)) &&
         (!categories?.length || l.data.categories?.some((c) => categoryMap[c.label])),
     )
   }
