@@ -6,6 +6,7 @@ declare global {
 
 export interface Listing {
   business_name: string
+  slug: string
   slogan: string
   island: 'hawaii' | 'oahu' | 'maui' | 'kauai'
   created_at: string

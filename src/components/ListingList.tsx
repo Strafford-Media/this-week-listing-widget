@@ -2,7 +2,7 @@ import { ComponentProps } from 'preact'
 import { ListingItem } from './ListingItem'
 import { useListingsEngine } from '../hooks/useListingsEngine'
 import { useURLParams } from '../hooks/useURLParams'
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 import { CategorySearchResult } from 'utils/ListingsEngine'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 
@@ -29,7 +29,7 @@ const islandClasses: Record<string, { pill: string }> = {
 export const ListingList = ({ className = '', ...props }: ListingListProps) => {
   const { categories, categoryMap, island: islandFromPath, category, islands, navigate } = useURLParams()
 
-  const allCategories = categories.concat(category ? [category] : [])
+  const allCategories = useMemo(() => (category ? [category] : []).concat(categories), [category, categories])
 
   const island = islandFromPath || islands[0] || ''
 
@@ -214,7 +214,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       )}
       <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4 tw-px-2 tw-pb-8">
         {list.map((data) => (
-          <ListingItem listing={data.data} listingURL={data.page_item_url} />
+          <ListingItem key={data.page_item_url} listing={data.data} listingURL={data.page_item_url} />
         ))}
       </ul>
     </div>

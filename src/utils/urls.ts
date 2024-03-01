@@ -46,3 +46,21 @@ export const getCategoryHref = (category: string, island: string) => {
       return `/${island ? `${island}/` : ''}explore?category=${category}`
   }
 }
+
+const imageEndPathRegex = /-[\d]{1,5}(w\.[a-z]{2,7})$/
+
+export const optimizeDudaImg = (src: string, width?: number) => {
+  if (!src) {
+    return src
+  }
+
+  if (src.startsWith('https://irp.cdn-website.com')) {
+    return (window as any).dmAPI.getOptimizedImageURL(src, width)
+  }
+
+  if (src.startsWith('https://lirp.cdn-website.com')) {
+    return src.trim().replace(imageEndPathRegex, `-${width ?? 300}$1`)
+  }
+
+  return src
+}

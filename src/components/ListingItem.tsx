@@ -1,6 +1,7 @@
-import { getListingHref } from 'utils/urls'
+import { getListingHref, optimizeDudaImg } from 'utils/urls'
 import { Listing } from '../@types/duda'
 import { ComponentProps } from 'preact'
+import { useEffect, useState } from 'preact/hooks'
 
 export interface ListingItemProps extends ComponentProps<'li'> {
   listing: Listing
@@ -26,10 +27,22 @@ const islandClasses = {
   },
 }
 
+const placeholderImg = 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-300w.png'
+
 export const ListingItem = ({ className = '', listing, listingURL, ...props }: ListingItemProps) => {
   const oneIsland = listing.island.split('|')[0] as keyof typeof islandClasses
   const pillBgClass = islandClasses[oneIsland]?.pill
   const iconClass = islandClasses[oneIsland]?.icon
+
+  const [optimizedImg, setOptimizedImg] = useState(() => optimizeDudaImg(listing.main_image, 300) ?? placeholderImg)
+
+  useEffect(() => {
+    if (optimizedImg !== placeholderImg) {
+      const img = new Image()
+      img.onerror = () => setOptimizedImg(optimizedImg !== listing.main_image ? listing.main_image : placeholderImg)
+      img.src = optimizedImg
+    }
+  }, [optimizedImg, listing.main_image])
 
   return (
     <li
@@ -39,12 +52,10 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
       <a className="tw-flex tw-grow tw-flex-col" href={getListingHref(listingURL)}>
         <div
           className={`tw-aspect-video tw-w-full ${
-            listing.main_image ? 'tw-bg-cover' : 'tw-bg-contain tw-bg-no-repeat tw-opacity-50'
+            optimizedImg !== placeholderImg ? 'tw-bg-cover' : 'tw-bg-contain tw-bg-no-repeat tw-opacity-50'
           } tw-bg-center`}
           style={{
-            backgroundImage: `url(${
-              listing.main_image || 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-640w.png'
-            })`,
+            backgroundImage: `url(${optimizedImg})`,
           }}
         ></div>
         <div className="tw-relative tw-flex tw-h-[180px] tw-grow tw-flex-col tw-p-2 tw-text-justify">

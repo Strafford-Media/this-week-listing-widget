@@ -17,6 +17,7 @@ const DudaContext = createContext<DudaContextValue>({
   },
   pageData: {
     business_name: '',
+    slug: '',
     slogan: '',
     island: 'hawaii',
     created_at: '',
@@ -28,6 +29,9 @@ const DudaContext = createContext<DudaContextValue>({
     primary_phone: '',
     primary_web_url: '',
     tier: 'basic',
+    lat_lng: '',
+    social_media: {},
+    business_hours: [],
     main_image: '',
     logo: '',
     this_week_recommended: true,
