@@ -7,6 +7,7 @@ import { BookingLinks } from './BookingLinks'
 import { Listing } from '../@types/duda'
 import { BigIsland, HawaiianIslands, Kauai, Maui, Oahu } from './Hawaii'
 import { BusinessHours } from './BusinessHours'
+import { OptimizedImage } from './OptimizedImage'
 
 const islandLogos = {
   hawaii: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/Hawaii-200w.png',
@@ -78,7 +79,9 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
         )}
         <div className="tw-mb-8 tw-flex tw-gap-6 lg:tw-gap-12">
           <div className="tw-flex tw-w-full tw-max-w-1/2 tw-flex-col">
-            {pageData.logo && <img className="mb-6" src={pageData.logo} alt={pageData.business_name} />}
+            {pageData.logo && (
+              <OptimizedImage optimizedWidth={300} className="mb-6" src={pageData.logo} alt={pageData.business_name} />
+            )}
             {pageData.island === 'oahu' && (
               <Oahu
                 className="tw-max-w-48 tw-scale-[2] tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
@@ -124,7 +127,12 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               ))}
             </p>
             {pageData.action_shot1 && (
-              <img className="tw-ml-auto" src={pageData.action_shot1} alt={`${pageData.business_name} Action Shot`} />
+              <OptimizedImage
+                optimizedWidth={640}
+                className="tw-ml-auto"
+                src={pageData.action_shot1}
+                alt={`${pageData.business_name} Action Shot`}
+              />
             )}
           </div>
         </div>

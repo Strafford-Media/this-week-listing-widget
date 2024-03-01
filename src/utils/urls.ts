@@ -1,3 +1,4 @@
+import { JSXInternal } from 'preact/src/jsx'
 import { isDevSimulation, env, siteID, deviceType } from './environment'
 
 let functionsUrl = ''
@@ -49,8 +50,8 @@ export const getCategoryHref = (category: string, island: string) => {
 
 const imageEndPathRegex = /-[\d]{1,5}(w\.[a-z]{2,7})$/
 
-export const optimizeDudaImg = (src: string, width?: number) => {
-  if (!src) {
+export const optimizeDudaImg = (src: string | JSXInternal.SignalLike<string | undefined>, width?: number) => {
+  if (!src || typeof src !== 'string') {
     return src
   }
 

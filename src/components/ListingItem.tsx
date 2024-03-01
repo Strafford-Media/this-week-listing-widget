@@ -1,7 +1,7 @@
-import { getListingHref, optimizeDudaImg } from 'utils/urls'
+import { getListingHref } from '../utils/urls'
 import { Listing } from '../@types/duda'
 import { ComponentProps } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import { useOptimizedImageURL } from 'hooks/useOptimizedImageURL'
 
 export interface ListingItemProps extends ComponentProps<'li'> {
   listing: Listing
@@ -34,15 +34,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
   const pillBgClass = islandClasses[oneIsland]?.pill
   const iconClass = islandClasses[oneIsland]?.icon
 
-  const [optimizedImg, setOptimizedImg] = useState(() => optimizeDudaImg(listing.main_image, 300) ?? placeholderImg)
-
-  useEffect(() => {
-    if (optimizedImg !== placeholderImg) {
-      const img = new Image()
-      img.onerror = () => setOptimizedImg(optimizedImg !== listing.main_image ? listing.main_image : placeholderImg)
-      img.src = optimizedImg
-    }
-  }, [optimizedImg, listing.main_image])
+  const optimizedImg = useOptimizedImageURL(listing.main_image, 300, placeholderImg)
 
   return (
     <li
