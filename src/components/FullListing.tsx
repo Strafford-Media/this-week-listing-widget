@@ -5,7 +5,7 @@ import { PhotoGallery } from './PhotoGallery'
 import { VideoPlayer } from './VideoPlayer'
 import { BookingLinks } from './BookingLinks'
 import { Listing } from '../@types/duda'
-import { BigIsland, Kauai, Maui, Oahu } from './Hawaii'
+import { BigIsland, HawaiianIslands, Kauai, Maui, Oahu } from './Hawaii'
 import { BusinessHours } from './BusinessHours'
 
 const islandLogos = {
@@ -13,6 +13,13 @@ const islandLogos = {
   maui: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/maui-200w.png',
   oahu: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/OAHU-200w.png',
   kauai: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/kauai-200w.png',
+}
+
+const islandsIconClasses: Record<string, string> = {
+  hawaii: '[--big-island-highlight-color:theme(colors.red.500)]',
+  maui: '[--maui-highlight-color:theme(colors.pink.500)]',
+  oahu: '[--oahu-highlight-color:theme(colors.yellow.400)]',
+  kauai: '[--kauai-highlight-color:theme(colors.fuchsia.500)]',
 }
 
 const socialPrefixes: Record<string, string> = {
@@ -39,7 +46,7 @@ export interface FullListingProps extends ComponentProps<'div'> {}
 export const FullListing = ({ className = '', ...props }: FullListingProps) => {
   const { pageData } = useDudaContext()
 
-  console.log(pageData)
+  const allIslands = pageData?.island.split('|') ?? []
 
   useEffect(() => {
     const hasAddress = pageData?.primary_address || pageData?.lat_lng
@@ -74,25 +81,34 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             {pageData.logo && <img className="mb-6" src={pageData.logo} alt={pageData.business_name} />}
             {pageData.island === 'oahu' && (
               <Oahu
-                className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
+                className="tw-max-w-48 tw-scale-[2] tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
                 strokeWidth={200}
               />
             )}
             {pageData.island === 'maui' && (
               <Maui
-                className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
+                className="tw-max-w-48 tw-scale-125 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
                 strokeWidth={200}
               />
             )}
             {pageData.island === 'kauai' && (
               <Kauai
-                className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
+                className="tw-max-w-48 tw-scale-150 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
                 strokeWidth={200}
               />
             )}
             {pageData.island === 'hawaii' && (
               <BigIsland
                 className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.red.500)]"
+                strokeWidth={200}
+              />
+            )}
+            {pageData.island.includes('|') && (
+              <HawaiianIslands
+                className={`tw-max-w-48 tw-self-center tw-text-green-200 ${allIslands
+                  .map((isle) => islandsIconClasses[isle])
+                  .filter(Boolean)
+                  .join(' ')}`}
                 strokeWidth={200}
               />
             )}
