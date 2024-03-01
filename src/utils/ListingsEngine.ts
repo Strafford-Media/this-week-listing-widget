@@ -62,6 +62,8 @@ export class ListingsEngine extends EventTarget {
   }
 
   searchCategories(search: string, island: string): CategorySearchResult[] {
+    search = search.toLowerCase()
+
     if (!search) {
       return this.allCategories.map((cat) => ({
         value: cat.data,
@@ -86,8 +88,9 @@ export class ListingsEngine extends EventTarget {
       if (island && !cat.data.island?.[island]) return
 
       const label = cat.data.label
+      const lowerLabel = label.toLowerCase()
 
-      if (label === search) {
+      if (lowerLabel === search) {
         results.exact.push({ value: cat.data, matchCount: label.length, segments: [{ substring: label, match: true }] })
         return
       }
@@ -105,7 +108,7 @@ export class ListingsEngine extends EventTarget {
           break
         }
 
-        const searchMatched = searchChar === label[i]
+        const searchMatched = searchChar === lowerLabel[i]
 
         if (searchMatched) {
           matchCount++
