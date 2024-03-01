@@ -27,8 +27,9 @@ const islandClasses = {
 }
 
 export const ListingItem = ({ className = '', listing, listingURL, ...props }: ListingItemProps) => {
-  const pillBgClass = islandClasses[listing.island]?.pill
-  const iconClass = islandClasses[listing.island]?.icon
+  const oneIsland = listing.island.split('|')[0] as keyof typeof islandClasses
+  const pillBgClass = islandClasses[oneIsland]?.pill
+  const iconClass = islandClasses[oneIsland]?.icon
 
   return (
     <li
@@ -75,7 +76,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
               d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
             />
           </svg>
-          {listing.island}
+          {listing.island.split('|').join(' | ')}
         </div>
       </a>
     </li>
