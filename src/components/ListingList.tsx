@@ -118,7 +118,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             <ul
               ref={refs.setFloating}
               style={floatingStyles}
-              className="tw-z-10 tw-min-w-48 tw-max-w-[95vw] tw-rounded-lg tw-bg-white tw-shadow-2xl"
+              className="tw-z-10 tw-max-h-[40vh] tw-min-w-48 tw-max-w-[95vw] tw-overflow-y-auto tw-rounded-lg tw-bg-white tw-shadow-2xl"
             >
               {categoryResults.map(
                 (cr) =>
