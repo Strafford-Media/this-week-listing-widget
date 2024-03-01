@@ -1,4 +1,4 @@
-import { ComponentProps } from 'preact'
+import { ComponentProps, Fragment } from 'preact'
 import { useDudaContext } from '../DudaContext'
 import { useEffect } from 'preact/hooks'
 import { PhotoGallery } from './PhotoGallery'
@@ -99,7 +99,14 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             <img className="tw-self-center" src={islandLogos[pageData.island]} />
           </div>
           <div className="tw-grow tw-pt-2">
-            <p className="tw-mb-6">{pageData.description}</p>
+            <p className="tw-mb-6">
+              {pageData.description.split('\n').map((text, i) => (
+                <Fragment key={i}>
+                  {i !== 0 && <br />}
+                  {text}
+                </Fragment>
+              ))}
+            </p>
             {pageData.action_shot1 && (
               <img className="tw-ml-auto" src={pageData.action_shot1} alt={`${pageData.business_name} Action Shot`} />
             )}
