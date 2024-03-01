@@ -24,6 +24,10 @@ export const useURLParams = () => {
 
     const categoryMap = categories.reduce<Record<string, true>>((map, cat) => ({ ...map, [cat]: true }), {})
 
+    if (category) {
+      categoryMap[category] = true
+    }
+
     return { categories, island, islands, category, categoryMap }
   }, [window.location.href])
 
