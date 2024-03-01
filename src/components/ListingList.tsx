@@ -5,7 +5,6 @@ import { useURLParams } from '../hooks/useURLParams'
 import { useEffect, useState } from 'preact/hooks'
 import { CategorySearchResult } from 'utils/ListingsEngine'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
-import { useScript } from 'hooks/useScript'
 
 export interface ListingListProps extends ComponentProps<'div'> {}
 
@@ -30,11 +29,13 @@ const islandClasses: Record<string, { pill: string }> = {
 export const ListingList = ({ className = '', ...props }: ListingListProps) => {
   const { categories, categoryMap, island: islandFromPath, category, islands, navigate } = useURLParams()
 
+  const allCategories = categories.concat(category ? [category] : [])
+
   const island = islandFromPath || islands[0] || ''
 
   const { list, loaded, listingsEngine } = useListingsEngine({
     island,
-    categories: category ? [category] : categories,
+    categories: allCategories,
     search: '',
   })
 
@@ -73,18 +74,24 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       <div className="tw-mb-8 tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 lg:tw-flex-row lg:tw-items-end lg:tw-px-2">
         <div className="tw-grow">
           <div className="tw-flex tw-w-full tw-flex-wrap tw-justify-center tw-gap-2 tw-pb-2 lg:tw-justify-start">
-            {!categories.length && (
+            {!allCategories.length && (
               <span
                 className={`tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize ${islandClasses[island]?.pill}`}
               >
                 Showing All Categories
               </span>
             )}
-            {categories.map((cat) => (
+            {allCategories.map((cat) => (
               <button
                 type="button"
                 className={`tw-relative tw-bottom-0 tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize before:tw-absolute before:tw-inset-0 before:tw-z-10 before:tw-rounded-full before:tw-bg-gray-700 before:tw-opacity-0 after:tw-absolute after:tw-inset-0 after:tw-z-20 after:tw-py-0.5 after:tw-font-bold after:tw-opacity-0 after:tw-content-x hover:before:tw-opacity-50 hover:after:tw-opacity-100 focus:tw-outline-none focus:tw-ring-2 focus:before:tw-opacity-50 focus:after:tw-opacity-100 ${islandClasses[island]?.pill}`}
-                onClick={() => navigate({ remove: { category: [cat] } })}
+                onClick={() => {
+                  if (cat === category) {
+                    window.history.pushState({}, '', window.location.href.replace(`/${category}`, ''))
+                  } else {
+                    navigate({ remove: { category: [cat] } })
+                  }
+                }}
               >
                 {cat}
               </button>
