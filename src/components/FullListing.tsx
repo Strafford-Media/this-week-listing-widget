@@ -189,20 +189,20 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 }
 
 const getMapAddress = (pageData: Listing) => {
-  if (pageData.primary_address) {
-    return { addressQuery: pageData.primary_address }
-  }
-
   if (pageData.lat_lng) {
-    const [latitude, longitude] = pageData.lat_lng
+    const [lat, lng] = pageData.lat_lng
       .replace(/[()]/g, '')
       .split(',')
       .map((t) => t.trim())
 
     return {
-      latitude,
-      longitude,
+      lat,
+      lng,
     }
+  }
+
+  if (pageData.primary_address) {
+    return { addressQuery: pageData.primary_address }
   }
 
   return {}

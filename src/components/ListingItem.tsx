@@ -46,20 +46,18 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             })`,
           }}
         ></div>
-        <div className="tw-p-2 tw-text-justify">
+        <div className="tw-relative tw-flex tw-h-[180px] tw-grow tw-flex-col tw-p-2 tw-text-justify">
           <h5 className="mb-2 tw-text-base">{listing.business_name}</h5>
-          <p className="tw-relative tw-h-[140px] tw-overflow-y-hidden tw-text-sm">
-            {listing.description}
-            <div className="tw-absolute tw-inset-x-0 tw-top-[100px] tw-flex tw-h-10 tw-flex-nowrap tw-items-end tw-gap-2 tw-overflow-x-auto tw-bg-gradient-to-t tw-from-white tw-from-60%">
-              {listing.categories?.map((category) => (
-                <span
-                  className={`tw-whitespace-nowrap tw-rounded-full tw-px-1 tw-py-0.5 tw-text-xs tw-capitalize ${pillBgClass}`}
-                >
-                  {category.label}
-                </span>
-              ))}
-            </div>
-          </p>
+          <p className="tw-grow tw-overflow-y-hidden tw-text-sm">{listing.description}</p>
+          <div className="no-scrollbar tw-absolute tw-inset-x-0 tw-bottom-0 tw-flex tw-flex-nowrap tw-items-end tw-gap-2 tw-overflow-x-auto tw-bg-gradient-to-t tw-from-white tw-from-60% tw-px-2 tw-pb-2 tw-pt-6">
+            {listing.categories?.map((category) => (
+              <span
+                className={`tw-whitespace-nowrap tw-rounded-full tw-px-2 tw-py-0.5 tw-text-xs tw-capitalize ${pillBgClass}`}
+              >
+                {category.label}
+              </span>
+            ))}
+          </div>
         </div>
         <div className="tw-mt-auto tw-flex tw-grow-0 tw-items-center tw-border-t tw-border-t-gray-200 tw-p-2 tw-text-xs tw-capitalize tw-text-gray-500">
           <svg
