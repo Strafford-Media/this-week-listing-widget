@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 
 const islandSwitcher: { [key: string]: string } = {
   hawaii: 'hawaii',
@@ -9,6 +9,12 @@ const islandSwitcher: { [key: string]: string } = {
 
 export const useURLParams = () => {
   const fireUpdate = useState(false)[1]
+
+  useEffect(() => {
+    window.addEventListener('popstate', () => {
+      fireUpdate((s) => !s)
+    })
+  }, [])
 
   const urlStuff = useMemo(() => {
     const url = new URL(window.location.href)
