@@ -51,6 +51,18 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   const [openDropdown, setOpenDropdown] = useState(false)
 
+  const islandSelection = (isle: string) => {
+    if (islands[0] === isle) {
+      navigate({ remove: { island: isle } })
+    } else if (islandFromPath === isle) {
+      navigate({ path: window.location.pathname.replace(`/${islandFromPath}/`, '/') })
+    } else if (islandFromPath) {
+      navigate({ add: { island: isle }, path: window.location.pathname.replace(`/${islandFromPath}/`, '/') })
+    } else {
+      navigate({ add: { island: isle } })
+    }
+  }
+
   useEffect(() => {
     const listener = (e: MouseEvent) => {
       if (
@@ -70,7 +82,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   return (
     <div className={`${className}`} {...props}>
-      <h2 className="tw-mb-8 tw-mt-8 tw-text-center md:tw-mt-0">Activities{islandFromPath && ` on ${island}`}</h2>
+      <h2 className="tw-mb-8 tw-mt-8 tw-text-center md:tw-mt-0">Activities{island && ` on ${island}`}</h2>
       <div className="tw-mb-8 tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 lg:tw-flex-row lg:tw-items-end lg:tw-px-2">
         <div className="tw-grow">
           <div className="tw-flex tw-w-full tw-flex-wrap tw-justify-center tw-gap-2 tw-pb-2 lg:tw-justify-start">
@@ -144,70 +156,44 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             </ul>
           )}
         </div>
-        {!islandFromPath && (
-          <div className="tw-flex tw-flex-nowrap tw-justify-end tw-overflow-clip tw-rounded-md tw-bg-white">
-            <button
-              type="button"
-              className={`tw-rounded-l-md tw-border-y tw-border-l tw-border-red-500 tw-px-4 tw-py-1 ${
-                !islands[0] || islands[0] === 'hawaii' ? 'tw-bg-red-500 tw-text-red-100' : 'tw-text-red-500'
-              }`}
-              onClick={() => {
-                if (islands[0] === 'hawaii') {
-                  navigate({ remove: { island: 'hawaii' } })
-                } else {
-                  navigate({ add: { island: 'hawaii' } })
-                }
-              }}
-            >
-              Hawaii
-            </button>
-            <button
-              type="button"
-              className={`tw-border-y tw-border-pink-500 tw-px-4 tw-py-1 ${
-                !islands[0] || islands[0] === 'maui' ? 'tw-bg-pink-500 tw-text-pink-100' : 'tw-text-pink-500'
-              }`}
-              onClick={() => {
-                if (islands[0] === 'maui') {
-                  navigate({ remove: { island: 'maui' } })
-                } else {
-                  navigate({ add: { island: 'maui' } })
-                }
-              }}
-            >
-              Maui
-            </button>
-            <button
-              type="button"
-              className={`tw-border-y tw-border-yellow-500 tw-px-4 tw-py-1 ${
-                !islands[0] || islands[0] === 'oahu' ? 'tw-bg-yellow-500 tw-text-yellow-100' : 'tw-text-yellow-500'
-              }`}
-              onClick={() => {
-                if (islands[0] === 'oahu') {
-                  navigate({ remove: { island: 'oahu' } })
-                } else {
-                  navigate({ add: { island: 'oahu' } })
-                }
-              }}
-            >
-              Oahu
-            </button>
-            <button
-              type="button"
-              className={`tw-rounded-r-md tw-border-y tw-border-r tw-border-fuchsia-500 tw-px-4 tw-py-1 ${
-                !islands[0] || islands[0] === 'kauai' ? 'tw-bg-fuchsia-500 tw-text-fuchsia-100' : 'tw-text-fuchsia-500'
-              }`}
-              onClick={() => {
-                if (islands[0] === 'kauai') {
-                  navigate({ remove: { island: 'kauai' } })
-                } else {
-                  navigate({ add: { island: 'kauai' } })
-                }
-              }}
-            >
-              Kauai
-            </button>
-          </div>
-        )}
+        <div className="tw-flex tw-shrink-0 tw-flex-nowrap tw-justify-end tw-overflow-clip tw-rounded-md tw-bg-white">
+          <button
+            type="button"
+            className={`tw-rounded-l-md tw-border-y tw-border-l tw-border-red-500 tw-px-4 tw-py-1 ${
+              !island || island === 'hawaii' ? 'tw-bg-red-500 tw-text-red-100' : 'tw-text-red-500'
+            }`}
+            onClick={() => islandSelection('hawaii')}
+          >
+            Hawaii
+          </button>
+          <button
+            type="button"
+            className={`tw-border-y tw-border-pink-500 tw-px-4 tw-py-1 ${
+              !island || island === 'maui' ? 'tw-bg-pink-500 tw-text-pink-100' : 'tw-text-pink-500'
+            }`}
+            onClick={() => islandSelection('maui')}
+          >
+            Maui
+          </button>
+          <button
+            type="button"
+            className={`tw-border-y tw-border-yellow-500 tw-px-4 tw-py-1 ${
+              !island || island === 'oahu' ? 'tw-bg-yellow-500 tw-text-yellow-100' : 'tw-text-yellow-500'
+            }`}
+            onClick={() => islandSelection('oahu')}
+          >
+            Oahu
+          </button>
+          <button
+            type="button"
+            className={`tw-rounded-r-md tw-border-y tw-border-r tw-border-fuchsia-500 tw-px-4 tw-py-1 ${
+              !island || island === 'kauai' ? 'tw-bg-fuchsia-500 tw-text-fuchsia-100' : 'tw-text-fuchsia-500'
+            }`}
+            onClick={() => islandSelection('kauai')}
+          >
+            Kauai
+          </button>
+        </div>
       </div>
       {loaded && !list.length && (
         <p className="tw-w-full tw-text-center">No activities matched your search, unfortunately.</p>

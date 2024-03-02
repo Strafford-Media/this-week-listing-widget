@@ -35,16 +35,16 @@ export const getListingHref = (listingUrl: string) => {
 export const getCategoryHref = (category: string, island: string) => {
   switch (env) {
     case 'preview':
-      return `/site/${siteID}/${
-        island ? `${island}/` : ''
-      }explore?category=${category}&preview=true&insitepreview=true&dm_device=${deviceType}`
+      return `/site/${siteID}/explore?category=${category}${
+        island ? `&island=${island}` : ''
+      }&preview=true&insitepreview=true&dm_device=${deviceType}`
     case 'editor':
-      return `/site/${siteID}/${
-        island ? `${island}/` : ''
-      }explore?category=${category}&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
+      return `/site/${siteID}/explore?category=${category}${
+        island ? `&island=${island}` : ''
+      }&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
     case 'live':
     default:
-      return `/${island ? `${island}/` : ''}explore?category=${category}`
+      return `/explore?category=${category}${island ? `&island=${island}` : ''}`
   }
 }
 

@@ -34,9 +34,11 @@ export const useURLParams = () => {
   const navigate = ({
     add,
     remove,
+    path,
   }: {
     add?: { [key: string]: string | string[] }
     remove?: { [key: string]: string | string[] }
+    path?: string
   }) => {
     const currentUrl = new URL(window.location.href)
 
@@ -65,6 +67,10 @@ export const useURLParams = () => {
           currentUrl.searchParams.delete(param)
         }
       }
+    }
+
+    if (path) {
+      currentUrl.pathname = path
     }
 
     window.history.pushState(null, '', currentUrl.toString())
