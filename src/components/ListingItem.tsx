@@ -2,6 +2,7 @@ import { getListingHref } from '../utils/urls'
 import { Listing } from '../@types/duda'
 import { ComponentProps } from 'preact'
 import { useOptimizedImageURL } from 'hooks/useOptimizedImageURL'
+import { SimpleHawaii } from './SimpleHawaii'
 
 export interface ListingItemProps extends ComponentProps<'li'> {
   listing: Listing
@@ -34,22 +35,29 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
   const pillBgClass = islandClasses[oneIsland]?.pill
   const iconClass = islandClasses[oneIsland]?.icon
 
-  const optimizedImg = useOptimizedImageURL(listing.main_image, 300, placeholderImg)
+  const { optimizedImg, loaded } = useOptimizedImageURL(listing.main_image, 300, placeholderImg)
 
   return (
     <li
       className={`${className} tw-flex tw-flex-col tw-overflow-clip tw-rounded-md tw-bg-white tw-shadow-md`}
       {...props}
     >
-      <a className="tw-flex tw-grow tw-flex-col" href={getListingHref(listingURL)}>
-        <div
-          className={`tw-aspect-video tw-w-full ${
-            optimizedImg !== placeholderImg ? 'tw-bg-cover' : 'tw-bg-contain tw-bg-no-repeat tw-opacity-50'
-          } tw-bg-center`}
-          style={{
-            backgroundImage: `url(${optimizedImg})`,
-          }}
-        ></div>
+      <a className="tw-relative tw-flex tw-grow tw-flex-col" href={getListingHref(listingURL)}>
+        <div className={`tw-relative tw-aspect-video tw-w-full`}>
+          <SimpleHawaii
+            className={`tw-absolute tw-inset-0 tw-m-auto tw-max-h-full tw-shrink tw-text-gray-200 tw-duration-500 ${
+              loaded ? 'tw-opacity-0' : 'tw-opacity-100'
+            }`}
+          />
+          <div
+            className={`tw-aspect-video tw-w-full tw-bg-center tw-duration-500 ${
+              optimizedImg !== placeholderImg ? 'tw-bg-cover' : 'tw-bg-contain tw-bg-no-repeat tw-opacity-50'
+            } ${loaded ? 'tw-opacity-100' : 'tw-opacity-0'}`}
+            style={{
+              backgroundImage: `url(${optimizedImg})`,
+            }}
+          ></div>
+        </div>
         <div className="tw-relative tw-flex tw-h-[180px] tw-grow tw-flex-col tw-p-2 tw-text-justify">
           <h5 className="mb-2 tw-text-base">{listing.business_name}</h5>
           <p className="tw-grow tw-overflow-y-hidden tw-text-sm">{listing.description}</p>
