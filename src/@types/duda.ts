@@ -8,7 +8,7 @@ export interface Listing {
   business_name: string
   slug: string
   slogan: string
-  island: 'hawaii' | 'oahu' | 'maui' | 'kauai'
+  island: string
   created_at: string
   updated_at: string
   id: number

@@ -9,7 +9,7 @@ import { BigIsland, HawaiianIslands, Kauai, Maui, Oahu } from './Hawaii'
 import { BusinessHours } from './BusinessHours'
 import { OptimizedImage } from './OptimizedImage'
 
-const islandLogos = {
+const islandLogos: Record<string, string> = {
   hawaii: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/Hawaii-200w.png',
   maui: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/maui-200w.png',
   oahu: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/OAHU-200w.png',
@@ -22,6 +22,15 @@ const islandsIconClasses: Record<string, string> = {
   oahu: '[--oahu-highlight-color:theme(colors.yellow.400)]',
   kauai: '[--kauai-highlight-color:theme(colors.fuchsia.500)]',
 }
+
+const aspectRatio: Record<string, string> = {
+  hawaii: 'tw-aspect-[200/51] tw-translate-y-px',
+  maui: 'tw-aspect-[100/33]',
+  oahu: 'tw-aspect-[40/13]',
+  kauai: 'tw-aspect-[200/63]',
+}
+
+const imageWidths = ['', '', 'tw-max-w-1/2', 'tw-max-w-1/3', 'tw-max-w-1/4']
 
 const socialPrefixes: Record<string, string> = {
   twitter: 'https://twitter.com/',
@@ -115,7 +124,21 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
                 strokeWidth={200}
               />
             )}
-            <img className="tw-self-center" src={islandLogos[pageData.island]} />
+            {pageData.island.includes('|') ? (
+              <div className="tw-flex tw-w-full tw-flex-nowrap tw-gap-2">
+                {pageData.island
+                  .split('|')
+                  .reverse()
+                  .map((isle, _, arr) => (
+                    <img
+                      className={`${imageWidths[arr.length]} tw-shrink ${aspectRatio[isle]}`}
+                      src={islandLogos[isle]}
+                    />
+                  ))}
+              </div>
+            ) : (
+              <img className="tw-self-center" src={islandLogos[pageData.island]} />
+            )}
           </div>
           <div className="tw-grow tw-pt-2">
             <p className="tw-mb-6">
