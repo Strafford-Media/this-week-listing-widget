@@ -13,7 +13,7 @@ export const OptimizedImage = ({
   src,
   ...props
 }: OptimizedImageProps) => {
-  const optimizedImg = useOptimizedImageURL(src ?? '', optimizedWidth, placeholderImageSrc)
+  const { optimizedImg } = useOptimizedImageURL(src ?? '', optimizedWidth, placeholderImageSrc)
 
   return <img className={`${className}`} src={optimizedImg} {...props} />
 }
