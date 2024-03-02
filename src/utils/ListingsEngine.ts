@@ -379,7 +379,9 @@ export class ListingsEngine extends EventTarget {
           }
 
           if (this.listingsMap[lct.listing_id]?.data?.island) {
-            cat.data.island![this.listingsMap[lct.listing_id].data.island] = true
+            this.listingsMap[lct.listing_id].data.island.split('|').forEach((isle) => {
+              cat.data.island![isle] = true
+            })
           }
         })
       })
