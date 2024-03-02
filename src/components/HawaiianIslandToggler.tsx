@@ -37,9 +37,10 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
       <div className="tw-mt-[160px] tw-grid tw-w-1/2 tw-grid-cols-[repeat(1,minmax(0,auto))] tw-grid-rows-[repeat(1,minmax(0,auto))] tw-items-stretch tw-overflow-clip tw-rounded-tr-xl lg:tw-mt-[120px] lg:tw-w-2/5">
         {islandContents.map((isle) => (
           <div
-            className={`tw-col-start-1 tw-row-start-1 tw-overflow-hidden tw-bg-gradient-to-b tw-from-20% tw-transition-opacity tw-duration-300 ${
+            className={`tw-col-start-1 tw-row-start-1 tw-cursor-pointer tw-overflow-hidden tw-bg-gradient-to-b tw-from-20% tw-transition-opacity tw-duration-300 ${
               isle.bgClass
             } ${island === isle.island ? 'tw-opacity-100' : 'tw-opacity-0'}`}
+            onClick={() => goToIsland(isle.island)}
           >
             <img className="tw-w-full" src={isle.bannerImage} alt={`scenic view of ${isle.island}`} />
             <div>
