@@ -212,6 +212,17 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       {loaded && !list.length && (
         <p className="tw-w-full tw-text-center">No activities matched your search, unfortunately.</p>
       )}
+      {!loaded && (
+        <div className="tw-flex-center tw-min-h-96 tw-w-full tw-animate-pulse">
+          <div className="tw-flex-center tw-flex-col">
+            <img
+              src="https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-300w.png"
+              alt="loading activities from around Hawaii..."
+            />
+            <span className="tw-text-xl tw-font-bold">Sailing around the Islands...</span>
+          </div>
+        </div>
+      )}
       <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4 tw-px-2 tw-pb-8">
         {list.map((data) => (
           <ListingItem key={data.page_item_url} listing={data.data} listingURL={data.page_item_url} />

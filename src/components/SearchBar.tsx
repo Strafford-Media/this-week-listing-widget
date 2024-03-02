@@ -20,36 +20,41 @@ const islandHoverAndFocusClasses =
     ' ',
   )
 
-const islands: { value: IslandValue; label: string; peerClass: string; buttonClass: string }[] = [
+const islands: { value: IslandValue; label: string; peerClass: string; buttonClass: string; textClass: string }[] = [
   {
     value: 'kauai',
     label: 'Kauai',
     peerClass: 'tw-peer/kauai',
     buttonClass: 'tw-bg-fuchsia-500 tw-text-white focus:tw-bg-fuchsia-900 hover:tw-bg-fuchsia-900',
+    textClass: 'tw-text-fuchsia-500',
   },
   {
     value: 'oahu',
     label: 'Oahu',
     peerClass: 'tw-peer/oahu',
     buttonClass: 'tw-bg-yellow-300 tw-text-gray-800 focus:tw-bg-yellow-600 hover:tw-bg-yellow-600',
+    textClass: 'tw-text-yellow-300',
   },
   {
     value: 'maui',
     label: 'Maui',
     peerClass: 'tw-peer/maui',
     buttonClass: 'tw-bg-pink-600 tw-text-white focus:tw-bg-pink-900 hover:tw-bg-pink-900',
+    textClass: 'tw-text-pink-600',
   },
   {
     value: 'hawaii',
     label: 'Hawaii',
     peerClass: 'tw-peer/big-island',
     buttonClass: 'tw-bg-red-600 tw-text-white focus:tw-bg-red-900 hover:tw-bg-red-900',
+    textClass: 'tw-text-red-600',
   },
   {
     value: '',
     label: 'Any Island',
     peerClass: 'tw-peer/any-island',
     buttonClass: 'tw-bg-red-600 tw-text-white focus:tw-bg-red-900 hover:tw-bg-red-900',
+    textClass: 'tw-text-gray-800',
   },
 ]
 
@@ -194,8 +199,16 @@ export const SearchBar = ({
           )}
           {!!searchResults.categoryTags.length && (
             <ul>
-              <p className="tw-mt-4 tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800">
+              <p
+                className={`tw-mt-4 tw-border-b tw-border-b-gray-200 tw-px-2 tw-py-1 tw-text-sm tw-font-semibold tw-text-gray-800`}
+              >
                 Relevant Categories
+                {island.value && (
+                  <>
+                    {' on '}
+                    <span className={island.textClass}>{island.label}</span>
+                  </>
+                )}
               </p>
               {searchResults.categoryTags.map((tag) => (
                 <li>

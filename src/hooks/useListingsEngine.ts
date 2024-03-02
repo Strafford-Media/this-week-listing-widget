@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import { ListingsEngine } from '../utils/ListingsEngine'
 import { CollectionValue, Listing } from '../@types/duda'
 
-const listingsEngine = new ListingsEngine(['Listings', 'All Categories'])
+const listingsEngine = new ListingsEngine()
 
 interface UseListingsEngineProps {
   search?: string
@@ -11,30 +11,35 @@ interface UseListingsEngineProps {
 }
 
 export const useListingsEngine = ({ search, island, categories }: UseListingsEngineProps = {}) => {
-  const [loaded, setLoaded] = useState(false)
+  const [collectionsLoaded, setCollectionsLoaded] = useState(false)
+  const loadedRef = useRef(false)
   const [list, setList] = useState<CollectionValue<Listing>[]>([])
 
   useEffect(() => {
-    if (loaded) return
+    if (collectionsLoaded) return
 
     const listener = () => {
-      setLoaded(true)
+      setCollectionsLoaded(true)
     }
 
     listingsEngine.addEventListener('collections-loaded', listener)
 
     return () => listingsEngine.removeEventListener('collections-loaded', listener)
-  }, [loaded])
+  }, [collectionsLoaded])
 
   useEffect(() => {
-    if (!loaded) return
+    if (!collectionsLoaded) return
 
     if (search) {
-      listingsEngine.search({ search, island }).then((v) => setList(v.matches.concat(v.suggestions)))
+      listingsEngine.search({ search, island }).then((v) => {
+        loadedRef.current = true
+        setList(v.matches.concat(v.suggestions))
+      })
     } else {
+      loadedRef.current = true
       setList(listingsEngine.filterList({ island, categories }))
     }
-  }, [search, island, categories, loaded])
+  }, [search, island, categories, collectionsLoaded])
 
-  return { listingsEngine, list, loaded }
+  return { listingsEngine, list, loaded: loadedRef.current }
 }

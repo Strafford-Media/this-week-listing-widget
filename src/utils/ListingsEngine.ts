@@ -28,6 +28,11 @@ export interface CategorySearchResult {
   segments: CategorySearchSegment[]
 }
 
+export interface CollectionMetadata<T extends { id: number } = any> {
+  totalCount: number
+  results?: CollectionResult<T>
+}
+
 const collectionMapping = {
   Listings: {
     listKey: 'listings',
@@ -46,26 +51,26 @@ const collectionMapping = {
 const emptyResult = { matches: [], suggestions: [], categoryTags: [], emptySearch: true, notEnough: true }
 
 export class ListingsEngine extends EventTarget {
-  collectionsAPI: any
-  listings: CollectionResult<Listing>['values'] = []
-  listingsMap: Record<string, CollectionResult<Listing>['values'][number]> = {}
-  primaryCategories: CollectionResult<Category>['values'] = []
-  primaryCategoriesMap: Record<string, CollectionResult<Category>['values'][number]> = {}
-  allCategories: CollectionResult<Category>['values'] = []
-  allCategoriesMap: Record<string, CollectionResult<Category>['values'][number]> = {}
+  collectionManager: CollectionManager
   error: Error | null = null
-  listingsCategorized = false
 
-  constructor(categories: (keyof typeof collectionMapping)[] = ['Listings']) {
+  constructor() {
     super()
-    this.loadCollections(categories)
+    this.collectionManager = getCollectionManager()
+    this.collectionManager.addEventListener('collections-loaded', () => {
+      this.dispatchEvent(new Event('collections-loaded'))
+    })
+
+    if (this.collectionManager.loaded) {
+      this.dispatchEvent(new Event('collections-loaded'))
+    }
   }
 
   searchCategories(search: string, island: string): CategorySearchResult[] {
     search = search.toLowerCase()
 
     if (!search) {
-      return this.allCategories.map((cat) => ({
+      return this.collectionManager.allCategories.map((cat) => ({
         value: cat.data,
         matchCount: 0,
         segments: [{ substring: cat.data.label, match: false }],
@@ -84,7 +89,7 @@ export class ListingsEngine extends EventTarget {
       someChars: [] as CategorySearchResult[],
     }
 
-    this.allCategories.forEach((cat) => {
+    this.collectionManager.allCategories.forEach((cat) => {
       if (island && !cat.data.island?.[island]) return
 
       const label = cat.data.label
@@ -178,12 +183,12 @@ export class ListingsEngine extends EventTarget {
 
   filterList({ island, categories }: { island?: string; categories?: string[] }): CollectionResult<Listing>['values'] {
     if (!island && !categories?.length) {
-      return this.listings
+      return this.collectionManager.listings
     }
 
     const categoryMap = categories?.reduce<Record<string, true>>((map, cat) => ({ ...map, [cat]: true }), {}) ?? {}
 
-    return this.listings.filter(
+    return this.collectionManager.listings.filter(
       (l) =>
         (!island || l.data.island?.includes(island)) &&
         (!categories?.length || l.data.categories?.some((c) => categoryMap[c.label])),
@@ -199,8 +204,8 @@ export class ListingsEngine extends EventTarget {
     island?: string
     includeCategories?: boolean
   }): Promise<SearchResult> {
-    if (!this.listings.length) {
-      await this.loadCollections()
+    if (!this.collectionManager.listings.length) {
+      await this.collectionManager.loadCollections()
     }
 
     if (!search) {
@@ -268,7 +273,7 @@ export class ListingsEngine extends EventTarget {
       return [new Error('Unable to search for matches'), null]
     }
 
-    return [null, res.data.search_listings.map((r) => this.listingsMap[r.id]).filter(Boolean)]
+    return [null, res.data.search_listings.map((r) => this.collectionManager.listingsMap[r.id]).filter(Boolean)]
   }
 
   async findSuggestions(
@@ -295,7 +300,7 @@ export class ListingsEngine extends EventTarget {
       return [new Error('Unable to search for matches'), null]
     }
 
-    return [null, res.data.fuzzy_search_listings.map((r) => this.listingsMap[r.id]).filter(Boolean)]
+    return [null, res.data.fuzzy_search_listings.map((r) => this.collectionManager.listingsMap[r.id]).filter(Boolean)]
   }
 
   async findSuggestedCategories(search: string, island?: string): Promise<[Error | null, Category[] | null]> {
@@ -330,6 +335,54 @@ export class ListingsEngine extends EventTarget {
         }))
         .filter(Boolean),
     ]
+  }
+
+  async graphqlRequest<Data = any>(query: string, variables: any): Promise<[Error | null, Data | null]> {
+    const hasuraUrl = getHasuraUrl()
+    const res: Data | Error = await fetch(hasuraUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    })
+      .then((r) => r.json())
+      .catch((err) => (err instanceof Error ? err : new Error(JSON.stringify(err))))
+
+    if (res instanceof Error) {
+      return [res, null]
+    }
+
+    return [null, res]
+  }
+}
+
+const getCollectionManager = () => {
+  if (!(window as any).thisWeekCollectionManager) {
+    ;(window as any).thisWeekCollectionManager = new CollectionManager()
+  }
+  return (window as any).thisWeekCollectionManager
+}
+
+class CollectionManager extends EventTarget {
+  collectionsAPI: any
+  listings: CollectionResult<Listing>['values'] = []
+  listingsMap: Record<string, CollectionResult<Listing>['values'][number]> = {}
+  primaryCategories: CollectionResult<Category>['values'] = []
+  primaryCategoriesMap: Record<string, CollectionResult<Category>['values'][number]> = {}
+  allCategories: CollectionResult<Category>['values'] = []
+  allCategoriesMap: Record<string, CollectionResult<Category>['values'][number]> = {}
+  error: Error | null = null
+  loaded = false
+
+  //                                  !!!!!!!!!!STOP!!!!!!!!!!
+  // There is listing categorization logic that you must account for if you change this parameter!
+  constructor(collections: (keyof typeof collectionMapping)[] = ['Listings', 'All Categories']) {
+    super()
+    this.loadCollections(collections)
   }
 
   async loadCollections(collectionNames: (keyof typeof collectionMapping)[] = ['Listings']) {
@@ -388,64 +441,121 @@ export class ListingsEngine extends EventTarget {
     }
 
     this.dispatchEvent(new Event('collections-loaded'))
+    this.loaded = true
   }
 
   async loadCollection<T extends { id: number }>(collectionName: string) {
-    let list: CollectionResult<T>['values'] = []
+    const currentMetadata = await this.getCollectionMetadata<T>(collectionName)
 
-    let moar = true
-    let nextPage = 0
-    let pageSize = 100
-    while (moar) {
-      const results: CollectionResult<T> = await this.collectionsAPI
-        .data(collectionName)
-        .pageSize(pageSize)
-        .pageNumber(nextPage)
-        .get()
-        .catch((err: any) => (err instanceof Error ? err : new Error(JSON.stringify(err))))
-
-      if (results instanceof Error) {
-        this.error = results
-        list = []
-        moar = false
-      }
-
-      if (!Array.isArray(results.values)) {
-        this.error = new Error('No results fetched')
-        list = []
-        moar = false
-      }
-
-      list = list.concat(results.values)
-
-      nextPage = results.page.pageNumber + 1
-      moar = nextPage < results.page.totalPages
+    if (currentMetadata.totalCount === 0) {
+      return { list: [], map: {} }
     }
+
+    const preResults = currentMetadata.results?.values ?? []
+
+    const startingPage = preResults.length ? 1 : 0
+    const pageCount = Math.ceil(currentMetadata.totalCount / 100) - startingPage
+
+    const fetched = await Promise.all(
+      Array(pageCount)
+        .fill(startingPage)
+        .map((s, i) => s + i)
+        .map((pageNumber) => this.makeCollectionRequest<T>(collectionName, { pageNumber })),
+    )
+
+    const lastPage = fetched.filter(([err]) => !err).at(-1)?.[1]?.page
+
+    if (lastPage?.totalItems && lastPage.totalItems !== currentMetadata.totalCount) {
+      // fetch more if necessary (do math on last result)
+      this.setCollectionMetadata(collectionName, { totalCount: lastPage.totalItems })
+
+      const missingPages = Math.ceil(lastPage.totalItems / 100) - Math.ceil(currentMetadata.totalCount / 100)
+
+      if (missingPages) {
+        fetched.push(
+          ...(
+            await Promise.all(
+              Array(missingPages)
+                .fill(pageCount + startingPage)
+                .map((s, i) => s + i)
+                .map((pageNumber) => this.makeCollectionRequest<T>(collectionName, { pageNumber })),
+            )
+          ).filter(([err]) => !err),
+        )
+      }
+    }
+
+    const list = preResults.concat(fetched.flatMap(([_, result]) => result?.values ?? []))
 
     const map = list.reduce((map, item) => ({ ...map, [item.data.id]: item }), {})
 
     return { map, list }
   }
 
-  async graphqlRequest<Data = any>(query: string, variables: any): Promise<[Error | null, Data | null]> {
-    const hasuraUrl = getHasuraUrl()
-    const res: Data | Error = await fetch(hasuraUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        variables,
-      }),
-    })
-      .then((r) => r.json())
-      .catch((err) => (err instanceof Error ? err : new Error(JSON.stringify(err))))
+  async makeCollectionRequest<T extends { id: number }>(
+    collectionName: string,
+    { pageSize = 100, pageNumber = 0 } = {},
+  ): Promise<[Error | null, CollectionResult<T> | null]> {
+    const results: CollectionResult<T> = await this.collectionsAPI
+      .data(collectionName)
+      .pageSize(pageSize)
+      .pageNumber(pageNumber)
+      .get()
+      .catch((err: any) => (err instanceof Error ? err : new Error(JSON.stringify(err))))
 
-    if (res instanceof Error) {
-      return [res, null]
+    if (results instanceof Error) {
+      this.error = results
+      console.error('error fetching collection:', { collectionName, pageNumber, pageSize }, results)
+      return [results, null]
     }
 
-    return [null, res]
+    if (!Array.isArray(results?.values)) {
+      this.error = new Error('No results fetched')
+      console.error('error fetching collection:', this.error, results)
+      return [this.error, results]
+    }
+
+    return [null, results]
+  }
+
+  async getCollectionMetadata<T extends { id: number } = any>(collectionName: string): Promise<CollectionMetadata> {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(`this-week-collection-metadata-${collectionName}`) as string)
+
+      if (typeof parsed.totalCount !== 'number' || !parsed.totalCount) {
+        throw 'bad metadata'
+      }
+
+      return parsed
+    } catch (error) {
+      const [err, results] = await this.makeCollectionRequest<T>(collectionName)
+
+      if (err || !results) {
+        this.error = err
+
+        return {
+          totalCount: 0,
+        }
+      }
+
+      const metadata = { totalCount: results.page.totalItems }
+
+      this.setCollectionMetadata(collectionName, metadata)
+
+      return {
+        ...metadata,
+        results,
+      }
+    }
+  }
+
+  setCollectionMetadata(collectionName: string, metadata: CollectionMetadata) {
+    try {
+      const stringified = JSON.stringify(metadata)
+
+      localStorage.setItem(`this-week-collection-metadata-${collectionName}`, stringified)
+    } catch (error) {
+      console.error('trouble storing collection metadata:', collectionName, metadata, error)
+    }
   }
 }
