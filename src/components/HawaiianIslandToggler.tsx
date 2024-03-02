@@ -40,7 +40,7 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
             className={`tw-col-start-1 tw-row-start-1 tw-cursor-pointer tw-overflow-hidden tw-bg-gradient-to-b tw-from-20% tw-transition-opacity tw-duration-300 ${
               isle.bgClass
             } ${island === isle.island ? 'tw-opacity-100' : 'tw-opacity-0'}`}
-            onClick={() => goToIsland(isle.island)}
+            onClick={() => goToIsland(island)}
           >
             <img className="tw-w-full" src={isle.bannerImage} alt={`scenic view of ${isle.island}`} />
             <div>
