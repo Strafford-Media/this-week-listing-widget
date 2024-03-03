@@ -7,6 +7,7 @@ import { useURLParams } from '../hooks/useURLParams'
 import { useRememberedState } from '../hooks/useRememberedState'
 import { CategorySearchResult } from '../utils/ListingsEngine'
 import { useDebouncedCallback } from 'hooks/useDebouncedCallback'
+import { deviceType } from '../utils/environment'
 
 export interface ListingListProps extends ComponentProps<'div'> {}
 
@@ -38,7 +39,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
   const [liveSearchValue, setLiveSearchValue] = useRememberedState('this-week-listing-list-search-value', '')
   const [search, setSearch] = useState(liveSearchValue)
 
-  useDebouncedCallback(() => setSearch(liveSearchValue), 500)
+  const debouncedSearch = useDebouncedCallback((s) => setSearch(s), deviceType === 'mobile' ? 1000 : 500)
 
   const { list, loaded, listingsEngine } = useListingsEngine({
     island,
@@ -166,7 +167,10 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
           className={`search-area tw-max-w-64 tw-justify-self-center tw-rounded-md tw-border-2 tw-border-gray-300 tw-bg-white tw-px-2 tw-py-2 focus:tw-border-sky-400 focus:tw-outline-none lg:tw-block`}
           value={liveSearchValue}
           placeholder="Search Content"
-          onInput={(e) => setLiveSearchValue((e as any).target.value)}
+          onInput={(e) => {
+            setLiveSearchValue((e as any).target.value)
+            debouncedSearch((e as any).target.value)
+          }}
         />
         <div className="islands-area tw-mt-2 tw-flex tw-shrink-0 tw-flex-nowrap tw-justify-self-center tw-overflow-clip tw-rounded-md tw-bg-white md:tw-mt-0 md:tw-justify-self-end">
           <button
