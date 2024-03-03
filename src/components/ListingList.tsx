@@ -90,11 +90,11 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   return (
     <div className={`${className}`} {...props}>
-      <h2 className={`${search ? 'tw-mb-2' : 'tw-mb-8'} tw-mt-8 tw-text-center md:tw-mt-0`}>
+      <h2 className={`${search ? 'tw-mb-0' : 'tw-mb-8'} tw-mt-8 tw-text-center md:tw-mt-0`}>
         Activities{island && ` on ${island}`}
       </h2>
       {search && (
-        <p className="tw-mb-8 tw-text-center tw-text-gray-600 ">
+        <p className="tw-mb-2 tw-text-center tw-text-gray-600 ">
           <em>related to</em> "{search}"
         </p>
       )}
@@ -236,7 +236,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
         </div>
       </div>
       {loaded && !list.length && (
-        <p className="tw-w-full tw-text-center">No activities matched your search, unfortunately.</p>
+        <p className="tw-w-full tw-px-4 tw-text-center">No activities matched your search, unfortunately.</p>
       )}
       {!loaded && (
         <div className="tw-flex-center tw-min-h-96 tw-w-full tw-animate-pulse">
