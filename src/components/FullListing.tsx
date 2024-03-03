@@ -2,7 +2,7 @@ import { ComponentProps, Fragment } from 'preact'
 import { useDudaContext } from '../DudaContext'
 import { useEffect, useState } from 'preact/hooks'
 import { PhotoGallery } from './PhotoGallery'
-import { VideoPlayer } from './VideoPlayer'
+import { VideoList } from './VideoList'
 import { BookingLinks } from './BookingLinks'
 import { Listing } from '../@types/duda'
 import { BigIsland, HawaiianIslands, Kauai, Maui, Oahu } from './Hawaii'
@@ -28,7 +28,8 @@ const aspectRatio: Record<string, string> = {
   kauai: 'tw-aspect-[200/63]',
 }
 
-const imageWidths = ['', '', 'tw-max-w-1/2', 'tw-max-w-1/3', 'tw-max-w-1/4']
+const imageWidths = ['', '', 'tw-max-w-[45%]', 'tw-max-w-[28%]', 'tw-max-w-[21%]']
+const imageSpacing = ['', '', 'tw-gap-[10%]', 'tw-gap-[8%]', 'tw-gap-[5.3%]']
 
 const socialPrefixes: Record<string, string> = {
   twitter: 'https://twitter.com/',
@@ -71,7 +72,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
   useEffect(() => {
     const hasAddress = pageData?.primary_address || pageData?.lat_lng
 
-    if (typeof (window as any).dmAPI !== 'undefined' && hasAddress) {
+    if (typeof (window as any).dmAPI !== 'undefined' && hasAddress && pageData.tier !== 'basic') {
       ;(window as any).dmAPI.drawMap({
         container: '.main-listing-mapbox-map',
         ...getMapAddress(pageData),
@@ -84,78 +85,87 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 
   const socialKeys = Object.keys(pageData.social_media).filter((k) => pageData.social_media[k])
 
+  const islands = pageData.island.split('|')
+
+  const { images: imagesMax, videos: videoMax } = mediaMaxes(pageData.tier)
+
   return (
     <div className={`${className}`} {...props}>
-      <section className="tw-relative tw-pt-8 md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">
-        {pageData.this_week_recommended && (
-          <div className="tw-absolute tw-right-0 tw-top-0 tw-flex tw-rotate-12 tw-flex-col tw-items-center tw-text-[9px] tw-font-bold tw-leading-[1] tw-text-red-500">
-            <img
-              src="https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-300w.png"
-              className="tw-w-12"
-            />
-            Recommended!
-          </div>
-        )}
-        <div className="tw-mb-8 tw-flex tw-gap-6 lg:tw-gap-12">
-          <div className="tw-flex tw-w-full tw-max-w-1/2 tw-flex-col">
+      <section className="tw-pt-8 md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">
+        <div
+          className={`tw-mb-8 tw-flex ${
+            pageData.logo ? 'tw-flex-col' : 'tw-flex-col-reverse'
+          } tw-gap-6 md:tw-flex-row lg:tw-gap-12`}
+        >
+          <div className="tw-flex tw-w-full md:tw-max-w-1/2 md:tw-flex-col">
             {pageData.logo && (
               <OptimizedImage
                 optimizedWidth={300}
-                className="tw-mb-6"
+                className="tw-mb-6 tw-aspect-auto tw-max-w-3/4 tw-shrink tw-self-start md:tw-w-full md:tw-max-w-full"
                 src={pageData.logo}
                 alt={pageData.business_name}
               />
             )}
-            {pageData.island === 'oahu' && (
-              <Oahu
-                className="tw-max-w-48 tw-scale-[2] tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
-                strokeWidth={200}
-              />
-            )}
-            {pageData.island === 'maui' && (
-              <Maui
-                className="tw-max-w-48 tw-scale-125 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
-                strokeWidth={200}
-              />
-            )}
-            {pageData.island === 'kauai' && (
-              <Kauai
-                className="tw-max-w-48 tw-scale-150 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
-                strokeWidth={200}
-              />
-            )}
-            {pageData.island === 'hawaii' && (
-              <BigIsland
-                className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.red.500)]"
-                strokeWidth={200}
-              />
-            )}
-            {pageData.island.includes('|') && (
-              <HawaiianIslands
-                className={`tw-max-w-48 tw-self-center tw-text-green-200 ${allIslands
-                  .map((isle) => islandClasses[isle].islandHighlight)
-                  .filter(Boolean)
-                  .join(' ')}`}
-                strokeWidth={200}
-              />
-            )}
-            {pageData.island.includes('|') ? (
-              <div className="tw-flex tw-w-full tw-flex-nowrap tw-gap-2">
-                {pageData.island
-                  .split('|')
-                  .reverse()
-                  .map((isle, _, arr) => (
+            <div
+              className={`${pageData.logo ? 'tw-hidden' : 'tw-flex'} tw-shrink tw-flex-col tw-items-center md:tw-flex`}
+            >
+              {pageData.island === 'oahu' && (
+                <Oahu
+                  className="tw-max-w-48 tw-scale-[2] tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
+                  strokeWidth={200}
+                />
+              )}
+              {pageData.island === 'maui' && (
+                <Maui
+                  className="tw-max-w-48 tw-scale-125 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
+                  strokeWidth={200}
+                />
+              )}
+              {pageData.island === 'kauai' && (
+                <Kauai
+                  className="tw-max-w-48 tw-scale-150 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
+                  strokeWidth={200}
+                />
+              )}
+              {pageData.island === 'hawaii' && (
+                <BigIsland
+                  className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.red.500)]"
+                  strokeWidth={200}
+                />
+              )}
+              {islands.length > 1 && (
+                <HawaiianIslands
+                  className={`tw-max-w-48 tw-self-center tw-text-green-200 ${allIslands
+                    .map((isle) => islandClasses[isle].islandHighlight)
+                    .filter(Boolean)
+                    .join(' ')}`}
+                  strokeWidth={200}
+                />
+              )}
+              {islands.length > 1 ? (
+                <div className={`tw-flex tw-w-full tw-flex-nowrap ${imageSpacing[islands.length]}`}>
+                  {islands.reverse().map((isle, _, arr) => (
                     <img
                       className={`${imageWidths[arr.length]} tw-shrink ${aspectRatio[isle]}`}
                       src={islandLogos[isle]}
                     />
                   ))}
-              </div>
-            ) : (
-              <img className="tw-self-center" src={islandLogos[pageData.island]} />
-            )}
+                </div>
+              ) : (
+                <img className="tw-self-center" src={islandLogos[pageData.island]} />
+              )}
+            </div>
           </div>
-          <div className="tw-grow tw-pt-2">
+          <div className="tw-relative tw-grow tw-pt-2">
+            {pageData.this_week_recommended && (
+              <div className="tw-absolute -tw-top-10 tw-right-0 tw-flex tw-rotate-12 tw-flex-col tw-items-center tw-text-[9px] tw-font-bold tw-leading-[1] tw-text-red-500">
+                <img
+                  src="https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-300w.png"
+                  className="tw-w-12"
+                />
+                Recommended!
+              </div>
+            )}
             <p className="tw-mb-6">
               {pageData.description.split('\n').map((text, i) => (
                 <Fragment key={i}>
@@ -175,13 +185,18 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
           </div>
         </div>
         {!!pageData.booking_links?.length && <BookingLinks links={pageData.booking_links} className="tw-mb-8" />}
-        {!!pageData.videos.length && <VideoPlayer video={pageData.videos[0]} className="tw-mb-8" />}
-        {!!pageData.images?.length && <PhotoGallery images={pageData.images} className="tw-mb-8" />}
-        <CategoryList className="tw-mb-8" size="lg" categories={categories} island={pageData.island.split('|')[0]} />
+        {!!pageData.videos.length && pageData.tier !== 'basic' && (
+          <VideoList
+            videos={pageData.videos.slice(0, videoMax)}
+            className="tw-mx-auto tw-mb-8 tw-w-fit tw-max-w-full"
+          />
+        )}
+        {!!pageData.images?.length && <PhotoGallery images={pageData.images.slice(0, imagesMax)} className="tw-mb-8" />}
+        <CategoryList className="tw-mb-8" size="lg" categories={categories} island={islands[0]} />
         <div className="tw-mb-4">
           <BusinessHours className="tw-mb-8" businessHours={pageData.business_hours} />
           <h3>Contact Us</h3>
-          {socialKeys.length > 0 && (
+          {socialKeys.length > 0 && pageData.tier === 'premium' && (
             <p>
               Social Media:{' '}
               <ul className="tw-inline-flex tw-gap-4">
@@ -205,14 +220,18 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             <p>
               Email:{' '}
               <em>
-                <a
-                  className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
-                  href={`mailto:${pageData.primary_email}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  {pageData.primary_email}
-                </a>
+                {pageData.tier !== 'basic' ? (
+                  <a
+                    className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
+                    href={`mailto:${pageData.primary_email}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {pageData.primary_email}
+                  </a>
+                ) : (
+                  pageData.primary_email
+                )}
               </em>
             </p>
           )}
@@ -220,14 +239,18 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             <p>
               Phone:{' '}
               <em>
-                <a
-                  className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
-                  href={`tel:${pageData.primary_phone}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  {pageData.primary_phone}
-                </a>
+                {pageData.tier !== 'basic' ? (
+                  <a
+                    className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
+                    href={`tel:${pageData.primary_phone}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {pageData.primary_phone}
+                  </a>
+                ) : (
+                  pageData.primary_phone
+                )}
               </em>
             </p>
           )}
@@ -235,14 +258,18 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             <p>
               Online:{' '}
               <em>
-                <a
-                  className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
-                  href={pageData.primary_web_url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  {pageData.primary_web_url}
-                </a>
+                {pageData.tier === 'premium' ? (
+                  <a
+                    className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
+                    href={pageData.primary_web_url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {pageData.primary_web_url}
+                  </a>
+                ) : (
+                  pageData.primary_web_url
+                )}
               </em>
             </p>
           )}
@@ -252,10 +279,32 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             </p>
           )}
         </div>
-        {(pageData.primary_address || pageData.lat_lng) && <div className="main-listing-mapbox-map"></div>}
+        {(pageData.primary_address || pageData.lat_lng) && pageData.tier !== 'basic' && (
+          <div className="main-listing-mapbox-map"></div>
+        )}
       </section>
     </div>
   )
+}
+
+const mediaMaxes = (tier: Listing['tier']) => {
+  switch (tier) {
+    case 'basic':
+      return {
+        images: 3,
+        videos: 0,
+      }
+    case 'standard':
+      return {
+        images: 10,
+        videos: 1,
+      }
+    case 'premium':
+      return {
+        images: Infinity,
+        videos: Infinity,
+      }
+  }
 }
 
 const getMapAddress = (pageData: Listing) => {

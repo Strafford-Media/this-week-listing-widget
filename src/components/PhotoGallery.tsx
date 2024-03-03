@@ -34,6 +34,8 @@ export const PhotoGallery = ({ className = '', images, ...props }: PhotoGalleryP
     }
   })
 
+  if (!images.length) return null
+
   return (
     <div className={`${className} tw-max-h-[60vh]`} {...props}>
       <h3 className="tw-mb-4">Photo Gallery</h3>
