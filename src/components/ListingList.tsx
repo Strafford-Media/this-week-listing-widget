@@ -96,7 +96,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
               className={`tw-relative tw-bottom-0 tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize before:tw-absolute before:tw-inset-0 before:tw-z-10 before:tw-rounded-full before:tw-bg-gray-700 before:tw-opacity-0 after:tw-absolute after:tw-inset-0 after:tw-z-20 after:tw-py-0.5 after:tw-font-bold after:tw-opacity-0 after:tw-content-x hover:before:tw-opacity-50 hover:after:tw-opacity-100 focus:tw-outline-none focus:tw-ring-2 focus:before:tw-opacity-50 focus:after:tw-opacity-100 ${islandClasses[island]?.coloredBg}`}
               onClick={() => {
                 if (cat === category) {
-                  window.history.pushState({}, '', window.location.href.replace(`/${encodeURIComponent(category)}`, ''))
+                  navigate({ path: window.location.pathname.replace(`/${encodeURIComponent(category)}`, '') })
                 } else {
                   navigate({ remove: { category: [cat] } })
                 }
