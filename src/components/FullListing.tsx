@@ -10,6 +10,7 @@ import { BusinessHours } from './BusinessHours'
 import { OptimizedImage } from './OptimizedImage'
 import { ListingsEngine } from '../utils/ListingsEngine'
 import { islandClasses } from '../utils/islandClasses'
+import { CategoryList } from './CategoryList'
 
 const listingEngine = new ListingsEngine()
 
@@ -166,7 +167,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             {pageData.action_shot1 && (
               <OptimizedImage
                 optimizedWidth={640}
-                className="tw-ml-auto tw-rounded"
+                className="tw-mx-auto tw-rounded-md"
                 src={pageData.action_shot1}
                 alt={`${pageData.business_name} Action Shot`}
               />
@@ -176,7 +177,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
         {!!pageData.booking_links?.length && <BookingLinks links={pageData.booking_links} className="tw-mb-8" />}
         {!!pageData.videos.length && <VideoPlayer video={pageData.videos[0]} className="tw-mb-8" />}
         {!!pageData.images?.length && <PhotoGallery images={pageData.images} className="tw-mb-8" />}
-        {categories?.map((cat) => cat.label)}
+        <CategoryList className="tw-mb-8" size="lg" categories={categories} island={pageData.island.split('|')[0]} />
         <div className="tw-mb-4">
           <BusinessHours className="tw-mb-8" businessHours={pageData.business_hours} />
           <h3>Contact Us</h3>

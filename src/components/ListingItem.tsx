@@ -48,7 +48,11 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             {listing.business_name}
           </h5>
           <p className="tw-grow tw-overflow-y-hidden tw-text-xs sm:tw-text-sm">{listing.description}</p>
-          <CategoryList categories={listing.categories} island={oneIsland} className="tw-hidden sm:tw-flex" />
+          <CategoryList
+            categories={listing.categories}
+            island={oneIsland}
+            className="tw-hidden tw-bg-gradient-to-t tw-from-white tw-from-60% tw-px-2 sm:tw-absolute sm:tw-inset-x-0 sm:tw-bottom-0 sm:tw-flex sm:tw-pb-2 sm:tw-pt-6"
+          />
         </div>
         <div className="tw-mt-auto tw-flex tw-w-full tw-items-center tw-gap-1 tw-border-t tw-border-t-gray-200 tw-p-2 tw-pr-0 tw-text-xs tw-capitalize tw-text-gray-500 sm:tw-grow-0">
           <span className="tw-flex-center tw-shrink-0">
@@ -69,7 +73,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             </svg>
             {listing.island.split('|').join(' | ')}
           </span>
-          <CategoryList categories={listing.categories} island={oneIsland} className="tw-flex sm:tw-hidden" />
+          <CategoryList categories={listing.categories} island={oneIsland} className="tw-px-2 sm:tw-hidden" />
         </div>
       </a>
     </li>

@@ -2,23 +2,31 @@ import { islandClasses } from '../utils/islandClasses'
 import { Category } from '../@types/duda'
 import { ComponentProps } from 'preact'
 
-export interface CategoryListProps extends ComponentProps<'div'> {
+export interface CategoryListProps extends Omit<ComponentProps<'div'>, 'size'> {
   categories?: Category[]
   island: string
   className?: string
+  size?: 'sm' | 'lg'
 }
 
-export const CategoryList = ({ className = 'tw-flex', categories, island, ...props }: CategoryListProps) => {
+const sizeClasses = {
+  sm: 'tw-px-2 tw-py-0.5 tw-text-xs',
+  lg: 'tw-px-3 tw-py-0.5 tw-text-sm',
+}
+
+export const CategoryList = ({ className = '', size = 'sm', categories, island, ...props }: CategoryListProps) => {
   if (!categories) return null
+
+  const sizeClass = sizeClasses[size] ?? sizeClasses.sm
 
   return (
     <div
-      className={`${className} no-scrollbar tw-flex-nowrap tw-items-end tw-gap-2 tw-overflow-x-auto tw-bg-gradient-to-t tw-from-white tw-from-60% tw-px-2 sm:tw-absolute sm:tw-inset-x-0 sm:tw-bottom-0 sm:tw-pb-2 sm:tw-pt-6`}
+      className={`${className} no-scrollbar tw-flex tw-flex-nowrap tw-items-end tw-gap-2 tw-overflow-x-auto tw-py-1`}
       {...props}
     >
       {categories.map((category) => (
         <span
-          className={`tw-whitespace-nowrap tw-rounded-full tw-px-2 tw-py-0.5 tw-text-xs tw-capitalize ${islandClasses[island].coloredBg}`}
+          className={`tw-whitespace-nowrap tw-rounded-full tw-capitalize ${sizeClass} ${islandClasses[island].coloredBg}`}
         >
           {category.label}
         </span>
