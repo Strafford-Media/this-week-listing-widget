@@ -18,7 +18,7 @@ export const BusinessHours = ({ className = '', businessHours, ...props }: Busin
 
   return (
     <div className={`${className} tw-w-full`} {...props}>
-      <h3 className="tw-w-full">Business Hours</h3>
+      <h3 className="tw-w-full">Hours</h3>
       <ul className="tw-flex tw-w-full tw-flex-wrap tw-gap-4">
         {activeBusinessHours.map((bh) => (
           <li className="tw-flex tw-flex-col tw-justify-center">

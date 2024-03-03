@@ -6,6 +6,7 @@ import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react
 import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
 import { IslandValue, ListingsEngine, SearchParams, SearchResult } from '../utils/ListingsEngine'
 import { getCategoryHref, getListingHref } from '../utils/urls'
+import { islandClasses } from '../utils/islandClasses'
 
 const islandHoverAndFocusClasses =
   `tw-absolute tw-inset-y-0 tw-right-0 -tw-z-10 tw-my-auto tw-w-2/3 tw-origin-center tw-rotate-12
@@ -20,41 +21,26 @@ const islandHoverAndFocusClasses =
     ' ',
   )
 
-const islands: { value: IslandValue; label: string; peerClass: string; buttonClass: string; textClass: string }[] = [
+const islands: { value: IslandValue; label: string }[] = [
   {
     value: 'kauai',
     label: 'Kauai',
-    peerClass: 'tw-peer/kauai',
-    buttonClass: 'tw-bg-fuchsia-500 tw-text-white focus:tw-bg-fuchsia-900 hover:tw-bg-fuchsia-900',
-    textClass: 'tw-text-fuchsia-500',
   },
   {
     value: 'oahu',
     label: 'Oahu',
-    peerClass: 'tw-peer/oahu',
-    buttonClass: 'tw-bg-yellow-300 tw-text-gray-800 focus:tw-bg-yellow-600 hover:tw-bg-yellow-600',
-    textClass: 'tw-text-yellow-300',
   },
   {
     value: 'maui',
     label: 'Maui',
-    peerClass: 'tw-peer/maui',
-    buttonClass: 'tw-bg-pink-600 tw-text-white focus:tw-bg-pink-900 hover:tw-bg-pink-900',
-    textClass: 'tw-text-pink-600',
   },
   {
     value: 'hawaii',
     label: 'Hawaii',
-    peerClass: 'tw-peer/big-island',
-    buttonClass: 'tw-bg-red-600 tw-text-white focus:tw-bg-red-900 hover:tw-bg-red-900',
-    textClass: 'tw-text-red-600',
   },
   {
     value: '',
     label: 'Any Island',
-    peerClass: 'tw-peer/any-island',
-    buttonClass: 'tw-bg-red-600 tw-text-white focus:tw-bg-red-900 hover:tw-bg-red-900',
-    textClass: 'tw-text-gray-800',
   },
 ]
 
@@ -140,7 +126,7 @@ export const SearchBar = ({
       {dropDownType === 'island' && (
         <ul className="tw-relative tw-w-screen tw-max-w-sm">
           {islands.map((isle) => (
-            <li className={isle.peerClass}>
+            <li className={islandClasses[isle.value]?.peer}>
               <button
                 className="tw-flex tw-w-full tw-items-center tw-p-3 tw-font-bold tw-text-white tw-drop-shadow-md hover:tw-bg-white/10 focus:tw-bg-white/10 focus:tw-outline-none"
                 type="button"
@@ -206,7 +192,7 @@ export const SearchBar = ({
                 {island.value && (
                   <>
                     {' on '}
-                    <span className={island.textClass}>{island.label}</span>
+                    <span className={islandClasses[island.value]?.text}>{island.label}</span>
                   </>
                 )}
               </p>
@@ -243,7 +229,9 @@ export const SearchBar = ({
         >
           <button
             type="button"
-            className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent tw-px-3 focus:tw-outline-none ${island.buttonClass}`}
+            className={`tw-group tw-relative tw-flex tw-min-h-10 tw-items-center tw-rounded-l-lg tw-border-2 tw-border-transparent tw-px-3 focus:tw-outline-none ${islandClasses[
+              island.value
+            ]?.coloredBg} ${islandClasses[island.value]?.hoverAndFocus}`}
             onClick={() => {
               if (dropDownType !== 'island') {
                 setOpenDropdown(true)
@@ -343,16 +331,21 @@ export const SearchBar = ({
   )
 }
 
+const five = 'tw-h-5 tw-w-5'
+const six = 'tw-h-6 tw-w-6'
+const seven = 'tw-h-7 tw-w-7'
+const eight = 'tw-h-8 tw-w-8'
+
 function getSizeClass(size: 'sm' | 'md' | 'lg' | 'xl') {
   switch (size) {
     case 'xl':
-      return { text: 'tw-text-3xl', icon: 'tw-h-8 tw-w-8', caret: 'tw-h-8 tw-w-8' }
+      return { text: 'tw-text-3xl', icon: eight, caret: eight }
     case 'lg':
-      return { text: 'tw-text-xl', icon: 'tw-h-7 tw-w-7', caret: 'tw-h-6 tw-w-6' }
+      return { text: 'tw-text-xl', icon: seven, caret: six }
     case 'md':
-      return { text: 'tw-text-lg', icon: 'tw-h-6 tw-w-6', caret: 'tw-h-5 tw-w-5' }
+      return { text: 'tw-text-lg', icon: six, caret: five }
     case 'sm':
     default:
-      return { text: 'tw-text-base', icon: 'tw-h-6 tw-w-6', caret: 'tw-h-5 tw-w-5' }
+      return { text: 'tw-text-base', icon: six, caret: five }
   }
 }

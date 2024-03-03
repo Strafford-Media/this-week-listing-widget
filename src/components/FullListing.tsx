@@ -1,6 +1,6 @@
 import { ComponentProps, Fragment } from 'preact'
 import { useDudaContext } from '../DudaContext'
-import { useEffect } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import { PhotoGallery } from './PhotoGallery'
 import { VideoPlayer } from './VideoPlayer'
 import { BookingLinks } from './BookingLinks'
@@ -8,19 +8,16 @@ import { Listing } from '../@types/duda'
 import { BigIsland, HawaiianIslands, Kauai, Maui, Oahu } from './Hawaii'
 import { BusinessHours } from './BusinessHours'
 import { OptimizedImage } from './OptimizedImage'
+import { ListingsEngine } from '../utils/ListingsEngine'
+import { islandClasses } from '../utils/islandClasses'
+
+const listingEngine = new ListingsEngine()
 
 const islandLogos: Record<string, string> = {
   hawaii: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/Hawaii-200w.png',
   maui: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/maui-200w.png',
   oahu: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/OAHU-200w.png',
   kauai: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/kauai-200w.png',
-}
-
-const islandsIconClasses: Record<string, string> = {
-  hawaii: '[--big-island-highlight-color:theme(colors.red.500)]',
-  maui: '[--maui-highlight-color:theme(colors.pink.500)]',
-  oahu: '[--oahu-highlight-color:theme(colors.yellow.400)]',
-  kauai: '[--kauai-highlight-color:theme(colors.fuchsia.500)]',
 }
 
 const aspectRatio: Record<string, string> = {
@@ -58,6 +55,18 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 
   const allIslands = pageData?.island.split('|') ?? []
 
+  const [categories, setCategories] = useState(pageData?.categories)
+
+  useEffect(() => {
+    const listener = () => {
+      setCategories(listingEngine.collectionManager.listingsMap[pageData?.id!]?.data?.categories)
+    }
+
+    listingEngine.addEventListener('collections-loaded', listener)
+
+    return () => listingEngine.removeEventListener('collections-loaded', listener)
+  })
+
   useEffect(() => {
     const hasAddress = pageData?.primary_address || pageData?.lat_lng
 
@@ -89,7 +98,12 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
         <div className="tw-mb-8 tw-flex tw-gap-6 lg:tw-gap-12">
           <div className="tw-flex tw-w-full tw-max-w-1/2 tw-flex-col">
             {pageData.logo && (
-              <OptimizedImage optimizedWidth={300} className="mb-6" src={pageData.logo} alt={pageData.business_name} />
+              <OptimizedImage
+                optimizedWidth={300}
+                className="tw-mb-6"
+                src={pageData.logo}
+                alt={pageData.business_name}
+              />
             )}
             {pageData.island === 'oahu' && (
               <Oahu
@@ -118,7 +132,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             {pageData.island.includes('|') && (
               <HawaiianIslands
                 className={`tw-max-w-48 tw-self-center tw-text-green-200 ${allIslands
-                  .map((isle) => islandsIconClasses[isle])
+                  .map((isle) => islandClasses[isle].islandHighlight)
                   .filter(Boolean)
                   .join(' ')}`}
                 strokeWidth={200}
@@ -152,7 +166,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             {pageData.action_shot1 && (
               <OptimizedImage
                 optimizedWidth={640}
-                className="tw-ml-auto"
+                className="tw-ml-auto tw-rounded"
                 src={pageData.action_shot1}
                 alt={`${pageData.business_name} Action Shot`}
               />
@@ -162,6 +176,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
         {!!pageData.booking_links?.length && <BookingLinks links={pageData.booking_links} className="tw-mb-8" />}
         {!!pageData.videos.length && <VideoPlayer video={pageData.videos[0]} className="tw-mb-8" />}
         {!!pageData.images?.length && <PhotoGallery images={pageData.images} className="tw-mb-8" />}
+        {categories?.map((cat) => cat.label)}
         <div className="tw-mb-4">
           <BusinessHours className="tw-mb-8" businessHours={pageData.business_hours} />
           <h3>Contact Us</h3>
