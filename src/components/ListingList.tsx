@@ -99,11 +99,13 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
         </p>
       )}
       <div className="filtering-grid tw-mb-8 tw-grid tw-gap-x-4 tw-px-2">
-        <div className="categories-area tw-flex tw-w-full tw-flex-wrap tw-gap-2 tw-pb-2">
-          {!allCategories.length && (
+        <div className="categories-area tw-flex tw-w-full tw-flex-wrap tw-items-center tw-gap-2 tw-pb-2">
+          {!allCategories.length ? (
             <span className={`tw-rounded-full tw-bg-gray-500 tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize tw-text-white`}>
               Showing All Categories
             </span>
+          ) : (
+            <span className="tw-text-sm">In Categories:</span>
           )}
           {allCategories.map((cat) => (
             <button

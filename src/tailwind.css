@@ -41,7 +41,7 @@
       grid-template:
         'categories categories categories' auto
         'cat-filter search     islands   ' auto
-        / auto 1fr auto;
+        / auto auto 1fr;
     }
   }
 }
