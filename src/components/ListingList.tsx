@@ -118,7 +118,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
         <input
           ref={refs.setReference}
           type="text"
-          className={`cat-filter-area tw-max-w-64 tw-justify-self-end tw-rounded-md tw-border-2 tw-border-gray-300 tw-bg-white tw-px-2 tw-py-2 focus:tw-border-sky-400 focus:tw-outline-none md:tw-justify-self-start md:tw-justify-self-center lg:tw-block`}
+          className={`cat-filter-area tw-max-w-64 tw-justify-self-end tw-rounded-md tw-border-2 tw-border-gray-300 tw-bg-white tw-px-2 tw-py-2 focus:tw-border-sky-400 focus:tw-outline-none md:tw-justify-self-start lg:tw-block`}
           value={categorySearch}
           placeholder="Filter by Category"
           onFocus={() => {
