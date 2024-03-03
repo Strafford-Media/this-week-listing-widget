@@ -1,10 +1,12 @@
 import { ComponentProps } from 'preact'
+import { useEffect, useMemo, useState } from 'preact/hooks'
+import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { ListingItem } from './ListingItem'
 import { useListingsEngine } from '../hooks/useListingsEngine'
 import { useURLParams } from '../hooks/useURLParams'
-import { useEffect, useMemo, useState } from 'preact/hooks'
-import { CategorySearchResult } from 'utils/ListingsEngine'
-import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
+import { useRememberedState } from '../hooks/useRememberedState'
+import { CategorySearchResult } from '../utils/ListingsEngine'
+import { useDebouncedCallback } from 'hooks/useDebouncedCallback'
 
 export interface ListingListProps extends ComponentProps<'div'> {}
 
@@ -33,10 +35,15 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   const island = islandFromPath || islands[0] || ''
 
+  const [liveSearchValue, setLiveSearchValue] = useRememberedState('this-week-listing-list-search-value', '')
+  const [search, setSearch] = useState(liveSearchValue)
+
+  useDebouncedCallback(() => setSearch(liveSearchValue), 500)
+
   const { list, loaded, listingsEngine } = useListingsEngine({
     island,
     categories: allCategories,
-    search: '',
+    search,
   })
 
   const [categorySearch, setCategorySearch] = useState('')
@@ -83,80 +90,85 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
   return (
     <div className={`${className}`} {...props}>
       <h2 className="tw-mb-8 tw-mt-8 tw-text-center md:tw-mt-0">Activities{island && ` on ${island}`}</h2>
-      <div className="tw-mb-8 tw-flex tw-flex-col tw-items-center tw-justify-between tw-gap-4 lg:tw-flex-row lg:tw-items-end lg:tw-px-2">
-        <div className="tw-grow">
-          <div className="tw-flex tw-w-full tw-flex-wrap tw-justify-center tw-gap-2 tw-pb-2 lg:tw-justify-start">
-            {!allCategories.length && (
-              <span
-                className={`tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize ${islandClasses[island]?.pill}`}
-              >
-                Showing All Categories
-              </span>
-            )}
-            {allCategories.map((cat) => (
-              <button
-                type="button"
-                className={`tw-relative tw-bottom-0 tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize before:tw-absolute before:tw-inset-0 before:tw-z-10 before:tw-rounded-full before:tw-bg-gray-700 before:tw-opacity-0 after:tw-absolute after:tw-inset-0 after:tw-z-20 after:tw-py-0.5 after:tw-font-bold after:tw-opacity-0 after:tw-content-x hover:before:tw-opacity-50 hover:after:tw-opacity-100 focus:tw-outline-none focus:tw-ring-2 focus:before:tw-opacity-50 focus:after:tw-opacity-100 ${islandClasses[island]?.pill}`}
-                onClick={() => {
-                  if (cat === category) {
-                    window.history.pushState({}, '', window.location.href.replace(`/${category}`, ''))
-                  } else {
-                    navigate({ remove: { category: [cat] } })
-                  }
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          <input
-            ref={refs.setReference}
-            type="text"
-            className={`tw-max-w-64 tw-rounded-md tw-border-2 tw-border-gray-300 tw-bg-white tw-px-2 tw-py-2 focus:tw-border-sky-400 focus:tw-outline-none lg:tw-block`}
-            value={categorySearch}
-            placeholder="Filter by Category"
-            onFocus={() => {
-              setCategoryResults(listingsEngine.searchCategories(categorySearch, island))
-              setOpenDropdown(true)
-            }}
-            onInput={(e) => {
-              const newVal = (e as any).target.value
-              setCategorySearch(newVal)
-              setCategoryResults(listingsEngine.searchCategories(newVal, island))
-              setOpenDropdown(true)
-            }}
-          />
-          {openDropdown && (
-            <ul
-              ref={refs.setFloating}
-              style={floatingStyles}
-              className="tw-z-10 tw-max-h-[40vh] tw-min-w-48 tw-max-w-[95vw] tw-overflow-y-auto tw-rounded-lg tw-bg-white tw-shadow-2xl"
+      <div className="filtering-grid tw-mb-8 tw-grid tw-gap-x-4 tw-px-2">
+        <div className="categories-area tw-flex tw-w-full tw-flex-wrap tw-justify-center tw-gap-2 tw-pb-2 lg:tw-justify-start">
+          {!allCategories.length && (
+            <span
+              className={`tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize ${islandClasses[island]?.pill}`}
             >
-              {categoryResults.map(
-                (cr) =>
-                  !categoryMap[cr.value.label] && (
-                    <li
-                      key={cr.value.label}
-                      className="tw-cursor-pointer tw-px-2 tw-py-1 tw-text-left tw-text-sm tw-capitalize tw-text-gray-600 hover:tw-bg-gray-50 focus:tw-bg-gray-100 focus:tw-outline-none"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        navigate({ add: { category: [cr.value.label] } })
-                      }}
-                      tabIndex={0}
-                    >
-                      {cr.segments.map((seg, i) => (
-                        <span key={i} className={`${seg.match ? 'tw-font-bold' : ''}`}>
-                          {seg.substring}
-                        </span>
-                      ))}
-                    </li>
-                  ),
-              )}
-            </ul>
+              Showing All Categories
+            </span>
           )}
+          {allCategories.map((cat) => (
+            <button
+              type="button"
+              className={`tw-relative tw-bottom-0 tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize before:tw-absolute before:tw-inset-0 before:tw-z-10 before:tw-rounded-full before:tw-bg-gray-700 before:tw-opacity-0 after:tw-absolute after:tw-inset-0 after:tw-z-20 after:tw-py-0.5 after:tw-font-bold after:tw-opacity-0 after:tw-content-x hover:before:tw-opacity-50 hover:after:tw-opacity-100 focus:tw-outline-none focus:tw-ring-2 focus:before:tw-opacity-50 focus:after:tw-opacity-100 ${islandClasses[island]?.pill}`}
+              onClick={() => {
+                if (cat === category) {
+                  window.history.pushState({}, '', window.location.href.replace(`/${category}`, ''))
+                } else {
+                  navigate({ remove: { category: [cat] } })
+                }
+              }}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
-        <div className="tw-flex tw-shrink-0 tw-flex-nowrap tw-justify-end tw-overflow-clip tw-rounded-md tw-bg-white">
+        <input
+          ref={refs.setReference}
+          type="text"
+          className={`cat-filter-area tw-max-w-64 tw-justify-self-end tw-rounded-md tw-border-2 tw-border-gray-300 tw-bg-white tw-px-2 tw-py-2 focus:tw-border-sky-400 focus:tw-outline-none md:tw-justify-self-start md:tw-justify-self-center lg:tw-block`}
+          value={categorySearch}
+          placeholder="Filter by Category"
+          onFocus={() => {
+            setCategoryResults(listingsEngine.searchCategories(categorySearch, island))
+            setOpenDropdown(true)
+          }}
+          onInput={(e) => {
+            const newVal = (e as any).target.value
+            setCategorySearch(newVal)
+            setCategoryResults(listingsEngine.searchCategories(newVal, island))
+            setOpenDropdown(true)
+          }}
+        />
+        {openDropdown && (
+          <ul
+            ref={refs.setFloating}
+            style={floatingStyles}
+            className="tw-z-10 tw-max-h-[40vh] tw-min-w-48 tw-max-w-[95vw] tw-overflow-y-auto tw-rounded-lg tw-bg-white tw-shadow-2xl"
+          >
+            {categoryResults.map(
+              (cr) =>
+                !categoryMap[cr.value.label] && (
+                  <li
+                    key={cr.value.label}
+                    className="tw-cursor-pointer tw-px-2 tw-py-1 tw-text-left tw-text-sm tw-capitalize tw-text-gray-600 hover:tw-bg-gray-50 focus:tw-bg-gray-100 focus:tw-outline-none"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      navigate({ add: { category: [cr.value.label] } })
+                    }}
+                    tabIndex={0}
+                  >
+                    {cr.segments.map((seg, i) => (
+                      <span key={i} className={`${seg.match ? 'tw-font-bold' : ''}`}>
+                        {seg.substring}
+                      </span>
+                    ))}
+                  </li>
+                ),
+            )}
+          </ul>
+        )}
+        <input
+          type="text"
+          className={`search-area tw-max-w-64 tw-justify-self-center tw-rounded-md tw-border-2 tw-border-gray-300 tw-bg-white tw-px-2 tw-py-2 focus:tw-border-sky-400 focus:tw-outline-none lg:tw-block`}
+          value={liveSearchValue}
+          placeholder="Search Content"
+          onInput={(e) => setLiveSearchValue((e as any).target.value)}
+        />
+        <div className="islands-area tw-mt-2 tw-flex tw-shrink-0 tw-flex-nowrap tw-justify-self-center tw-overflow-clip tw-rounded-md tw-bg-white md:tw-mt-0 md:tw-justify-self-end">
           <button
             type="button"
             className={`tw-rounded-l-md tw-border-y tw-border-l tw-border-red-500 tw-px-4 tw-py-1 ${

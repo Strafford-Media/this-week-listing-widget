@@ -11,6 +11,41 @@
 
 @tailwind utilities;
 
+@layer components {
+  .categories-area {
+    grid-area: categories;
+  }
+
+  .cat-filter-area {
+    grid-area: cat-filter;
+  }
+
+  .search-area {
+    grid-area: search;
+  }
+
+  .islands-area {
+    grid-area: islands;
+  }
+  .filtering-grid {
+    display: grid;
+    grid-template:
+      'categories categories' auto
+      'cat-filter search    ' auto
+      'islands    islands   ' auto
+      / 1fr 1fr;
+  }
+
+  @screen md {
+    .filtering-grid {
+      grid-template:
+        'categories categories categories' auto
+        'cat-filter search     islands   ' auto
+        / auto 1fr auto;
+    }
+  }
+}
+
 @layer utilities {
   .tw-flex-center {
     @apply tw-flex tw-items-center tw-justify-center !important;

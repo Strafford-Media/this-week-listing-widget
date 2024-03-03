@@ -199,10 +199,12 @@ export class ListingsEngine extends EventTarget {
     search,
     island,
     includeCategories = false,
+    limit,
   }: {
     search: string
     island?: string
     includeCategories?: boolean
+    limit?: number
   }): Promise<SearchResult> {
     if (!this.collectionManager.listings.length) {
       await this.collectionManager.loadCollections()
@@ -232,8 +234,12 @@ export class ListingsEngine extends EventTarget {
 
     let suggestions: CollectionValue<Listing>[] = []
 
-    if ((matches?.length ?? 0) < 3) {
-      const [suggestionErr, fetchedSuggestions] = await this.findSuggestions(search, island, matches?.length ? 5 : 10)
+    if ((matches?.length ?? 0) < (limit || 3)) {
+      const [suggestionErr, fetchedSuggestions] = await this.findSuggestions(
+        search,
+        island,
+        limit || (matches?.length ? 5 : 10),
+      )
 
       if (suggestionErr) {
         console.error('trouble fetching suggestions:', suggestionErr)

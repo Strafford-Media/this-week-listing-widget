@@ -33,7 +33,14 @@ export const useListingsEngine = ({ search, island, categories }: UseListingsEng
     if (search) {
       listingsEngine.search({ search, island }).then((v) => {
         loadedRef.current = true
-        setList(v.matches.concat(v.suggestions))
+        const allSearchResults = v.matches.concat(v.suggestions)
+
+        if (categories?.length) {
+          const catMap = categories.reduce<Record<string, 1>>((map, cat) => ({ ...map, [cat]: 1 }), {})
+          setList(allSearchResults.filter((l) => l.data.categories?.some((cat) => catMap[cat.label])))
+        } else {
+          setList(allSearchResults)
+        }
       })
     } else {
       loadedRef.current = true

@@ -5,6 +5,8 @@ export const useDebouncedCallback = <T extends (...args: any[]) => any>(callback
   const callbackRef = useRef(callback)
   callbackRef.current = callback
 
+  if (!ms) return
+
   return (...args: Parameters<T>) => {
     window.clearTimeout(timerRef.current)
 
