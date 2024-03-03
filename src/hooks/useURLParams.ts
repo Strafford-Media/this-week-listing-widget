@@ -23,7 +23,7 @@ export const useURLParams = () => {
     const exploreIndex = segments.findIndex((s) => s === 'explore')
 
     const island = islandSwitcher[segments[exploreIndex - 1]]
-    const category = segments[exploreIndex + 1]
+    const category = decodeURIComponent(segments[exploreIndex + 1] ?? '') || undefined
 
     const categories = url.searchParams.getAll('category')
     const islands = url.searchParams.getAll('island')
