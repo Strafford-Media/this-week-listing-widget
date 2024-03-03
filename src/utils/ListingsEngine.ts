@@ -70,11 +70,13 @@ export class ListingsEngine extends EventTarget {
     search = search.toLowerCase()
 
     if (!search) {
-      return this.collectionManager.allCategories.map((cat) => ({
-        value: cat.data,
-        matchCount: 0,
-        segments: [{ substring: cat.data.label, match: false }],
-      }))
+      return this.collectionManager.allCategories
+        .filter((cat) => !island || cat.data.island?.[island])
+        .map((cat) => ({
+          value: cat.data,
+          matchCount: 0,
+          segments: [{ substring: cat.data.label, match: false }],
+        }))
     }
 
     const results = {
