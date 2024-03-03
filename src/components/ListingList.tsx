@@ -93,13 +93,15 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       <h2 className={`${search ? 'tw-mb-2' : 'tw-mb-8'} tw-mt-8 tw-text-center md:tw-mt-0`}>
         Activities{island && ` on ${island}`}
       </h2>
-      {search && <p className="tw-mb-8 tw-text-center tw-text-gray-600">related to "{search}"</p>}
+      {search && (
+        <p className="tw-mb-8 tw-text-center tw-text-gray-600 ">
+          <em>related to</em> "{search}"
+        </p>
+      )}
       <div className="filtering-grid tw-mb-8 tw-grid tw-gap-x-4 tw-px-2">
-        <div className="categories-area tw-flex tw-w-full tw-flex-wrap tw-justify-center tw-gap-2 tw-pb-2 lg:tw-justify-start">
+        <div className="categories-area tw-flex tw-w-full tw-flex-wrap tw-gap-2 tw-pb-2">
           {!allCategories.length && (
-            <span
-              className={`tw-rounded-full tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize ${islandClasses[island]?.pill}`}
-            >
+            <span className={`tw-rounded-full tw-bg-gray-500 tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize tw-text-white`}>
               Showing All Categories
             </span>
           )}
@@ -135,6 +137,13 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             setCategoryResults(listingsEngine.searchCategories(newVal, island))
             setOpenDropdown(true)
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowDown') {
+              e.preventDefault()
+
+              refs.floating.current?.children?.[0]?.focus?.()
+            }
+          }}
         />
         {openDropdown && (
           <ul
@@ -142,27 +151,39 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             style={floatingStyles}
             className="tw-z-10 tw-max-h-[40vh] tw-min-w-48 tw-max-w-[95vw] tw-overflow-y-auto tw-rounded-lg tw-bg-white tw-shadow-2xl"
           >
-            {categoryResults.map(
-              (cr) =>
-                !categoryMap[cr.value.label] && (
-                  <li
-                    key={cr.value.label}
-                    className="tw-cursor-pointer tw-px-2 tw-py-1 tw-text-left tw-text-sm tw-capitalize tw-text-gray-600 hover:tw-bg-gray-50 focus:tw-bg-gray-100 focus:tw-outline-none"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      navigate({ add: { category: [cr.value.label] } })
-                    }}
-                    tabIndex={0}
-                  >
-                    {cr.segments.map((seg, i) => (
-                      <span key={i} className={`${seg.match ? 'tw-font-bold' : ''}`}>
-                        {seg.substring}
-                      </span>
-                    ))}
-                  </li>
-                ),
-            )}
+            {categoryResults
+              .filter((cr) => !categoryMap[cr.value.label])
+              .map((cr, i) => (
+                <li
+                  key={`${i}-${cr.value.label}`}
+                  className="tw-cursor-pointer tw-px-2 tw-py-1 tw-text-left tw-text-sm tw-capitalize tw-text-gray-600 hover:tw-bg-gray-50 focus:tw-bg-gray-100 focus:tw-outline-none"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    navigate({ add: { category: [cr.value.label] } })
+                  }}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    e.preventDefault()
+
+                    switch (e.key) {
+                      case 'ArrowDown':
+                        return (e.currentTarget.nextElementSibling as any)?.focus?.()
+                      case 'ArrowUp':
+                        if (i === 0) {
+                          return refs.reference.current?.focus?.()
+                        }
+                        return (e.currentTarget.previousElementSibling as any)?.focus?.()
+                    }
+                  }}
+                >
+                  {cr.segments.map((seg, i) => (
+                    <span key={i} className={`${seg.match ? 'tw-font-bold' : ''}`}>
+                      {seg.substring}
+                    </span>
+                  ))}
+                </li>
+              ))}
           </ul>
         )}
         <input
