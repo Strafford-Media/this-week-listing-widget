@@ -234,11 +234,13 @@ export class ListingsEngine extends EventTarget {
 
     let suggestions: CollectionValue<Listing>[] = []
 
-    if ((matches?.length ?? 0) < (limit || 3)) {
+    const numMatches = matches?.length ?? 0
+
+    if (numMatches < (limit || 3)) {
       const [suggestionErr, fetchedSuggestions] = await this.findSuggestions(
         search,
         island,
-        limit || (matches?.length ? 5 : 10),
+        limit || (numMatches ? 5 : 10),
       )
 
       if (suggestionErr) {
@@ -246,7 +248,9 @@ export class ListingsEngine extends EventTarget {
       }
 
       if (fetchedSuggestions) {
-        suggestions = fetchedSuggestions.filter((fs) => !matches || matches.every((m) => m.data.id !== fs.data.id))
+        suggestions = fetchedSuggestions
+          .filter((fs) => !matches || matches.every((m) => m.data.id !== fs.data.id))
+          .slice(0, (limit || 3) - numMatches)
       }
     }
 

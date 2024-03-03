@@ -31,7 +31,7 @@ export const useListingsEngine = ({ search, island, categories }: UseListingsEng
     if (!collectionsLoaded) return
 
     if (search) {
-      listingsEngine.search({ search, island }).then((v) => {
+      listingsEngine.search({ search, island, limit: 100 }).then((v) => {
         loadedRef.current = true
         const allSearchResults = v.matches.concat(v.suggestions)
 
