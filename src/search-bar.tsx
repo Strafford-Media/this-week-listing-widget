@@ -19,7 +19,7 @@ export async function init({ container, props }: { container: Element; props: Du
     render(
       <DudaProvider value={props}>
         <SearchBar
-          className="tw-mx-auto"
+          className="tw-relative tw-z-10 tw-mx-auto"
           style={{ maxWidth }}
           size={props.siteDetails.config.size || 'md'}
           dropdownBGImage={bgImage}
