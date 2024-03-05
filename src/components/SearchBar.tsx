@@ -153,14 +153,14 @@ export const SearchBar = ({
         </ul>
       )}
       {dropDownType === 'results' && (
-        <>
+        <div className="tw-max-h-[50vh] tw-overflow-y-auto">
           {!searchResults.matches.length && !searchResults.suggestions.length && (
             <em className="tw-px-3 tw-py-1 tw-text-gray-500">
               {searchResults.notEnough ? 'Type more for better results...' : 'None'}
             </em>
           )}
           {!!(searchResults.matches.length || searchResults.suggestions.length) && (
-            <ul className="tw-max-h-[50vh] tw-overflow-y-auto">
+            <ul>
               {searchResults.matches.map((listing) => (
                 <li>
                   <a
@@ -208,7 +208,7 @@ export const SearchBar = ({
               ))}
             </ul>
           )}
-        </>
+        </div>
       )}
     </div>
   )
