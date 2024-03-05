@@ -87,7 +87,7 @@ export const SearchBar = ({
   })
 
   const go = async (params: SearchParams) => {
-    const newResults = await listingsEngine.search({ ...params, includeCategories: true })
+    const newResults = await listingsEngine.search({ ...params, includeCategories: true, limit: 10 })
 
     setResultList(newResults)
 
@@ -160,7 +160,7 @@ export const SearchBar = ({
             </em>
           )}
           {!!(searchResults.matches.length || searchResults.suggestions.length) && (
-            <ul>
+            <ul className="tw-max-h-[50vh] tw-overflow-y-auto">
               {searchResults.matches.map((listing) => (
                 <li>
                   <a
