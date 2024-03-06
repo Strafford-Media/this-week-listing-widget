@@ -1,6 +1,6 @@
 import { useAd } from '../hooks/useAd'
 import { ComponentProps } from 'preact'
-import { env, isDevSimulation } from '../utils/environment'
+import { env, isDevSimulation, isProdSimulation } from '../utils/environment'
 import { useRef } from 'preact/hooks'
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import { registerEvent } from '../utils/ad_events'
@@ -17,7 +17,7 @@ export interface AdPlacementProps extends Omit<ComponentProps<'div'>, 'size'> {
   placement_identifier?: string
 }
 
-const isLive = env === 'live' || (env !== 'editor' && isDevSimulation)
+const isLive = env === 'live' || (env !== 'editor' && (isDevSimulation || isProdSimulation))
 
 export const AdPlacement = ({
   className = '',
