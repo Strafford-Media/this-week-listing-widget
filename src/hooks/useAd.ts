@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
 import { getFunctionsUrl } from '../utils/urls'
-import { env, isDevSimulation } from '../utils/environment'
+import { env, isDevSimulation, isProdSimulation } from '../utils/environment'
 import { Ad } from '../@types/thisweek'
 
-const shouldLoad = env === 'live' || isDevSimulation
+const shouldLoad = env === 'live' || isDevSimulation || isProdSimulation
 
 export const useAd = (size: string) => {
   const [ad, setAd] = useState<Ad | null>(null)
