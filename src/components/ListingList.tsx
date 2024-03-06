@@ -233,7 +233,9 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       )}
       {!!(lists.suggestions.length || lists.matches.length) && loaded && (
         <div className="tw-px-2 tw-pb-8">
-          <h3 className="tw-my-4 sm:tw-my-6">Search Results</h3>
+          <h3 className="tw-my-4 sm:tw-my-6">
+            Search Results{!!allCategories.length && ' (limited by category filter)'}
+          </h3>
           {!lists.matches.length && (
             <p className="tw-w-full tw-px-4 tw-text-center">No activities matched your search</p>
           )}
