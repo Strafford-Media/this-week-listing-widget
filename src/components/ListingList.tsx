@@ -231,6 +231,19 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
           </div>
         </div>
       )}
+      {(!!lists.list.length || (!lists.matches.length && !lists.suggestions.length)) && (
+        <div className="tw-px-2 tw-pb-8">
+          {!lists.list.length && (
+            <p className="tw-w-full tw-px-4 tw-text-center">No activities meet the island and category criteria</p>
+          )}
+          {!lists.list.length && search && <p>Try refining your search with longer or different words and phrases</p>}
+          <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4">
+            {lists.list.map((data) => (
+              <ListingItem key={data.page_item_url} listing={data.data} listingURL={data.page_item_url} />
+            ))}
+          </ul>
+        </div>
+      )}
       {!!(lists.suggestions.length || lists.matches.length) && loaded && (
         <div className="tw-px-2 tw-pb-8">
           <h3 className="tw-my-4 sm:tw-my-6">
