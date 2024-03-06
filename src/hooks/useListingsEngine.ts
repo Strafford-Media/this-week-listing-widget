@@ -10,10 +10,16 @@ interface UseListingsEngineProps {
   island?: string
 }
 
+interface Lists {
+  list: CollectionValue<Listing>[]
+  matches: CollectionValue<Listing>[]
+  suggestions: CollectionValue<Listing>[]
+}
+
 export const useListingsEngine = ({ search, island, categories }: UseListingsEngineProps = {}) => {
   const [collectionsLoaded, setCollectionsLoaded] = useState(false)
   const loadedRef = useRef(false)
-  const [list, setList] = useState<CollectionValue<Listing>[]>([])
+  const [lists, setLists] = useState<Lists>({ list: [], matches: [], suggestions: [] })
 
   useEffect(() => {
     if (collectionsLoaded) return
@@ -33,20 +39,27 @@ export const useListingsEngine = ({ search, island, categories }: UseListingsEng
     if (search) {
       listingsEngine.search({ search, island, limit: 100 }).then((v) => {
         loadedRef.current = true
-        const allSearchResults = v.matches.concat(v.suggestions)
 
         if (categories?.length) {
           const catMap = categories.reduce<Record<string, 1>>((map, cat) => ({ ...map, [cat]: 1 }), {})
-          setList(allSearchResults.filter((l) => l.data.categories?.some((cat) => catMap[cat.label])))
+          setLists({
+            list: [],
+            matches: v.matches.filter((l) => l.data.categories?.some((cat) => catMap[cat.label])),
+            suggestions: v.suggestions.filter((l) => l.data.categories?.some((cat) => catMap[cat.label])),
+          })
         } else {
-          setList(allSearchResults)
+          setLists({
+            list: [],
+            matches: v.matches ?? [],
+            suggestions: v.suggestions ?? [],
+          })
         }
       })
     } else {
       loadedRef.current = true
-      setList(listingsEngine.filterList({ island, categories }))
+      setLists({ list: listingsEngine.filterList({ island, categories }), matches: [], suggestions: [] })
     }
   }, [search, island, categories, collectionsLoaded])
 
-  return { listingsEngine, list, loaded: loadedRef.current }
+  return { listingsEngine, lists, loaded: loadedRef.current }
 }

@@ -24,7 +24,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   const debouncedSearch = useDebouncedCallback((s) => setSearch(s), deviceType === 'mobile' ? 1000 : 500)
 
-  const { list, loaded, listingsEngine } = useListingsEngine({
+  const { lists, loaded, listingsEngine } = useListingsEngine({
     island,
     categories: allCategories,
     search,
@@ -220,9 +220,6 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
           </button>
         </div>
       </div>
-      {loaded && !list.length && (
-        <p className="tw-w-full tw-px-4 tw-text-center">No activities matched your search, unfortunately.</p>
-      )}
       {!loaded && (
         <div className="tw-flex-center tw-min-h-96 tw-w-full tw-animate-pulse">
           <div className="tw-flex-center tw-flex-col">
@@ -234,11 +231,29 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
           </div>
         </div>
       )}
-      <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4 tw-px-2 tw-pb-8">
-        {list.map((data) => (
-          <ListingItem key={data.page_item_url} listing={data.data} listingURL={data.page_item_url} />
-        ))}
-      </ul>
+      {!!(lists.suggestions.length || lists.matches.length) && loaded && (
+        <div className="tw-px-2 tw-pb-8">
+          <h3>Search Results</h3>
+          {!lists.matches.length && (
+            <p className="tw-w-full tw-px-4 tw-text-center">No activities matched your search</p>
+          )}
+          <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4">
+            {lists.matches.map((data) => (
+              <ListingItem key={data.page_item_url} listing={data.data} listingURL={data.page_item_url} />
+            ))}
+          </ul>
+          {!!lists.suggestions.length && (
+            <>
+              <h3>Suggestions</h3>
+              <ul className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4">
+                {lists.suggestions.map((data) => (
+                  <ListingItem key={data.page_item_url} listing={data.data} listingURL={data.page_item_url} />
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }
