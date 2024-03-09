@@ -184,7 +184,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
         <div className="islands-area tw-mt-2 tw-flex tw-shrink-0 tw-flex-nowrap tw-justify-self-center tw-overflow-clip tw-rounded-md tw-bg-white md:tw-mt-0 md:tw-justify-self-end">
           <button
             type="button"
-            className={`tw-rounded-l-md tw-border-y tw-border-yellow-500 tw-px-4 tw-py-1 ${
+            className={`tw-rounded-l-md tw-border-y tw-border-l tw-border-yellow-500 tw-px-4 tw-py-1 ${
               !island || island === 'oahu' ? 'tw-bg-yellow-500 tw-text-yellow-100' : 'tw-text-yellow-500'
             }`}
             onClick={() => islandSelection('oahu')}
@@ -202,7 +202,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
           </button>
           <button
             type="button"
-            className={`tw-border-y tw-border-l tw-border-red-500 tw-px-4 tw-py-1 ${
+            className={`tw-border-y tw-border-red-500 tw-px-4 tw-py-1 ${
               !island || island === 'hawaii' ? 'tw-bg-red-500 tw-text-red-100' : 'tw-text-red-500'
             }`}
             onClick={() => islandSelection('hawaii')}
