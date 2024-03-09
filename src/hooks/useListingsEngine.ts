@@ -37,7 +37,7 @@ export const useListingsEngine = ({ search, island, categories }: UseListingsEng
     if (!collectionsLoaded) return
 
     if (search) {
-      listingsEngine.search({ search, island, limit: 100 }).then((v) => {
+      listingsEngine.search({ search, island, limit: 20 }).then((v) => {
         loadedRef.current = true
 
         if (categories?.length) {
