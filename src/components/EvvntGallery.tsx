@@ -7,7 +7,7 @@ export interface EvvntGalleryProps extends ComponentProps<'div'> {
   config?: any
 }
 
-const islands = ['kauai', 'oahu', 'maui', 'hawaii']
+const islands = ['oahu', 'maui', 'hawaii', 'kauai']
 
 export const EvvntGallery = ({ className = '', ...props }: EvvntGalleryProps) => {
   const [tab, setTab] = useRememberedState('this-week-evvnt-tab-island', 'oahu')

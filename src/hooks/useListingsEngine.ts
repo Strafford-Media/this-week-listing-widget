@@ -19,7 +19,7 @@ interface Lists {
 export const useListingsEngine = ({ search, island, categories }: UseListingsEngineProps = {}) => {
   const [collectionsLoaded, setCollectionsLoaded] = useState(false)
   const loadedRef = useRef(false)
-  const [lists, setLists] = useState<Lists>({ list: [], matches: [], suggestions: [] })
+  const [lists, setLists] = useState<Lists>(() => ({ list: [], matches: [], suggestions: [] }))
 
   useEffect(() => {
     if (collectionsLoaded) return

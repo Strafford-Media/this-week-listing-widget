@@ -1,7 +1,7 @@
 import { CollectionResult, Listing, Category, CollectionValue } from '../@types/duda'
 import { getHasuraUrl } from './urls'
 
-export type IslandValue = 'oahu' | 'maui' | 'kauai' | 'hawaii' | ''
+export type IslandValue = 'oahu' | 'maui' | 'hawaii' | 'kauai' | ''
 
 export interface SearchParams {
   island: IslandValue
