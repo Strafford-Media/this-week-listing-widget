@@ -207,7 +207,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             }`}
             onClick={() => islandSelection('hawaii')}
           >
-            Hawaii
+            Big Island
           </button>
           <button
             type="button"

@@ -23,7 +23,7 @@ export const EvvntGallery = ({ className = '', ...props }: EvvntGalleryProps) =>
             onClick={() => setTab(island)}
             tabIndex={0}
           >
-            {island}
+            {islandClasses[island]?.label}
           </div>
         ))}
       </div>

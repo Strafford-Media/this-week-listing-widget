@@ -54,7 +54,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             className="tw-hidden tw-bg-gradient-to-t tw-from-white tw-from-60% tw-px-2 sm:tw-absolute sm:tw-inset-x-0 sm:tw-bottom-0 sm:tw-flex sm:tw-pb-2 sm:tw-pt-6"
           />
         </div>
-        <div className="tw-mt-auto tw-flex tw-w-full tw-items-center tw-gap-1 tw-border-t tw-border-t-gray-200 tw-p-2 tw-pr-0 tw-text-xs tw-capitalize tw-text-gray-500 sm:tw-grow-0">
+        <div className="tw-mt-auto tw-flex tw-w-full tw-items-center tw-gap-1 tw-border-t tw-border-t-gray-200 tw-p-2 tw-pr-0 tw-text-xs tw-text-gray-500 sm:tw-grow-0">
           <span className="tw-flex-center tw-shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,10 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
                 d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
               />
             </svg>
-            {listing.island.split('|').join(' | ')}
+            {listing.island
+              .split('|')
+              .map((isle) => islandClasses[isle].label)
+              .join(' | ')}
           </span>
           <CategoryList categories={listing.categories} island={oneIsland} className="tw-px-2 sm:tw-hidden" />
         </div>
