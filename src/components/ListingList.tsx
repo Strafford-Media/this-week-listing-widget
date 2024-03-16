@@ -73,7 +73,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   return (
     <div className={`${className}`} {...props}>
-      <h2 className={`${search ? 'tw-mb-0' : 'tw-mb-8'} tw-mt-8 tw-text-center md:tw-mt-0`}>
+      <h2 className={`${search ? 'tw-mb-0' : 'tw-mb-8'} tw-text-center md:tw-mt-0`}>
         Activities{island && ` on ${island}`}
       </h2>
       {search && (
