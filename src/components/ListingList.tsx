@@ -73,7 +73,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
   return (
     <div className={`${className}`} {...props}>
-      <h2 className={`${search ? 'tw-mb-0' : 'tw-mb-8'} tw-text-center md:tw-mt-0`}>
+      <h2 className={`${search ? 'tw-mb-0' : 'tw-mb-8'} tw-mt-0 tw-text-center`}>
         Activities{island && ` on ${island}`}
       </h2>
       {search && (
@@ -84,7 +84,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
       <div className="filtering-grid tw-mb-8 tw-grid tw-gap-x-4 tw-px-2">
         <div className="categories-area tw-flex tw-w-full tw-flex-wrap tw-items-center tw-gap-2 tw-pb-2">
           {!allCategories.length ? (
-            <span className={`tw-rounded-full tw-bg-gray-500 tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize tw-text-white`}>
+            <span className={`tw-rounded-full tw-bg-gray-400 tw-px-2 tw-py-0.5 tw-text-sm tw-capitalize tw-text-white`}>
               Showing All Categories
             </span>
           ) : (

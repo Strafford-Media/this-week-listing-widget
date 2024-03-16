@@ -54,7 +54,7 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
             className="tw-hidden tw-bg-gradient-to-t tw-from-white tw-from-60% tw-px-2 sm:tw-absolute sm:tw-inset-x-0 sm:tw-bottom-0 sm:tw-flex sm:tw-pb-2 sm:tw-pt-6"
           />
         </div>
-        <div className="tw-mt-auto tw-flex tw-w-full tw-items-center tw-gap-1 tw-border-t tw-border-t-gray-200 tw-p-2 tw-pr-0 tw-text-xs tw-text-gray-500 sm:tw-grow-0">
+        <div className="tw-mt-auto tw-flex tw-w-full tw-items-center tw-gap-1 tw-border-t tw-border-t-gray-200 tw-py-1 tw-pl-2 tw-pr-0 tw-text-xs tw-text-gray-500 sm:tw-grow-0 sm:tw-py-2">
           <span className="tw-flex-center tw-shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
