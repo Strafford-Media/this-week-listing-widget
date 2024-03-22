@@ -6,9 +6,17 @@ import { useListingsEngine } from '../hooks/useListingsEngine'
 import { useURLParams } from '../hooks/useURLParams'
 import { useRememberedState } from '../hooks/useRememberedState'
 import { CategorySearchResult } from '../utils/ListingsEngine'
-import { useDebouncedCallback } from 'hooks/useDebouncedCallback'
+import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
+import { useInterval } from '../hooks/useInterval'
 import { deviceType } from '../utils/environment'
 import { islandClasses } from '../utils/islandClasses'
+
+const loadingMessages = [
+  'Sailing around the Islands...',
+  'Hiking up some mountains...',
+  'Grabbing a quick poke bowl...',
+  'Checking the surf reports...',
+]
 
 export interface ListingListProps extends ComponentProps<'div'> {}
 
@@ -70,6 +78,19 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
 
     return () => window.removeEventListener('click', listener)
   }, [openDropdown])
+
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(() =>
+    Math.floor(Math.random() * loadingMessages.length),
+  )
+
+  const loadingMessage = loadingMessages[loadingMessageIndex]
+
+  useInterval(
+    () => {
+      setLoadingMessageIndex((i) => (i + 1) % loadingMessages.length)
+    },
+    loaded ? 0 : 5000,
+  )
 
   return (
     <div className={`${className}`} {...props}>
@@ -227,11 +248,11 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
               src="https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/twhawaii-logo-300w.png"
               alt="loading activities from around Hawaii..."
             />
-            <span className="tw-text-xl tw-font-bold">Sailing around the Islands...</span>
+            <span className="tw-text-xl tw-font-bold">{loadingMessage}</span>
           </div>
         </div>
       )}
-      {(!!lists.list.length || (!lists.matches.length && !lists.suggestions.length)) && (
+      {(!!lists.list.length || (!lists.matches.length && !lists.suggestions.length)) && loaded && (
         <div className="tw-px-2 tw-pb-8">
           {!lists.list.length && (
             <p className="tw-w-full tw-px-4 tw-text-center">No activities meet the island and category criteria</p>
