@@ -97,7 +97,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             pageData.logo ? 'tw-flex-col' : 'tw-flex-col-reverse'
           } tw-gap-6 md:tw-flex-row lg:tw-gap-12`}
         >
-          <div className="tw-flex tw-w-full md:tw-max-w-1/2 md:tw-flex-col">
+          <div className="tw-mx-auto tw-flex tw-w-full md:tw-max-w-1/2 md:tw-flex-col">
             {pageData.logo && (
               <OptimizedImage
                 optimizedWidth={300}
