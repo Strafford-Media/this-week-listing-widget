@@ -79,7 +79,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
         // layout: 'layout2',
       })
     }
-  }, [pageData?.primary_address])
+  }, [pageData?.primary_address, pageData?.lat_lng, pageData?.tier])
 
   if (!pageData) return null
 
