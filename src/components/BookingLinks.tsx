@@ -89,6 +89,7 @@ export const FareHarborItemLink = ({ link, className = '' }: BookingLinkProps) =
     <button
       className={`${className} tw-flex tw-items-center tw-justify-center tw-rounded-md tw-bg-red-500 tw-px-6 tw-py-2 tw-text-base tw-font-bold tw-text-white`}
       onClick={() => {
+        console.log(link)
         if (window.FH) {
           window.FH.open({
             shortname: link.shortname,
