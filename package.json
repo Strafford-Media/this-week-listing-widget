@@ -39,6 +39,7 @@
   },
   "full-listing": "public/full-listing.js",
   "listing-list": "public/listing-list.js",
+  "featured-listings": "public/featured-listings.js",
   "search-bar": "public/search-bar.js",
   "ad-placement": "public/ad-placement.js",
   "evvnt-gallery": "public/evvnt-gallery.js",
@@ -56,6 +57,14 @@
     },
     "listing-list": {
       "source": "src/listing-list.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "featured-listings": {
+      "source": "src/featured-listings.tsx",
       "scopeHoist": false,
       "engines": {
         "browsers": "IE 11"

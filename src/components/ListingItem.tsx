@@ -1,5 +1,5 @@
 import { getListingHref } from '../utils/urls'
-import { Category, Listing } from '../@types/duda'
+import { Listing } from '../@types/duda'
 import { ComponentProps } from 'preact'
 import { useOptimizedImageURL } from 'hooks/useOptimizedImageURL'
 import { SimpleHawaii } from './SimpleHawaii'

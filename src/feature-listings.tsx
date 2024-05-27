@@ -1,14 +1,14 @@
 import { render } from 'preact'
 import { DudaProvider } from './DudaContext'
 import { DudaContextValue } from './@types/duda'
-import { ListingList } from './components/ListingList'
+import { FeaturedListings } from './components/FeaturedListings'
 
 let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
     render(
       <DudaProvider value={props}>
-        <ListingList />
+        <FeaturedListings />
       </DudaProvider>,
       container,
       container.firstChild as Element,
@@ -23,7 +23,7 @@ export function clean() {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  const root = document.getElementById('listing-list')!
+  const root = document.getElementById('featured-listings')!
 
   render(
     <DudaProvider
@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'development') {
         },
       }}
     >
-      <ListingList />
+      <FeaturedListings />
     </DudaProvider>,
     root,
   )
