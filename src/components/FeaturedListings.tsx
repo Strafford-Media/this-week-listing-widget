@@ -13,8 +13,6 @@ export const FeaturedListings = ({ className = '', ...props }: FeaturedListingsP
 
   const numericalMax = isNaN(Number(max)) ? 0 : Number(max)
 
-  console.log(siteDetails.config)
-
   const categories = useMemo(
     () => rawCategories?.split(',').map((cat: string) => cat.trim().toLowerCase()) ?? [],
     [rawCategories],
@@ -35,8 +33,6 @@ export const FeaturedListings = ({ className = '', ...props }: FeaturedListingsP
   }, [basic, premium])
 
   const { lists, loaded } = useListingsEngine({ island, categories, tiers, promotedOnly, ids })
-
-  console.log(lists)
 
   return (
     <div className={`${className}`} {...props}>
