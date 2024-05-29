@@ -183,7 +183,21 @@ export class ListingsEngine extends EventTarget {
     ]
   }
 
-  filterList({ island, categories }: { island?: string; categories?: string[] }): CollectionResult<Listing>['values'] {
+  listingsFromIdList(ids: string[]) {
+    return ids.map((id) => this.collectionManager.listingsMap[id])
+  }
+
+  filterList({
+    island,
+    categories,
+    tiers,
+    promotedOnly = false,
+  }: {
+    island?: string
+    categories?: string[]
+    tiers?: string[]
+    promotedOnly?: boolean
+  }): CollectionResult<Listing>['values'] {
     if (!island && !categories?.length) {
       return this.collectionManager.listings
     }
@@ -193,7 +207,9 @@ export class ListingsEngine extends EventTarget {
     return this.collectionManager.listings.filter(
       (l) =>
         (!island || l.data.island?.includes(island)) &&
-        (!categories?.length || l.data.categories?.some((c) => categoryMap[c.label])),
+        (!categories?.length || l.data.categories?.some((c) => categoryMap[c.label.toLowerCase()])) &&
+        (!tiers?.length || tiers.includes(l.data.tier)) &&
+        (!promotedOnly || l.data.promoted),
     )
   }
 
@@ -499,7 +515,10 @@ class CollectionManager extends EventTarget {
 
     const list = preResults.concat(fetched.flatMap(([_, result]) => result?.values ?? []))
 
-    const map = list.reduce((map, item) => ({ ...map, [item.data.id]: item }), {})
+    const map = list.reduce(
+      (map, item) => ({ ...map, [typeof item.data.id === 'string' ? item.data.id.toLowerCase() : item.data.id]: item }),
+      {},
+    )
 
     return { map, list }
   }

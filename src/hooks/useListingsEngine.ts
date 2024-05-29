@@ -8,6 +8,9 @@ interface UseListingsEngineProps {
   search?: string
   categories?: string[]
   island?: string
+  tiers?: string[]
+  promotedOnly?: boolean
+  ids?: string[]
 }
 
 interface Lists {
@@ -16,7 +19,15 @@ interface Lists {
   suggestions: CollectionValue<Listing>[]
 }
 
-export const useListingsEngine = ({ search, island, categories }: UseListingsEngineProps = {}) => {
+export const useListingsEngine = ({
+  ids,
+  search,
+  island,
+  categories,
+  tiers,
+  promotedOnly = false,
+}: UseListingsEngineProps = {}) => {
+  console.log(ids, search, island, categories, tiers, promotedOnly)
   const [collectionsLoaded, setCollectionsLoaded] = useState(false)
   const loadedRef = useRef(false)
   const [lists, setLists] = useState<Lists>(() => ({ list: [], matches: [], suggestions: [] }))
@@ -36,16 +47,29 @@ export const useListingsEngine = ({ search, island, categories }: UseListingsEng
   useEffect(() => {
     if (!collectionsLoaded) return
 
-    if (search) {
+    if (ids?.length) {
+      setLists({ list: listingsEngine.listingsFromIdList(ids), matches: [], suggestions: [] })
+    } else if (search) {
       listingsEngine.search({ search, island, limit: 20 }).then((v) => {
         loadedRef.current = true
 
-        if (categories?.length) {
-          const catMap = categories.reduce<Record<string, 1>>((map, cat) => ({ ...map, [cat]: 1 }), {})
+        if (categories?.length || tiers?.length || promotedOnly) {
+          const catMap = categories?.reduce<Record<string, 1>>((map, cat) => ({ ...map, [cat]: 1 }), {}) ?? {}
+
           setLists({
             list: [],
-            matches: v.matches.filter((l) => l.data.categories?.some((cat) => catMap[cat.label])),
-            suggestions: v.suggestions.filter((l) => l.data.categories?.some((cat) => catMap[cat.label])),
+            matches: v.matches.filter(
+              (l) =>
+                (!categories?.length || l.data.categories?.some((cat) => catMap[cat.label.toLowerCase()])) &&
+                (!tiers?.length || tiers.includes(l.data.tier)) &&
+                (!promotedOnly || l.data.promoted),
+            ),
+            suggestions: v.suggestions.filter(
+              (l) =>
+                (!categories?.length || l.data.categories?.some((cat) => catMap[cat.label.toLowerCase()])) &&
+                (!tiers?.length || tiers.includes(l.data.tier)) &&
+                (!promotedOnly || l.data.promoted),
+            ),
           })
         } else {
           setLists({
@@ -57,9 +81,13 @@ export const useListingsEngine = ({ search, island, categories }: UseListingsEng
       })
     } else {
       loadedRef.current = true
-      setLists({ list: listingsEngine.filterList({ island, categories }), matches: [], suggestions: [] })
+      setLists({
+        list: listingsEngine.filterList({ island, categories, tiers, promotedOnly }),
+        matches: [],
+        suggestions: [],
+      })
     }
-  }, [search, island, categories, collectionsLoaded])
+  }, [search, island, categories, collectionsLoaded, tiers, promotedOnly, ids])
 
   return { listingsEngine, lists, loaded: loadedRef.current }
 }

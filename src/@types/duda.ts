@@ -19,6 +19,7 @@ export interface Listing {
   primary_phone: string
   primary_web_url: string
   tier: 'basic' | 'standard' | 'premium'
+  promoted: boolean
   main_image: string
   action_shot1?: string
   logo?: string

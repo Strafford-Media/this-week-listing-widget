@@ -158,7 +158,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
             className="tw-z-10 tw-max-h-[40vh] tw-min-w-48 tw-max-w-[95vw] tw-overflow-y-auto tw-rounded-lg tw-bg-white tw-shadow-2xl"
           >
             {categoryResults
-              .filter((cr) => !categoryMap[cr.value.label])
+              .filter((cr) => !categoryMap[cr.value.label.toLowerCase()])
               .map((cr, i) => (
                 <li
                   key={`${i}-${cr.value.label}`}

@@ -23,9 +23,9 @@ export const useURLParams = () => {
     const exploreIndex = segments.findIndex((s) => s === 'explore')
 
     const island = islandSwitcher[segments[exploreIndex - 1]]
-    const category = decodeURIComponent(segments[exploreIndex + 1] ?? '') || undefined
+    const category = decodeURIComponent(segments[exploreIndex + 1] ?? '').toLowerCase() || undefined
 
-    const categories = url.searchParams.getAll('category')
+    const categories = url.searchParams.getAll('category').map((c) => c.toLowerCase())
     const islands = url.searchParams.getAll('island')
 
     const categoryMap = categories.reduce<Record<string, true>>((map, cat) => ({ ...map, [cat]: true }), {})
@@ -47,6 +47,7 @@ export const useURLParams = () => {
     path?: string
   }) => {
     const currentUrl = new URL(window.location.href)
+    currentUrl.search = window.location.search.toLowerCase()
 
     if (add) {
       for (const param of Object.keys(add)) {
