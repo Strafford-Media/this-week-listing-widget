@@ -13,7 +13,7 @@ export async function init({ container, props }: { container: Element; props: Du
         <FeaturedListings />
       </DudaProvider>,
       container,
-      container.firstChild as Element,
+      // container.firstChild as Element,
     )
   }
 }
