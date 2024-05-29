@@ -5,6 +5,8 @@ import { FeaturedListings } from './components/FeaturedListings'
 
 let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
+  console.log(container, props, container.firstChild)
+  root = container
   if (container) {
     render(
       <DudaProvider value={props}>
