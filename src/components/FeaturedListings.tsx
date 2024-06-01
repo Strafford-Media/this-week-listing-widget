@@ -13,10 +13,11 @@ export const FeaturedListings = ({ className = '', ...props }: FeaturedListingsP
 
   const numericalMax = isNaN(Number(max)) ? 0 : Number(max)
 
-  const categories = useMemo(
-    () => rawCategories?.split(',').map((cat: string) => cat.trim().toLowerCase()) ?? [],
-    [rawCategories],
-  )
+  const categories = useMemo(() => {
+    const parsedCats = (rawCategories?.split(',').map((cat: string) => cat.trim().toLowerCase()) ?? []).filter(Boolean)
+
+    return parsedCats.length ? parsedCats : undefined
+  }, [rawCategories])
 
   const tiers = useMemo(() => {
     const tierList = []

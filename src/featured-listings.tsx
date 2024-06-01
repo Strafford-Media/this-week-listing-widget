@@ -5,7 +5,6 @@ import { FeaturedListings } from './components/FeaturedListings'
 
 let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
-  console.log(container, props, container.firstChild)
   root = container
   if (container) {
     render(
@@ -20,7 +19,6 @@ export async function init({ container, props }: { container: Element; props: Du
 
 export function clean() {
   if (root!) {
-    console.log(root)
     root.unmount()
   }
 }

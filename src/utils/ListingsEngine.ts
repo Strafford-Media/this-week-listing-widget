@@ -198,7 +198,7 @@ export class ListingsEngine extends EventTarget {
     tiers?: string[]
     promotedOnly?: boolean
   }): CollectionResult<Listing>['values'] {
-    if (!island && !categories?.length) {
+    if (!island && !categories?.length && !tiers?.length && !promotedOnly) {
       return this.collectionManager.listings
     }
 

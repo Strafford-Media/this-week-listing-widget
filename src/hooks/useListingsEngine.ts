@@ -27,7 +27,7 @@ export const useListingsEngine = ({
   tiers,
   promotedOnly = false,
 }: UseListingsEngineProps = {}) => {
-  const [collectionsLoaded, setCollectionsLoaded] = useState(false)
+  const [collectionsLoaded, setCollectionsLoaded] = useState(listingsEngine.collectionManager.loaded)
   const loadedRef = useRef(false)
   const [lists, setLists] = useState<Lists>(() => ({ list: [], matches: [], suggestions: [] }))
 
