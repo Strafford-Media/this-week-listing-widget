@@ -30,7 +30,7 @@ export const AdMultiPlacement = ({
         ads.length > 2 ? 'tw-justify-between' : ads.length === 1 ? 'tw-justify-evenly' : 'tw-justify-center'
       }`}
     >
-      {ads.map((ad, index) => (
+      {(isLive ? ads : Array(max).fill(null)).map((ad) => (
         <AdDisplay ad={ad} size={size} placement_identifier={placement_identifier} {...props} />
       ))}
     </div>
