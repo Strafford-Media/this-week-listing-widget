@@ -42,6 +42,7 @@
   "featured-listings": "public/featured-listings.js",
   "search-bar": "public/search-bar.js",
   "ad-placement": "public/ad-placement.js",
+  "ad-group": "public/ad-group.js",
   "evvnt-gallery": "public/evvnt-gallery.js",
   "hawaiian-islands": "public/hawaiian-islands.js",
   "this-week-widgets-css": "public/this-week-widgets.css",
@@ -81,6 +82,14 @@
     },
     "ad-placement": {
       "source": "src/ad-placement.tsx",
+      "scopeHoist": false,
+      "engines": {
+        "browsers": "IE 11"
+      },
+      "outputFormat": "global"
+    },
+    "ad-group": {
+      "source": "src/ad-group.tsx",
       "scopeHoist": false,
       "engines": {
         "browsers": "IE 11"
