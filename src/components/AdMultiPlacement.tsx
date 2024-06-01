@@ -31,7 +31,7 @@ export const AdMultiPlacement = ({
       }`}
     >
       {ads.map((ad, index) => (
-        <AdDisplay ad={ad} size={size} placement_identifier={`${placement_identifier}-${index}`} {...props} />
+        <AdDisplay ad={ad} size={size} placement_identifier={placement_identifier} {...props} />
       ))}
     </div>
   )

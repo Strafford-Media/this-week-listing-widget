@@ -6,10 +6,10 @@ let root
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
     const size = props?.siteDetails?.config?.size
-    const max = props?.siteDetails?.config?.max ?? 0
+    const max = Number(props?.siteDetails?.config?.max ?? 0)
 
     if (!size) return console.error('no size specified')
-    if (typeof max !== 'number') return console.error('max must be a number')
+    if (isNaN(max)) return console.error('max must be a number')
 
     render(
       <AdMultiPlacement max={max} size={size} placement_identifier={props.siteDetails.config.placement_identifier} />,
