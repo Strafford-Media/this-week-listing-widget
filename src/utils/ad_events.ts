@@ -1,5 +1,5 @@
 import { Ad } from '../@types/thisweek'
-import { env, isDevSimulation } from './environment'
+import { env, isDevSimulation, isProdSimulation } from './environment'
 import { getFunctionsUrl } from './urls'
 
 interface RegisterEventArgs {
@@ -8,7 +8,7 @@ interface RegisterEventArgs {
   ad: Ad | null
 }
 
-const shouldRegister = env === 'live' || isDevSimulation
+const shouldRegister = env === 'live' || isDevSimulation || isProdSimulation
 
 export const registerEvent = async ({ ad, event, placement_identifier }: RegisterEventArgs) => {
   if (!ad || !shouldRegister) return
