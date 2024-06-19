@@ -60,7 +60,10 @@ export const FeaturedListings = ({ className = '', ...props }: FeaturedListingsP
 
   return (
     <div ref={ref} className={`${className} tw-flex tw-justify-center`} {...props}>
-      <ul style={{ maxWidth }} className="tw-grid tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4">
+      <ul
+        style={{ maxWidth }}
+        className="tw-grid tw-w-full tw-grid-cols-[repeat(auto-fill,minmax(300px,1fr))] tw-gap-4"
+      >
         {loaded && truncatedList.map((l) => <ListingItem listingURL={l.page_item_url} listing={l.data} />)}
       </ul>
     </div>
