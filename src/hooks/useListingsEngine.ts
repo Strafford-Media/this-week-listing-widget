@@ -47,6 +47,7 @@ export const useListingsEngine = ({
     if (!collectionsLoaded) return
 
     if (ids?.length) {
+      loadedRef.current = true
       setLists({ list: listingsEngine.listingsFromIdList(ids), matches: [], suggestions: [] })
     } else if (search) {
       listingsEngine.search({ search, island, limit: 20 }).then((v) => {
