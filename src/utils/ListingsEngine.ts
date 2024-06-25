@@ -184,7 +184,7 @@ export class ListingsEngine extends EventTarget {
   }
 
   listingsFromIdList(ids: string[]) {
-    return ids.map((id) => this.collectionManager.listingsMap[id])
+    return ids.map((id) => this.collectionManager.listingsMap[id]).filter(Boolean)
   }
 
   filterList({
