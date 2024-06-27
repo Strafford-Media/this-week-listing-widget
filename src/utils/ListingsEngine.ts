@@ -50,6 +50,23 @@ const collectionMapping = {
 
 const emptyResult = { matches: [], suggestions: [], categoryTags: [], emptySearch: true, notEnough: true }
 
+const listingSortPriority = (l: Listing) => {
+  switch (true) {
+    case l.promoted:
+      return 0
+    case l.tier === 'premium':
+      return 1
+    case l.this_week_recommended:
+      return 2
+    case l.tier === 'standard':
+      return 3
+    case l.tier === 'basic':
+      return 4
+    default:
+      return 5
+  }
+}
+
 export class ListingsEngine extends EventTarget {
   collectionManager: CollectionManager
   error: Error | null = null
@@ -432,7 +449,7 @@ class CollectionManager extends EventTarget {
         switch (name) {
           case 'Listings': {
             const { list, map } = await this.loadCollection<Listing>('Listings')
-            this.listings = list
+            this.listings = list.sort((a, b) => listingSortPriority(a.data) - listingSortPriority(b.data))
             this.listingsMap = map
             break
           }
@@ -472,7 +489,9 @@ class CollectionManager extends EventTarget {
     this.loaded = true
   }
 
-  async loadCollection<T extends { id: number }>(collectionName: string) {
+  async loadCollection<T extends { id: number }>(
+    collectionName: string,
+  ): Promise<{ list: CollectionValue<T>[]; map: Record<string, CollectionValue<T>> }> {
     const currentMetadata = await this.getCollectionMetadata<T>(collectionName)
 
     if (currentMetadata.totalCount === 0) {
@@ -516,7 +535,10 @@ class CollectionManager extends EventTarget {
     const list = preResults.concat(fetched.flatMap(([_, result]) => result?.values ?? []))
 
     const map = list.reduce(
-      (map, item) => ({ ...map, [typeof item.data.id === 'string' ? item.data.id.toLowerCase() : item.data.id]: item }),
+      (map, item) => ({
+        ...map,
+        [typeof item.data.id === 'string' ? (item.data.id as string).toLowerCase() : item.data.id]: item,
+      }),
       {},
     )
 
@@ -549,7 +571,7 @@ class CollectionManager extends EventTarget {
     return [null, results]
   }
 
-  async getCollectionMetadata<T extends { id: number } = any>(collectionName: string): Promise<CollectionMetadata> {
+  async getCollectionMetadata<T extends { id: number } = any>(collectionName: string): Promise<CollectionMetadata<T>> {
     try {
       const parsed = JSON.parse(localStorage.getItem(`this-week-collection-metadata-${collectionName}`) as string)
 
