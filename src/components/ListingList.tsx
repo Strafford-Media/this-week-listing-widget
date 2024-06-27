@@ -118,9 +118,7 @@ export const ListingList = ({ className = '', ...props }: ListingListProps) => {
               onClick={() => {
                 if (cat === category) {
                   navigate({
-                    path: window.location.pathname
-                      .toLowerCase()
-                      .replace(`/${encodeURIComponent(category.toLowerCase())}`, ''),
+                    path: window.location.pathname.replace(new RegExp(`/${encodeURIComponent(category)}`, 'i'), ''),
                   })
                 } else {
                   navigate({ remove: { category: [cat] } })
