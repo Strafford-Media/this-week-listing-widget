@@ -3,6 +3,7 @@ import { HawaiianIslands } from './Hawaii'
 import { useDudaContext } from '../DudaContext'
 import { useRememberedState } from '../hooks/useRememberedState'
 import { useMemo } from 'preact/hooks'
+import { env } from 'utils/environment'
 
 export interface HawaiianIslandsTogglerProps extends ComponentProps<'div'> {}
 
@@ -15,12 +16,8 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
     return ['hawaii', 'maui', 'oahu', 'kauai'].map((i) => getContent(siteDetails.config, i))
   }, [siteDetails])
 
-  console.log(islandContents)
-
   const goToIsland = (island: string) => {
-    const url = getContent(siteDetails.config, island)?.link?.raw_url
-
-    console.log(url, getContent(siteDetails.config, island))
+    const url = getContent(siteDetails.config, island)?.link
 
     if (url) {
       window.open(url, '_self')
@@ -88,7 +85,7 @@ const getContent = (config: any, island: string) => {
         bannerImage: optimizeImage(config.hawaiiImage),
         magImage: optimizeImage(config.hawaiiMagImage),
         logo: optimizeImage(config.hawaiiLogo),
-        link: config.hawaiiLink,
+        link: env === 'live' ? config.hawaiiLink.href : config.hawaiiLink.raw_url,
         bgClass: 'tw-from-red-500',
         tagLine: config.hawaiiTagline,
         tagLineClass: 'tw-text-white',
@@ -101,7 +98,7 @@ const getContent = (config: any, island: string) => {
         bannerImage: optimizeImage(config.mauiImage),
         magImage: optimizeImage(config.mauiMagImage),
         logo: optimizeImage(config.mauiLogo),
-        link: config.mauiLink,
+        link: env === 'live' ? config.mauiLink.href : config.mauiLink.raw_url,
         bgClass: 'tw-from-pink-500',
         tagLine: config.mauiTagline,
         tagLineClass: 'tw-text-yellow-300',
@@ -114,7 +111,7 @@ const getContent = (config: any, island: string) => {
         bannerImage: optimizeImage(config.kauaiImage),
         magImage: optimizeImage(config.kauaiMagImage),
         logo: optimizeImage(config.kauaiLogo),
-        link: config.kauaiLink,
+        link: env === 'live' ? config.kauaiLink.href : config.kauaiLink.raw_url,
         bgClass: 'tw-from-fuchsia-500',
         tagLine: config.kauaiTagline,
         tagLineClass: 'tw-text-yellow-300',
@@ -128,7 +125,7 @@ const getContent = (config: any, island: string) => {
         bannerImage: optimizeImage(config.oahuImage),
         magImage: optimizeImage(config.oahuMagImage),
         logo: optimizeImage(config.oahuLogo),
-        link: config.oahuLink,
+        link: env === 'live' ? config.oahuLink.href : config.oahuLink.raw_url,
         bgClass: 'tw-from-yellow-300',
         tagLine: config.oahuTagline,
         tagLineClass: 'tw-text-red-600 ',
