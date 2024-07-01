@@ -15,8 +15,12 @@ export const HawaiianIslandsToggler = ({ className = '', ...props }: HawaiianIsl
     return ['hawaii', 'maui', 'oahu', 'kauai'].map((i) => getContent(siteDetails.config, i))
   }, [siteDetails])
 
+  console.log(islandContents)
+
   const goToIsland = (island: string) => {
     const url = getContent(siteDetails.config, island)?.link?.raw_url
+
+    console.log(url, getContent(siteDetails.config, island))
 
     if (url) {
       window.open(url, '_self')
