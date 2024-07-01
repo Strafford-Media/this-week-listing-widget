@@ -26,6 +26,7 @@ export const registerEvent = async ({ ad, event, placement_identifier }: Registe
 
   fetch(`${functions}/ad-event`, {
     method: 'POST',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
