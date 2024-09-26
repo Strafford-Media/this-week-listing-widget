@@ -170,7 +170,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             )}
             {pageData.rich_description && (
               <p
-                className="prose tw-mb-6 [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"
+                className="tw-prose tw-mb-6 [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"
                 dangerouslySetInnerHTML={{ __html: pageData.rich_description }}
               />
             )}
