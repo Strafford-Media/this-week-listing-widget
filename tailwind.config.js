@@ -86,7 +86,7 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
   important: true,
   prefix: 'tw-',
 }
