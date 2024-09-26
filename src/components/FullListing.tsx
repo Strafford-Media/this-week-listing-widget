@@ -169,7 +169,10 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               </div>
             )}
             {pageData.rich_description && (
-              <p className="tw-mb-6" dangerouslySetInnerHTML={{ __html: pageData.rich_description }} />
+              <p
+                className="tw-mb-6 [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"
+                dangerouslySetInnerHTML={{ __html: pageData.rich_description }}
+              />
             )}
             {!pageData.rich_description && pageData.description && (
               <p className="tw-mb-6">
