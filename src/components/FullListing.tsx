@@ -168,14 +168,19 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
                 Recommended!
               </div>
             )}
-            <p className="tw-mb-6">
-              {pageData.description.split('\n').map((text, i) => (
-                <Fragment key={i}>
-                  {i !== 0 && <br />}
-                  {text}
-                </Fragment>
-              ))}
-            </p>
+            {pageData.rich_description && (
+              <p className="tw-mb-6" dangerouslySetInnerHTML={{ __html: pageData.rich_description }} />
+            )}
+            {!pageData.rich_description && pageData.description && (
+              <p className="tw-mb-6">
+                {pageData.description.split('\n').map((text, i) => (
+                  <Fragment key={i}>
+                    {i !== 0 && <br />}
+                    {text}
+                  </Fragment>
+                ))}
+              </p>
+            )}
             {pageData.action_shot1 && (
               <OptimizedImage
                 optimizedWidth={640}

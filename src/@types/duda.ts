@@ -13,6 +13,7 @@ export interface Listing {
   updated_at: string
   id: number
   description: string
+  rich_description: string
   primary_address: string
   lat_lng: string
   primary_email: string
