@@ -5,6 +5,7 @@ import { useMemo } from 'preact/hooks'
 interface BookingLink {
   type: 'fareharbor-item' | 'fareharbor-grid' | 'external'
   label: string
+  imageUrl?: string
   description: string
   title: string
   shortname: string
@@ -38,6 +39,7 @@ export const BookingLinks = ({ className = '', links, ...props }: BookingLinksPr
           .map((link) => (
             <div className="tw-flex tw-w-full tw-max-w-80 tw-flex-col tw-items-center tw-gap-4 tw-rounded-md tw-border tw-border-gray-300 tw-p-2 tw-shadow-md">
               {link.title && <h4 className="tw-text-center">{link.title}</h4>}
+              {link.imageUrl && <img src={link.imageUrl} alt={link.title} />}
               {link.description && (
                 <div className="tw-text-justify tw-text-sm">
                   {link.description.split('\n').map((text, i) => (
