@@ -74,7 +74,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 
     if (typeof (window as any).dmAPI !== 'undefined' && hasAddress && pageData.tier !== 'basic') {
       ;(window as any).dmAPI.drawMap({
-        container: '.main-listing-mapbox-map .tw-relative',
+        container: '.main-listing-mapbox-map',
         ...getMapAddress(pageData),
         // layout: 'layout2',
       })
