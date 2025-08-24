@@ -11,6 +11,7 @@ import { OptimizedImage } from './OptimizedImage'
 import { ListingsEngine } from '../utils/ListingsEngine'
 import { islandClasses } from '../utils/islandClasses'
 import { CategoryList } from './CategoryList'
+import { ensureHttpsUrl, getLinkPrefix } from '../utils/urls'
 
 const listingEngine = new ListingsEngine()
 
@@ -19,6 +20,13 @@ const islandLogos: Record<string, string> = {
   maui: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/maui-200w.png',
   oahu: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/OAHU-200w.png',
   kauai: 'https://lirp.cdn-website.com/0e650340/dms3rep/multi/opt/kauai-200w.png',
+}
+
+const islandLinks: Record<string, string> = {
+  hawaii: `${getLinkPrefix()}/hawaii`,
+  maui: `${getLinkPrefix()}/maui`,
+  oahu: `${getLinkPrefix()}/oahu`,
+  kauai: `${getLinkPrefix()}/kauai`,
 }
 
 const aspectRatio: Record<string, string> = {
@@ -112,28 +120,36 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               } tw-shrink tw-flex-col tw-items-center md:tw-flex`}
             >
               {pageData.island === 'oahu' && (
-                <Oahu
-                  className="tw-max-w-48 tw-scale-[2] tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
-                  strokeWidth={200}
-                />
+                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                  <Oahu
+                    className="tw-w-full tw-max-w-48 tw-scale-[2] tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
+                    strokeWidth={200}
+                  />
+                </a>
               )}
               {pageData.island === 'maui' && (
-                <Maui
-                  className="tw-max-w-48 tw-scale-125 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
-                  strokeWidth={200}
-                />
+                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                  <Maui
+                    className="tw-w-full tw-max-w-48 tw-scale-125 tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
+                    strokeWidth={200}
+                  />
+                </a>
               )}
               {pageData.island === 'kauai' && (
-                <Kauai
-                  className="tw-max-w-48 tw-scale-150 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
-                  strokeWidth={200}
-                />
+                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                  <Kauai
+                    className="tw-w-full tw-max-w-48 tw-scale-150 tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
+                    strokeWidth={200}
+                  />
+                </a>
               )}
               {pageData.island === 'hawaii' && (
-                <BigIsland
-                  className="tw-max-w-48 tw-self-center tw-text-green-200 [--island-highlight-color:theme(colors.red.500)]"
-                  strokeWidth={200}
-                />
+                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                  <BigIsland
+                    className="tw-w-full tw-max-w-48 tw-text-green-200 [--island-highlight-color:theme(colors.red.500)]"
+                    strokeWidth={200}
+                  />
+                </a>
               )}
               {islands.length > 1 && (
                 <HawaiianIslands
@@ -147,14 +163,18 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               {islands.length > 1 ? (
                 <div className={`tw-flex tw-w-full tw-flex-nowrap ${imageSpacing[islands.length]}`}>
                   {islands.reverse().map((isle, _, arr) => (
-                    <img
-                      className={`${imageWidths[arr.length]} tw-shrink ${aspectRatio[isle]}`}
-                      src={islandLogos[isle]}
-                    />
+                    <a href={islandLinks[isle]}>
+                      <img
+                        className={`${imageWidths[arr.length]} tw-shrink ${aspectRatio[isle]}`}
+                        src={islandLogos[isle]}
+                      />
+                    </a>
                   ))}
                 </div>
               ) : (
-                <img className="tw-self-center" src={islandLogos[pageData.island]} />
+                <a href={islandLinks[pageData.island]}>
+                  <img className="tw-self-center" src={islandLogos[pageData.island]} />
+                </a>
               )}
             </div>
           </div>
@@ -268,10 +288,10 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             <p>
               Online:{' '}
               <em>
-                {pageData.tier === 'premium' ? (
+                {pageData.tier !== 'basic' ? (
                   <a
                     className="hover:tw-text-blue-400 hover:tw-underline focus:tw-text-blue-400 focus:tw-underline focus:tw-outline-none"
-                    href={pageData.primary_web_url}
+                    href={ensureHttpsUrl(pageData.primary_web_url)}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
@@ -289,9 +309,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             </p>
           )}
         </div>
-        {(pageData.primary_address || pageData.lat_lng) && pageData.tier !== 'basic' && (
-          <div className="main-listing-mapbox-map tw-relative"></div>
-        )}
+        {(pageData.primary_address || pageData.lat_lng) && <div className="main-listing-mapbox-map tw-relative"></div>}
       </section>
     </div>
   )

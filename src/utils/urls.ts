@@ -48,6 +48,17 @@ export const getCategoryHref = (category: string, island: string) => {
   }
 }
 
+export const getLinkPrefix = () => {
+  switch (env) {
+    case 'preview':
+    case 'editor':
+      return `/site/${siteID}`
+    case 'live':
+    default:
+      return ''
+  }
+}
+
 const imageEndPathRegex = /-[\d]{1,5}(w\.[a-z]{2,7})$/
 
 export const optimizeDudaImg = (src: string | JSXInternal.SignalLike<string | undefined>, width?: number) => {
@@ -64,4 +75,10 @@ export const optimizeDudaImg = (src: string | JSXInternal.SignalLike<string | un
   }
 
   return src
+}
+
+export const ensureHttpsUrl = (url: string) => {
+  if (url.startsWith('http')) return url
+
+  return `https://${url}`
 }

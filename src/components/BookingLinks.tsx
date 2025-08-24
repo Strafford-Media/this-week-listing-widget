@@ -1,4 +1,4 @@
-import { useScript } from 'hooks/useScript'
+import { useScript } from '../hooks/useScript'
 import { ComponentProps, Fragment } from 'preact'
 import { useMemo } from 'preact/hooks'
 

@@ -3,7 +3,7 @@ import { HawaiianIslands } from './Hawaii'
 import { useDudaContext } from '../DudaContext'
 import { useRememberedState } from '../hooks/useRememberedState'
 import { useMemo } from 'preact/hooks'
-import { env } from 'utils/environment'
+import { env } from '../utils/environment'
 
 export interface HawaiianIslandsTogglerProps extends ComponentProps<'div'> {}
 
