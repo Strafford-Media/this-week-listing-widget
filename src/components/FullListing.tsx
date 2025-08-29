@@ -162,14 +162,14 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               )}
               {islands.length > 1 ? (
                 <div className={`tw-flex tw-w-full tw-flex-nowrap ${imageSpacing[islands.length]}`}>
-                  {islands.reverse().map((isle, _, arr) => (
-                    <a href={islandLinks[isle]}>
-                      <img
-                        className={`${imageWidths[arr.length]} tw-shrink ${aspectRatio[isle]}`}
-                        src={islandLogos[isle]}
-                      />
-                    </a>
-                  ))}
+                  {islands
+                    .slice()
+                    .reverse()
+                    .map((isle, _, arr) => (
+                      <a href={islandLinks[isle]} class={`tw-shrink ${imageWidths[arr.length]}`}>
+                        <img className={`${aspectRatio[isle]}`} src={islandLogos[isle]} />
+                      </a>
+                    ))}
                 </div>
               ) : (
                 <a href={islandLinks[pageData.island]}>
