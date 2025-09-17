@@ -28,7 +28,7 @@ export const CategoryList = ({ className = '', size = 'sm', categories, island, 
       {categories.map((category) => (
         <a
           href={getCategoryHref(category.label, island, category.is_primary)}
-          className={`tw-whitespace-nowrap tw-rounded-full tw-capitalize ${sizeClass} ${islandClasses[island].coloredBg}`}
+          className={`tw-whitespace-nowrap tw-rounded-full tw-capitalize tw-ring-offset-1 hover:tw-opacity-70 focus:tw-outline-none focus:tw-ring-1 ${sizeClass} ${islandClasses[island].coloredBg}`}
         >
           {category.label}
         </a>

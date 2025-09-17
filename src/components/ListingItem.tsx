@@ -25,7 +25,10 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
 
   return (
     <li className={`${className} tw-overflow-clip tw-rounded-md tw-bg-white tw-shadow-md`} {...props}>
-      <a className="tw-relative tw-flex tw-flex-wrap sm:tw-flex-col" href={getListingHref(listingURL)}>
+      <a
+        className="tw-relative tw-flex tw-flex-wrap tw-ring-offset-1 focus:tw-ring-1 sm:tw-flex-col"
+        href={getListingHref(listingURL)}
+      >
         <div
           className={`tw-relative tw-aspect-square tw-h-16 tw-w-16 tw-shrink-0 sm:tw-aspect-video sm:tw-h-auto sm:tw-w-full`}
         >
