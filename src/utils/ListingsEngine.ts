@@ -374,6 +374,7 @@ export class ListingsEngine extends EventTarget {
       null,
       res.data.fuzzy_search_categories
         .map((c) => ({
+          is_primary: false,
           ...c,
           // spoof the category type
           listing_category_tags: [],
@@ -457,6 +458,12 @@ class CollectionManager extends EventTarget {
             const { list, map } = await this.loadCollection<Category>('All Categories')
             this.allCategories = list
             this.allCategoriesMap = map
+            break
+          }
+          case 'Categories': {
+            const { list, map } = await this.loadCollection<Category>('Categories')
+            this.primaryCategories = list
+            this.primaryCategoriesMap = map
             break
           }
         }

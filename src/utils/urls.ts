@@ -32,19 +32,21 @@ export const getListingHref = (listingUrl: string) => {
   }
 }
 
-export const getCategoryHref = (category: string, island: string) => {
+export const getCategoryHref = (category: string, island: string, isPrimary?: boolean) => {
   switch (env) {
     case 'preview':
-      return `/site/${siteID}/explore?category=${category}${
-        island ? `&island=${island}` : ''
+      return `/site/${siteID}/explore${isPrimary ? `/${encodeURIComponent(category)}` : `?category=${category}`}${
+        island ? `${isPrimary ? '?' : '&'}island=${island}` : ''
       }&preview=true&insitepreview=true&dm_device=${deviceType}`
     case 'editor':
-      return `/site/${siteID}/explore?category=${category}${
-        island ? `&island=${island}` : ''
+      return `/site/${siteID}/explore${isPrimary ? `/${encodeURIComponent(category)}` : `?category=${category}`}${
+        island ? `${isPrimary ? '?' : '&'}island=${island}` : ''
       }&preview=true&nee=true&showOriginal=true&dm_checkSync=1&dm_try_mode=true&dm_device=${deviceType}`
     case 'live':
     default:
-      return `/explore?category=${category}${island ? `&island=${island}` : ''}`
+      return `/explore${isPrimary ? `/${encodeURIComponent(category)}` : `?category=${category}`}${
+        island ? `${isPrimary ? '?' : '&'}island=${island}` : ''
+      }`
   }
 }
 

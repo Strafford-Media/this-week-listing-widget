@@ -44,6 +44,7 @@ export interface Listing {
 export interface Category {
   id: number
   label: string
+  is_primary: boolean
   listings_count?: number
   listing_category_tags: {
     id: number

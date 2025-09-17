@@ -39,6 +39,8 @@ const aspectRatio: Record<string, string> = {
 const imageWidths = ['', '', 'tw-max-w-[45%]', 'tw-max-w-[28%]', 'tw-max-w-[21%]']
 const imageSpacing = ['', '', 'tw-gap-[10%]', 'tw-gap-[8%]', 'tw-gap-[5.3%]']
 
+const islandsInOrder = ['kauai', 'oahu', 'maui', 'hawaii']
+
 const socialPrefixes: Record<string, string> = {
   twitter: 'https://twitter.com/',
   facebook: 'https://facebook.com/',
@@ -62,8 +64,6 @@ export interface FullListingProps extends ComponentProps<'div'> {}
 
 export const FullListing = ({ className = '', ...props }: FullListingProps) => {
   const { pageData } = useDudaContext()
-
-  const allIslands = pageData?.island.split('|') ?? []
 
   const [categories, setCategories] = useState(pageData?.categories)
 
@@ -153,7 +153,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               )}
               {islands.length > 1 && (
                 <HawaiianIslands
-                  className={`tw-max-w-48 tw-self-center tw-text-green-200 ${allIslands
+                  className={`tw-max-w-48 tw-self-center tw-text-green-200 ${islands
                     .map((isle) => islandClasses[isle].islandHighlight)
                     .filter(Boolean)
                     .join(' ')}`}
@@ -161,15 +161,19 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
                 />
               )}
               {islands.length > 1 ? (
-                <div className={`tw-flex tw-w-full tw-flex-nowrap ${imageSpacing[islands.length]}`}>
-                  {islands
-                    .slice()
-                    .reverse()
-                    .map((isle, _, arr) => (
-                      <a href={islandLinks[isle]} class={`tw-shrink ${imageWidths[arr.length]}`}>
-                        <img className={`${aspectRatio[isle]}`} src={islandLogos[isle]} />
-                      </a>
-                    ))}
+                <div
+                  className={`tw-grid tw-w-full tw-grid-cols-4 ${imageSpacing[islands.length]} ${
+                    islands.includes('hawaii') ? '-tw-translate-x-[3%]' : ''
+                  }`}
+                >
+                  {islandsInOrder.map(
+                    (isle, _, arr) =>
+                      islands.includes(isle) && (
+                        <a href={islandLinks[isle]} class={`tw-h-full ${aspectRatio[isle]}`}>
+                          <img className={`${aspectRatio[isle]} tw-h-full`} src={islandLogos[isle]} />
+                        </a>
+                      ),
+                  )}
                 </div>
               ) : (
                 <a href={islandLinks[pageData.island]}>

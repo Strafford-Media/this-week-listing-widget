@@ -1,6 +1,7 @@
 import { islandClasses } from '../utils/islandClasses'
 import { Category } from '../@types/duda'
 import { ComponentProps } from 'preact'
+import { getCategoryHref } from '../utils/urls'
 
 export interface CategoryListProps extends Omit<ComponentProps<'div'>, 'size'> {
   categories?: Category[]
@@ -25,11 +26,12 @@ export const CategoryList = ({ className = '', size = 'sm', categories, island, 
       {...props}
     >
       {categories.map((category) => (
-        <span
+        <a
+          href={getCategoryHref(category.label, island, category.is_primary)}
           className={`tw-whitespace-nowrap tw-rounded-full tw-capitalize ${sizeClass} ${islandClasses[island].coloredBg}`}
         >
           {category.label}
-        </span>
+        </a>
       ))}
     </div>
   )

@@ -199,7 +199,7 @@ export const SearchBar = ({
               {searchResults.categoryTags.map((tag) => (
                 <li>
                   <a
-                    href={getCategoryHref(tag.label, island.value)}
+                    href={getCategoryHref(tag.label, island.value, tag.is_primary)}
                     className="tw-block tw-w-full tw-px-3 tw-py-1 tw-capitalize hover:tw-bg-sky-100 focus:tw-bg-sky-100 focus:tw-outline-none"
                   >
                     {tag.label} <span className="tw-text-sm tw-text-gray-500">({tag.listings_count})</span>
