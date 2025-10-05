@@ -97,9 +97,49 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 
   const { images: imagesMax, videos: videoMax } = mediaMaxes(pageData.tier)
 
+  const breadcrumbs = [
+    { href: '/', label: 'Home' },
+    ...(pageData.breadcrumbs ?? []),
+    { href: '', label: pageData.business_name },
+  ]
+
   return (
     <div className={`${className}`} {...props}>
       <section className="tw-pt-8 md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">
+        <script
+          data-auto="schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'http://schema.org/',
+              '@type': 'BreadcrumbList',
+              itemListElement: breadcrumbs.map(({ href, label }, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                item: { name: label, '@id': href },
+              })),
+            }),
+          }}
+        />
+        <nav aria-label="Breadcrumbs" class="tw-mb-4 tw-flex tw-flex-wrap tw-items-center tw-gap-2.5 sm:tw-mb-8">
+          {breadcrumbs.map(({ href, label }, i, l) => {
+            const isLast = i === l.length - 1
+            return (
+              <>
+                {href ? (
+                  <a href={href} class="bc-item ![color:--color_1]">
+                    <div class="">{label}</div>
+                  </a>
+                ) : (
+                  <div class="" data-auto="bc-unlinkable-item">
+                    {label}
+                  </div>
+                )}
+                {!isLast && <Chevron />}
+              </>
+            )
+          })}
+        </nav>
         <div
           className={`tw-mb-8 tw-flex ${
             pageData.logo ? 'tw-flex-col' : 'tw-flex-col-reverse'
@@ -357,4 +397,19 @@ const getMapAddress = (pageData: Listing) => {
   }
 
   return {}
+}
+
+const Chevron = () => {
+  return (
+    <span aria-hidden="true">
+      <svg data-auto="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M5.46967 3.46967C5.76256 3.17678 6.23744 3.17678 6.53033 3.46967L10.5303 7.46967C10.8232 7.76256 10.8232 8.23744 10.5303 8.53033L6.53033 12.5303C6.23744 12.8232 5.76256 12.8232 5.46967 12.5303C5.17678 12.2374 5.17678 11.7626 5.46967 11.4697L8.93934 8L5.46967 4.53033C5.17678 4.23744 5.17678 3.76256 5.46967 3.46967Z"
+          fill="currentColor"
+        />
+      </svg>
+    </span>
+  )
 }

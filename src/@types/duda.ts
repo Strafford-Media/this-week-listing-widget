@@ -39,6 +39,7 @@ export interface Listing {
   }[]
   booking_links: []
   categories?: Category[]
+  breadcrumbs?: { href: string; label: string }[]
 }
 
 export interface Category {
