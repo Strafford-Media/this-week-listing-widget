@@ -52,7 +52,7 @@ export const PhotoGallery = ({ className = '', images, ...props }: PhotoGalleryP
         {images.map((image, index) => (
           <li
             className={`${
-              enhance ? 'm-4 tw-h-full tw-w-full' : 'tw-h-40 tw-max-w-[90vw]'
+              enhance ? 'tw-h-full tw-w-full tw-p-4' : 'tw-h-40 tw-max-w-[90vw]'
             } tw-flex tw-shrink-0 tw-snap-center`}
             key={image.url}
             onClick={(e) => {

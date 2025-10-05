@@ -105,7 +105,7 @@ export interface MauiProps extends ComponentProps<'svg'> {}
 
 export const Maui = ({ className = '', strokeWidth = 150, ...props }: MauiProps) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -7000 16000 16000" className={className} {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="500 -6000 14100 14100" className={className} {...props}>
       <g id="Hawaii (state)" style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <path
           id="Molokai"
@@ -133,7 +133,7 @@ export interface OahuProps extends ComponentProps<'svg'> {}
 
 export const Oahu = ({ className = '', strokeWidth = 150, ...props }: OahuProps) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-14000 -13000 16000 16000" className={className} {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-9500 -9000 7000 7000" className={className} {...props}>
       <g style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <g id="Oahu">
           <path
@@ -159,7 +159,7 @@ export interface KauaiProps extends ComponentProps<'svg'> {}
 
 export const Kauai = ({ className = '', strokeWidth = 150, ...props }: KauaiProps) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-32000 -19000 16000 16000" className={className} {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-30000 -17000 10500 10500" className={className} {...props}>
       <g style={`fill: currentColor; stroke: #ecd9c7; stroke-width: ${strokeWidth};`}>
         <path
           id="Kauai"

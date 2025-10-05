@@ -145,7 +145,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             pageData.logo ? 'tw-flex-col' : 'tw-flex-col-reverse'
           } tw-gap-6 md:tw-flex-row lg:tw-gap-12`}
         >
-          <div className="tw-flex tw-w-full md:tw-max-w-72 md:tw-flex-col">
+          <div className="tw-flex tw-shrink-0 md:tw-max-w-72 md:tw-flex-col">
             {pageData.logo && (
               <OptimizedImage
                 optimizedWidth={300}
@@ -155,36 +155,34 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               />
             )}
             <div
-              className={`${
-                pageData.logo ? 'tw-hidden' : 'tw-mx-auto tw-flex'
-              } tw-shrink tw-flex-col tw-items-center md:tw-flex`}
+              className={`${pageData.logo ? 'tw-hidden' : 'tw-flex'} tw-shrink tw-flex-col tw-items-center md:tw-flex`}
             >
               {pageData.island === 'oahu' && (
-                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                <a className="" href={islandLinks[pageData.island]}>
                   <Oahu
-                    className="tw-w-full tw-max-w-48 tw-scale-[2] tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
+                    className="tw-w-full tw-max-w-48 tw-text-green-200 [--island-highlight-color:theme(colors.yellow.400)]"
                     strokeWidth={200}
                   />
                 </a>
               )}
               {pageData.island === 'maui' && (
-                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                <a className="" href={islandLinks[pageData.island]}>
                   <Maui
-                    className="tw-w-full tw-max-w-48 tw-scale-125 tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
+                    className="tw-w-full tw-max-w-48 tw-text-green-200 [--island-highlight-color:theme(colors.pink.500)]"
                     strokeWidth={200}
                   />
                 </a>
               )}
               {pageData.island === 'kauai' && (
-                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                <a className="" href={islandLinks[pageData.island]}>
                   <Kauai
-                    className="tw-w-full tw-max-w-48 tw-scale-150 tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
+                    className="tw-w-full tw-max-w-48 tw-text-green-200 [--island-highlight-color:theme(colors.fuchsia.500)]"
                     strokeWidth={200}
                   />
                 </a>
               )}
               {pageData.island === 'hawaii' && (
-                <a className="tw-self-center" href={islandLinks[pageData.island]}>
+                <a className="" href={islandLinks[pageData.island]}>
                   <BigIsland
                     className="tw-w-full tw-max-w-48 tw-text-green-200 [--island-highlight-color:theme(colors.red.500)]"
                     strokeWidth={200}
@@ -222,7 +220,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               )}
             </div>
           </div>
-          <div className="tw-relative tw-grow tw-pt-2">
+          <div className="tw-relative tw-grow">
             {pageData.this_week_recommended && (
               <div className="tw-absolute -tw-top-10 tw-right-0 tw-flex tw-rotate-12 tw-flex-col tw-items-center tw-text-[9px] tw-font-bold tw-leading-[1] tw-text-red-500">
                 <img
@@ -234,7 +232,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             )}
             {pageData.rich_description && (
               <p
-                className="tw-prose tw-mb-6 [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"
+                className="tw-prose tw-mb-6 !tw-max-w-full [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"
                 dangerouslySetInnerHTML={{ __html: pageData.rich_description }}
               />
             )}
