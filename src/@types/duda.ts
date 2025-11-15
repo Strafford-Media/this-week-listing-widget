@@ -25,6 +25,7 @@ export interface Listing {
   action_shot1?: string
   logo?: string
   this_week_recommended: boolean
+  is_island_original: boolean
   social_media: Record<string, string>
   business_hours: any
   images: {

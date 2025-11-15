@@ -12,6 +12,7 @@ import { ListingsEngine } from '../utils/ListingsEngine'
 import { islandClasses } from '../utils/islandClasses'
 import { CategoryList } from './CategoryList'
 import { ensureHttpsUrl, getLinkPrefix } from '../utils/urls'
+import { IslandOriginalBadge } from './IslandOriginalBadge'
 
 const listingEngine = new ListingsEngine()
 
@@ -230,6 +231,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
                 Recommended!
               </div>
             )}
+            {pageData.is_island_original && <IslandOriginalBadge className="tw-mb-2 tw-w-fit" />}
             {pageData.rich_description && (
               <p
                 className="tw-prose tw-mb-6 !tw-max-w-full [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"

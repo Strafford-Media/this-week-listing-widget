@@ -6,6 +6,8 @@ import { SimpleHawaii } from './SimpleHawaii'
 import { deviceType } from '../utils/environment'
 import { CategoryList } from './CategoryList'
 import { islandClasses } from '../utils/islandClasses'
+import { IslandOriginalBadge } from './IslandOriginalBadge'
+import { StarIcon } from './StarIcon'
 
 export interface ListingItemProps extends ComponentProps<'li'> {
   listing: Listing
@@ -45,6 +47,12 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
               backgroundImage: `url(${optimizedImg})`,
             }}
           ></div>
+          {listing.is_island_original && (
+            <>
+              <StarIcon className="tw-absolute tw-left-1 tw-top-1 tw-h-5 tw-w-5 tw-text-yellow-300 tw-drop-shadow sm:tw-hidden" />
+              <IslandOriginalBadge className="tw-absolute tw-left-1 tw-top-1 tw-hidden sm:tw-flex" />
+            </>
+          )}
         </div>
         <div className="tw-relative tw-flex tw-h-16 tw-w-[calc(100%-4rem)] tw-shrink tw-flex-col tw-px-2 tw-text-justify tw-shadow-[inset_0_-7px_9px_-7px_rgba(0,0,0,0.4)] sm:tw-h-[180px] sm:tw-w-full sm:tw-shrink-0 sm:tw-pt-2">
           <h5 className="tw-my-0 tw-shrink-0 tw-truncate tw-text-sm sm:tw-text-clip sm:tw-text-base">
