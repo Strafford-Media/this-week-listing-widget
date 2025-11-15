@@ -10,6 +10,7 @@ interface UseListingsEngineProps {
   island?: string
   tiers?: string[]
   promotedOnly?: boolean
+  islandOriginalsOnly?: boolean
   ids?: string[]
 }
 
@@ -26,6 +27,7 @@ export const useListingsEngine = ({
   categories,
   tiers,
   promotedOnly = false,
+  islandOriginalsOnly = false,
 }: UseListingsEngineProps = {}) => {
   const [collectionsLoaded, setCollectionsLoaded] = useState(listingsEngine.collectionManager.loaded)
   const loadedRef = useRef(false)
@@ -53,7 +55,7 @@ export const useListingsEngine = ({
       listingsEngine.search({ search, island, limit: 20 }).then((v) => {
         loadedRef.current = true
 
-        if (categories?.length || tiers?.length || promotedOnly) {
+        if (categories?.length || tiers?.length || promotedOnly || islandOriginalsOnly) {
           const catMap = categories?.reduce<Record<string, 1>>((map, cat) => ({ ...map, [cat]: 1 }), {}) ?? {}
 
           setLists({
@@ -62,13 +64,15 @@ export const useListingsEngine = ({
               (l) =>
                 (!categories?.length || l.data.categories?.some((cat) => catMap[cat.label.toLowerCase()])) &&
                 (!tiers?.length || tiers.includes(l.data.tier)) &&
-                (!promotedOnly || l.data.promoted),
+                (!promotedOnly || l.data.promoted) &&
+                (!islandOriginalsOnly || l.data.is_island_original),
             ),
             suggestions: v.suggestions.filter(
               (l) =>
                 (!categories?.length || l.data.categories?.some((cat) => catMap[cat.label.toLowerCase()])) &&
                 (!tiers?.length || tiers.includes(l.data.tier)) &&
-                (!promotedOnly || l.data.promoted),
+                (!promotedOnly || l.data.promoted) &&
+                (!islandOriginalsOnly || l.data.is_island_original),
             ),
           })
         } else {
@@ -82,12 +86,12 @@ export const useListingsEngine = ({
     } else {
       loadedRef.current = true
       setLists({
-        list: listingsEngine.filterList({ island, categories, tiers, promotedOnly }),
+        list: listingsEngine.filterList({ island, categories, tiers, promotedOnly, islandOriginalsOnly }),
         matches: [],
         suggestions: [],
       })
     }
-  }, [search, island, categories, collectionsLoaded, tiers, promotedOnly, ids])
+  }, [search, island, categories, collectionsLoaded, tiers, promotedOnly, islandOriginalsOnly, ids])
 
   return { listingsEngine, lists, loaded: loadedRef.current }
 }

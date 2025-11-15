@@ -2,7 +2,7 @@ import { useDudaContext } from '../DudaContext'
 import { ComponentProps } from 'preact'
 import { ListingItem } from './ListingItem'
 import { useListingsEngine } from '../hooks/useListingsEngine'
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
+import { useMemo, useRef } from 'preact/hooks'
 
 export interface FeaturedListingsProps extends ComponentProps<'div'> {}
 
@@ -18,6 +18,7 @@ export const FeaturedListings = ({ className = '', ...props }: FeaturedListingsP
     basic,
     premium,
     promotedOnly,
+    islandOriginalsOnly,
   } = siteDetails.config
 
   const numericalMax = isNaN(Number(max)) ? 0 : Number(max)
@@ -51,7 +52,7 @@ export const FeaturedListings = ({ className = '', ...props }: FeaturedListingsP
     return tierList
   }, [basic, premium])
 
-  const { lists, loaded } = useListingsEngine({ island, categories, tiers, promotedOnly, ids })
+  const { lists, loaded } = useListingsEngine({ island, categories, tiers, promotedOnly, islandOriginalsOnly, ids })
 
   const limit = ids.length ? lists.list.length : numericalMax || lists.list.length
 

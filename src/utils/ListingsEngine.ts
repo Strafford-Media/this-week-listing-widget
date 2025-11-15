@@ -58,12 +58,14 @@ const listingSortPriority = (l: Listing) => {
       return 1
     case l.this_week_recommended:
       return 2
-    case l.tier === 'standard':
+    case l.is_island_original:
       return 3
-    case l.tier === 'basic':
+    case l.tier === 'standard':
       return 4
-    default:
+    case l.tier === 'basic':
       return 5
+    default:
+      return 6
   }
 }
 
@@ -209,13 +211,15 @@ export class ListingsEngine extends EventTarget {
     categories,
     tiers,
     promotedOnly = false,
+    islandOriginalsOnly = false,
   }: {
     island?: string
     categories?: string[]
     tiers?: string[]
     promotedOnly?: boolean
+    islandOriginalsOnly?: boolean
   }): CollectionResult<Listing>['values'] {
-    if (!island && !categories?.length && !tiers?.length && !promotedOnly) {
+    if (!island && !categories?.length && !tiers?.length && !promotedOnly && !islandOriginalsOnly) {
       return this.collectionManager.listings
     }
 
@@ -226,7 +230,8 @@ export class ListingsEngine extends EventTarget {
         (!island || l.data.island?.includes(island)) &&
         (!categories?.length || l.data.categories?.some((c) => categoryMap[c.label.toLowerCase()])) &&
         (!tiers?.length || tiers.includes(l.data.tier)) &&
-        (!promotedOnly || l.data.promoted),
+        (!promotedOnly || l.data.promoted) &&
+        (!islandOriginalsOnly || l.data.is_island_original),
     )
   }
 
