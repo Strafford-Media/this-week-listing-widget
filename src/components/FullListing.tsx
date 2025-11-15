@@ -106,7 +106,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 
   return (
     <div className={`${className}`} {...props}>
-      <section className="tw-pt-8 md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">
+      <section className="tw-pt-4 sm:tw-pt-8 md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">
         <script
           data-auto="schema"
           type="application/ld+json"
