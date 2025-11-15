@@ -122,7 +122,10 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
             }),
           }}
         />
-        <nav aria-label="Breadcrumbs" class="tw-mb-4 tw-flex tw-flex-wrap tw-items-center tw-gap-2.5 sm:tw-mb-8">
+        <nav
+          aria-label="Breadcrumbs"
+          class="tw-mb-4 tw-flex tw-flex-wrap tw-items-center tw-gap-1 tw-text-xs sm:tw-mb-8 sm:tw-gap-2.5 sm:tw-text-base"
+        >
           {breadcrumbs.map(({ href, label }, i, l) => {
             const isLast = i === l.length - 1
             return (
