@@ -1,13 +1,15 @@
 import { getListingHref } from '../utils/urls'
 import { Listing } from '../@types/duda'
 import { ComponentProps } from 'preact'
-import { useOptimizedImageURL } from 'hooks/useOptimizedImageURL'
+import { useOptimizedImageURL } from '../hooks/useOptimizedImageURL'
 import { SimpleHawaii } from './SimpleHawaii'
 import { deviceType } from '../utils/environment'
 import { CategoryList } from './CategoryList'
 import { islandClasses } from '../utils/islandClasses'
 import { IslandOriginalBadge } from './IslandOriginalBadge'
 import { StarIcon } from './StarIcon'
+import { TagIcon } from './TagIcon'
+import { PromoCodesAvailableBadge } from './PromoCodesAvailableBadge'
 
 export interface ListingItemProps extends ComponentProps<'li'> {
   listing: Listing
@@ -47,10 +49,24 @@ export const ListingItem = ({ className = '', listing, listingURL, ...props }: L
               backgroundImage: `url(${optimizedImg})`,
             }}
           ></div>
+          {/* {listing.promo_code_count > 0 && (
+            <>
+              <TagIcon className="tw-absolute tw-left-1 tw-top-1 tw-h-5 tw-w-5 tw-text-red-500 tw-drop-shadow sm:tw-hidden" />
+              <PromoCodesAvailableBadge className="tw-absolute tw-left-1 tw-top-1 tw-hidden sm:tw-flex" />
+            </>
+          )} */}
           {listing.is_island_original && (
             <>
-              <StarIcon className="tw-absolute tw-left-1 tw-top-1 tw-h-5 tw-w-5 tw-text-yellow-300 tw-drop-shadow sm:tw-hidden" />
-              <IslandOriginalBadge className="tw-absolute tw-left-1 tw-top-1 tw-hidden sm:tw-flex" />
+              <StarIcon
+                className={`tw-absolute tw-left-1 tw-top-1 tw-h-5 tw-w-5 tw-text-yellow-300 tw-drop-shadow sm:tw-hidden ${
+                  /*listing.promo_code_count > 0 ? 'tw-left-6' :*/ 'tw-left-1'
+                }`}
+              />
+              <IslandOriginalBadge
+                className={`tw-absolute tw-left-1 tw-top-1 tw-hidden sm:tw-flex ${
+                  /*listing.promo_code_count > 0 ? 'tw-top-9' :*/ 'tw-top-1'
+                }`}
+              />
             </>
           )}
         </div>

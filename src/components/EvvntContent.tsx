@@ -32,9 +32,9 @@ export const EvvntContent = ({ className = '', island, ...props }: EvvntContentP
 
   useEffect(() => {
     const intervalRef = window.setInterval(() => {
-      if (typeof (window as any).evvnt_require === 'function') {
+      if (typeof window.evvnt_require === 'function') {
         window.clearInterval(intervalRef)
-        ;(window as any).evvnt_require('evvnt/discovery_plugin').init({
+        window.evvnt_require('evvnt/discovery_plugin').init({
           api_key: publishers[island]?.apiKey,
           publisher_id: publishers[island]?.id,
           discovery: {

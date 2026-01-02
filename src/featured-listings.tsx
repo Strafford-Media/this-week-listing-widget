@@ -3,7 +3,7 @@ import { DudaProvider } from './DudaContext'
 import { DudaContextValue } from './@types/duda'
 import { FeaturedListings } from './components/FeaturedListings'
 
-let root
+let root: any
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   root = container
   if (container) {
@@ -18,33 +18,11 @@ export async function init({ container, props }: { container: Element; props: Du
 }
 
 export function clean() {
-  if (root!) {
+  if (root) {
     root.unmount()
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
-  const root = document.getElementById('featured-listings')!
-
-  render(
-    <DudaProvider
-      value={{
-        siteDetails: {
-          device: 'desktop',
-          page: 'home',
-          inEditor: true,
-          accountId: '29a2c5ba8b6949a0bf32212853cc4ac5',
-          siteId: '948efe8a',
-          widgetId: 'a9486149096146debe5387df3e73b6f8',
-          widgetVersion: '-1',
-          elementId: '1789939675',
-          config: {},
-          locale: 'en',
-        },
-      }}
-    >
-      <FeaturedListings />
-    </DudaProvider>,
-    root,
-  )
+if (window.dmAPI) {
+  window.dmAPI.registerExternalWidget('featuredListings', { init, clean })
 }

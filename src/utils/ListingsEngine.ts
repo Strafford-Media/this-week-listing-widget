@@ -412,13 +412,13 @@ export class ListingsEngine extends EventTarget {
 }
 
 const getCollectionManager = () => {
-  if (!(window as any).thisWeekCollectionManager) {
-    ;(window as any).thisWeekCollectionManager = new CollectionManager()
+  if (!window.thisWeekCollectionManager) {
+    window.thisWeekCollectionManager = new CollectionManager()
   }
-  return (window as any).thisWeekCollectionManager
+  return window.thisWeekCollectionManager
 }
 
-class CollectionManager extends EventTarget {
+export class CollectionManager extends EventTarget {
   collectionsAPI: any
   listings: CollectionResult<Listing>['values'] = []
   listingsMap: Record<string, CollectionResult<Listing>['values'][number]> = {}
@@ -438,11 +438,11 @@ class CollectionManager extends EventTarget {
 
   async loadCollections(collectionNames: (keyof typeof collectionMapping)[] = ['Listings']) {
     if (!this.collectionsAPI) {
-      if (typeof (window as any).dmAPI === 'undefined') {
+      if (typeof window.dmAPI === 'undefined') {
         return console.error('no dmAPI object available to bootstrap widget content')
       }
 
-      const collectionsAPI = await (window as any).dmAPI?.loadCollectionsAPI?.()
+      const collectionsAPI = await window.dmAPI?.loadCollectionsAPI?.()
 
       if (!collectionsAPI) return console.error('failed to load collections API')
 

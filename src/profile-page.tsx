@@ -1,14 +1,14 @@
 import { render } from 'preact'
-import { DudaProvider } from './DudaContext'
 import { DudaContextValue } from './@types/duda'
-import { ListingList } from './components/ListingList'
+import { DudaProvider } from './DudaContext'
+import { ProfilePage } from './components/ProfilePage'
 
 let root: any
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
-    render(
+    root = render(
       <DudaProvider value={props}>
-        <ListingList />
+        <ProfilePage />
       </DudaProvider>,
       container,
       container.firstChild as Element,
@@ -18,10 +18,10 @@ export async function init({ container, props }: { container: Element; props: Du
 
 export function clean() {
   if (root) {
-    root.unmount()
+    root.unmount?.()
   }
 }
 
 if (window.dmAPI) {
-  window.dmAPI.registerExternalWidget('listingList', { init, clean })
+  window.dmAPI.registerExternalWidget('profilePage', { init, clean })
 }

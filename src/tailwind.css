@@ -9,8 +9,6 @@
 
 @tailwind components;
 
-@tailwind utilities;
-
 @layer components {
   .categories-area {
     grid-area: categories;
@@ -46,9 +44,13 @@
   }
 }
 
+@tailwind utilities;
+
 @layer utilities {
   .tw-flex-center {
-    @apply tw-flex tw-items-center tw-justify-center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .no-scrollbar {

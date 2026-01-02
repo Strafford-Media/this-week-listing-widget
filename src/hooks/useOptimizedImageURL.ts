@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
 import { optimizeDudaImg } from '../utils/urls'
-import { JSXInternal } from 'preact/src/jsx'
+import { Signalish } from 'preact'
 
 export const useOptimizedImageURL = (
-  original: string | JSXInternal.SignalLike<string | undefined>,
+  original: string | Signalish<string | undefined>,
   width = 300,
   placeholder = '',
 ) => {

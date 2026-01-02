@@ -3,7 +3,7 @@ import { HawaiianIslandsToggler } from './components/HawaiianIslandToggler'
 import { DudaContextValue } from './@types/duda'
 import { DudaProvider } from './DudaContext'
 
-let root
+let root: any
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
     render(
@@ -17,13 +17,11 @@ export async function init({ container, props }: { container: Element; props: Du
 }
 
 export function clean() {
-  if (root!) {
+  if (root) {
     root.unmount()
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
-  const root = document.getElementById('island-hero')!
-
-  render(<HawaiianIslandsToggler />, root)
+if (window.dmAPI) {
+  window.dmAPI.registerExternalWidget('hawaiianIslandsToggler', { init, clean })
 }

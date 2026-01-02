@@ -13,6 +13,7 @@ import { islandClasses } from '../utils/islandClasses'
 import { CategoryList } from './CategoryList'
 import { ensureHttpsUrl, getLinkPrefix } from '../utils/urls'
 import { IslandOriginalBadge } from './IslandOriginalBadge'
+import { PromoCodes } from './PromoCodes'
 
 const listingEngine = new ListingsEngine()
 
@@ -37,7 +38,6 @@ const aspectRatio: Record<string, string> = {
   kauai: 'tw-aspect-[200/63]',
 }
 
-const imageWidths = ['', '', 'tw-max-w-[45%]', 'tw-max-w-[28%]', 'tw-max-w-[21%]']
 const imageSpacing = ['', '', 'tw-gap-[10%]', 'tw-gap-[8%]', 'tw-gap-[5.3%]']
 
 const islandsInOrder = ['kauai', 'oahu', 'maui', 'hawaii']
@@ -68,6 +68,8 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
 
   const [categories, setCategories] = useState(pageData?.categories)
 
+  const loggedInAsSubscriber = false
+
   useEffect(() => {
     const listener = () => {
       setCategories(listingEngine.collectionManager.listingsMap[pageData?.id!]?.data?.categories)
@@ -81,14 +83,45 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
   useEffect(() => {
     const hasAddress = pageData?.primary_address || pageData?.lat_lng
 
-    if (typeof (window as any).dmAPI !== 'undefined' && hasAddress && pageData.tier !== 'basic') {
-      ;(window as any).dmAPI.drawMap({
+    if (typeof window.dmAPI !== 'undefined' && hasAddress && pageData.tier !== 'basic') {
+      window.dmAPI.drawMap({
         container: '.main-listing-mapbox-map',
         ...getMapAddress(pageData),
         // layout: 'layout2',
       })
     }
   }, [pageData?.primary_address, pageData?.lat_lng, pageData?.tier])
+
+  useEffect(() => {
+    if (!pageData?.id || !loggedInAsSubscriber) return
+    ;(async () => {
+      const date = new Date().toISOString().split('T')[0]
+      const [err, value] = await listingEngine.graphqlRequest(
+        `
+        query get_promo_codes_for_listing($id:Int!) {
+          listing_by_pk(id:$id) {
+            id
+            promo_code_count
+            promo_codes (where:{_or:[{expiration:{_is_null:true}},{expiration:{_gt:"${date}"}}]}){
+              id
+              code
+              label
+              expiration
+            }
+            business_name
+          }
+        }
+      `,
+        { id: pageData?.id },
+      )
+
+      if (err) {
+        return console.error(err)
+      }
+
+      console.log(value)
+    })()
+  }, [pageData?.id])
 
   if (!pageData) return null
 
@@ -209,7 +242,7 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
                   }`}
                 >
                   {islandsInOrder.map(
-                    (isle, _, arr) =>
+                    (isle) =>
                       islands.includes(isle) && (
                         <a href={islandLinks[isle]} class={`tw-h-full ${aspectRatio[isle]}`}>
                           <img className={`${aspectRatio[isle]} tw-h-full`} src={islandLogos[isle]} />
@@ -234,7 +267,10 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
                 Recommended!
               </div>
             )}
-            {pageData.is_island_original && <IslandOriginalBadge className="tw-mb-2 tw-w-fit" />}
+            {pageData.is_island_original && <IslandOriginalBadge className="tw-mb-2" />}
+            {/* {pageData.promo_code_count > 0 && (
+              <PromoCodes className="tw-my-2" visitorHook={pageData.promo_code_visitor_hook} />
+            )} */}
             {pageData.rich_description && (
               <p
                 className="tw-prose tw-mb-6 !tw-max-w-full [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"

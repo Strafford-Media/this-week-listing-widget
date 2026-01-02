@@ -6,3 +6,4 @@ dist
 apollo.config.js
 .env
 **/.DS_Store
+old_public

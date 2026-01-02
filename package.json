@@ -1,13 +1,11 @@
 {
   "name": "this-week-listing-widget",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.html",
   "scripts": {
-    "start": "MODE=development parcel serve src/index.html -p 2023",
-    "build": "MODE=production parcel build",
-    "watch": "NODE_ENV=production parcel watch -p 2023",
-    "test": "node -r ts-node/register --loader ts-node/esm --test ./tests/pg_trgm.spec.ts",
-    "test:watch": "node --watch -r ts-node/register --loader ts-node/esm --test ./tests/pg_trgm.spec.ts"
+    "start": "rollup -c -w",
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
   },
   "repository": {
     "type": "git",
@@ -28,99 +26,21 @@
   },
   "homepage": "https://github.com/Strafford-Media/this-week-listing-widget#readme",
   "devDependencies": {
-    "@parcel/transformer-inline-string": "^2.10.1",
+    "@rollup/plugin-alias": "^6.0.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
     "@tailwindcss/typography": "^0.5.15",
-    "@types/node": "^20.8.9",
-    "autoprefixer": "^10.4.16",
-    "parcel": "^2.10.1",
+    "@types/node": "^25.0.3",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
     "prettier-plugin-tailwindcss": "^0.5.7",
-    "process": "^0.11.10",
+    "rollup": "^4.54.0",
+    "rollup-plugin-esbuild": "^6.2.1",
+    "rollup-plugin-postcss": "^4.0.2",
     "tailwindcss": "^3.3.5",
-    "ts-node": "^10.9.1"
-  },
-  "full-listing": "public/full-listing.js",
-  "listing-list": "public/listing-list.js",
-  "featured-listings": "public/featured-listings.js",
-  "search-bar": "public/search-bar.js",
-  "ad-placement": "public/ad-placement.js",
-  "ad-group": "public/ad-group.js",
-  "evvnt-gallery": "public/evvnt-gallery.js",
-  "hawaiian-islands": "public/hawaiian-islands.js",
-  "this-week-widgets-css": "public/this-week-widgets.css",
-  "targets": {
-    "main": false,
-    "full-listing": {
-      "source": "src/full-listing.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "listing-list": {
-      "source": "src/listing-list.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "featured-listings": {
-      "source": "src/featured-listings.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "search-bar": {
-      "source": "src/search-bar.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "ad-placement": {
-      "source": "src/ad-placement.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "ad-group": {
-      "source": "src/ad-group.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "evvnt-gallery": {
-      "source": "src/evvnt-gallery.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "hawaiian-islands": {
-      "source": "src/hawaiian-islands.tsx",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    },
-    "this-week-widgets-css": {
-      "source": "src/tailwind.css",
-      "scopeHoist": false,
-      "engines": {
-        "browsers": "IE 11"
-      },
-      "outputFormat": "global"
-    }
+    "typescript": "^5.9.3"
   },
   "prettier": {
     "semi": false,
@@ -132,7 +52,8 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.0.3",
-    "preact": "^10.19.3"
+    "@nhost/nhost-js": "^4.2.1",
+    "preact": "^10.28.1"
   },
   "alias": {
     "preact/jsx-dev-runtime": "preact/jsx-runtime",

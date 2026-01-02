@@ -1,4 +1,4 @@
-import { JSXInternal } from 'preact/src/jsx'
+import { Signalish } from 'preact'
 import { isDevSimulation, env, siteID, deviceType } from './environment'
 
 let functionsUrl = ''
@@ -63,13 +63,13 @@ export const getLinkPrefix = () => {
 
 const imageEndPathRegex = /-[\d]{1,5}(w\.[a-z]{2,7})$/
 
-export const optimizeDudaImg = (src: string | JSXInternal.SignalLike<string | undefined>, width?: number) => {
+export const optimizeDudaImg = (src: string | Signalish<string | undefined>, width?: number) => {
   if (!src || typeof src !== 'string') {
     return src
   }
 
   if (src.startsWith('https://irp.cdn-website.com')) {
-    return (window as any).dmAPI.getOptimizedImageURL(src, width)
+    return window.dmAPI?.getOptimizedImageURL(src, width)
   }
 
   if (src.startsWith('https://lirp.cdn-website.com')) {

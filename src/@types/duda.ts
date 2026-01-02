@@ -1,6 +1,14 @@
+import { NhostClient } from '@nhost/nhost-js'
+import { CollectionManager } from 'utils/ListingsEngine'
+
 declare global {
   interface Window {
     FH: any
+    nhost: NhostClient
+    dmAPI: any
+    evvnt_require(module: string): any
+    postscribe(el: any, s: string): any
+    thisWeekCollectionManager: CollectionManager
   }
 }
 
@@ -28,6 +36,8 @@ export interface Listing {
   is_island_original: boolean
   social_media: Record<string, string>
   business_hours: any
+  promo_code_count: number
+  promo_code_visitor_hook: string
   images: {
     url: string
     status: 'UPLOADED'

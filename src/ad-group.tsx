@@ -1,8 +1,8 @@
 import { render } from 'preact'
 import { DudaContextValue } from './@types/duda'
-import { AdMultiPlacement } from 'components/AdMultiPlacement'
+import { AdMultiPlacement } from './components/AdMultiPlacement'
 
-let root
+let root: any
 export async function init({ container, props }: { container: Element; props: DudaContextValue }) {
   if (container) {
     const size = props?.siteDetails?.config?.size
@@ -20,13 +20,11 @@ export async function init({ container, props }: { container: Element; props: Du
 }
 
 export function clean() {
-  if (root!) {
+  if (root) {
     root.unmount()
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
-  const root = document.getElementById('ad-placement')!
-
-  render(<AdMultiPlacement max={3} size="300x250" />, root)
+if (window.dmAPI) {
+  window.dmAPI.registerExternalWidget('adGroup', { init, clean })
 }

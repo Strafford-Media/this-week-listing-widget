@@ -1,4 +1,4 @@
-import { useEventListener } from 'hooks/useEventListener'
+import { useEventListener } from '../hooks/useEventListener'
 import React, { ComponentProps } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
 

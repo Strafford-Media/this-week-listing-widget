@@ -1,4 +1,4 @@
-import { useOptimizedImageURL } from 'hooks/useOptimizedImageURL'
+import { useOptimizedImageURL } from '../hooks/useOptimizedImageURL'
 import { ComponentProps } from 'preact'
 
 export interface OptimizedImageProps extends ComponentProps<'img'> {
