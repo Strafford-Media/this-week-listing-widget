@@ -106,8 +106,6 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
     { href: '', label: pageData.business_name },
   ]
 
-  console.log(pageData)
-
   return (
     <div className={`${className}`} {...props}>
       <section className="sm:tw-pt-8 md:tw-mx-auto md:tw-max-w-6xl md:tw-p-8">

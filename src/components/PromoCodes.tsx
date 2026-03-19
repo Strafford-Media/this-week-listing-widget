@@ -31,7 +31,6 @@ export const PromoCodes = ({ className = '', visitorHook = '', listingId, ...pro
     skip: !loggedIn || !listingId,
   })
 
-  console.log(data)
   if (!loggedIn) {
     return (
       <div
