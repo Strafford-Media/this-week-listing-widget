@@ -17,6 +17,10 @@ module.exports = {
       content: {
         x: "'\\2715'",
       },
+      fontFamily: {
+        montserrat: 'Montserrat',
+        inter: 'Inter',
+      },
       minHeight: (theme) => ({
         ...theme('height'),
         ...theme('spacing'),
@@ -86,7 +90,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [require('@tailwindcss/forms')({ strategy: 'class' }), require('@tailwindcss/typography')],
   important: true,
   prefix: 'tw-',
 }

@@ -31,6 +31,7 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
+    "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^25.0.3",
     "autoprefixer": "^10.4.23",
@@ -52,7 +53,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.0.3",
-    "@nhost/nhost-js": "^4.2.1",
+    "@nhost/nhost-js": "^4.2.2",
     "preact": "^10.28.1"
   },
   "alias": {

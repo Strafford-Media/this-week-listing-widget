@@ -92,37 +92,6 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
     }
   }, [pageData?.primary_address, pageData?.lat_lng, pageData?.tier])
 
-  useEffect(() => {
-    if (!pageData?.id || !loggedInAsSubscriber) return
-    ;(async () => {
-      const date = new Date().toISOString().split('T')[0]
-      const [err, value] = await listingEngine.graphqlRequest(
-        `
-        query get_promo_codes_for_listing($id:Int!) {
-          listing_by_pk(id:$id) {
-            id
-            promo_code_count
-            promo_codes (where:{_or:[{expiration:{_is_null:true}},{expiration:{_gt:"${date}"}}]}){
-              id
-              code
-              label
-              expiration
-            }
-            business_name
-          }
-        }
-      `,
-        { id: pageData?.id },
-      )
-
-      if (err) {
-        return console.error(err)
-      }
-
-      console.log(value)
-    })()
-  }, [pageData?.id])
-
   if (!pageData) return null
 
   const socialKeys = Object.keys(pageData.social_media).filter((k) => pageData.social_media[k])
@@ -136,6 +105,8 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
     ...(pageData.breadcrumbs ?? []),
     { href: '', label: pageData.business_name },
   ]
+
+  console.log(pageData)
 
   return (
     <div className={`${className}`} {...props}>
@@ -268,9 +239,9 @@ export const FullListing = ({ className = '', ...props }: FullListingProps) => {
               </div>
             )}
             {pageData.is_island_original && <IslandOriginalBadge className="tw-mb-2" />}
-            {/* {pageData.promo_code_count > 0 && (
-              <PromoCodes className="tw-my-2" visitorHook={pageData.promo_code_visitor_hook} />
-            )} */}
+            {pageData.promo_code_count > 0 && (
+              <PromoCodes className="tw-my-2" visitorHook={pageData.promo_code_visitor_hook} listingId={pageData.id} />
+            )}
             {pageData.rich_description && (
               <p
                 className="tw-prose tw-mb-6 !tw-max-w-full [&_a]:tw-underline visited:[&_a]:tw-text-purple-400 hover:[&_a]:tw-text-blue-400 focus:[&_a]:tw-text-blue-400"

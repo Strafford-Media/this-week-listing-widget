@@ -113,3 +113,65 @@ export interface CollectionResult<T extends { id: number }> {
   language: string | null
   values: CollectionValue<T>[]
 }
+
+export interface TextQuestion {
+  id: number
+  label: string
+  question_type: 'text'
+  active: boolean
+  metadata: TextMetadata
+}
+
+export interface NumberQuestion {
+  id: number
+  label: string
+  question_type: 'number'
+  active: boolean
+  metadata: NumberMetadata
+}
+
+export interface CheckboxQuestion {
+  id: number
+  label: string
+  question_type: 'checkbox'
+  active: boolean
+  metadata: CheckboxMetadata
+}
+
+export interface ChoiceQuestion {
+  id: number
+  label: string
+  question_type: 'choice'
+  active: boolean
+  metadata: ChoiceMetadata
+}
+
+export type VisitorQuestion = TextQuestion | NumberQuestion | CheckboxQuestion | ChoiceQuestion
+
+export interface DefaultMetadata {
+  required?: boolean
+  description?: string
+}
+
+export interface TextMetadata extends DefaultMetadata {
+  defaultValue?: string
+  longform?: boolean
+  placeholder?: string
+}
+
+export interface NumberMetadata extends DefaultMetadata {
+  defaultValue?: number
+  min?: number
+  max?: number
+  step?: number
+  placeholder?: string | number
+}
+
+export interface ChoiceMetadata extends DefaultMetadata {
+  choices: { label: string; defaultChecked?: boolean }[]
+  multiple?: boolean
+}
+
+export interface CheckboxMetadata extends DefaultMetadata {
+  defaultValue?: boolean
+}

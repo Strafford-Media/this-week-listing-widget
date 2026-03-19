@@ -1,16 +1,16 @@
 import { Signalish } from 'preact'
-import { isDevSimulation, env, siteID, deviceType } from './environment'
+import { isDevSimulation, env, siteID, deviceType, isProdSimulation } from './environment'
 
 let functionsUrl = ''
 let hasuraUrl = ''
 
 export const setUrls = () => {
-  if (isDevSimulation) {
+  if (isDevSimulation && !isProdSimulation) {
     hasuraUrl = 'https://local.hasura.nhost.run/v1/graphql'
     functionsUrl = 'https://local.functions.nhost.run/v1'
   } else {
-    hasuraUrl = 'https://hboobcwwuscftftwhuse.hasura.us-east-1.nhost.run/v1/graphql'
-    functionsUrl = 'https://hboobcwwuscftftwhuse.functions.us-east-1.nhost.run/v1'
+    hasuraUrl = 'https://graphql.thisweekhawaii.com/v1/graphql'
+    functionsUrl = 'https://functions.thisweekhawaii.com/v1'
   }
 }
 
